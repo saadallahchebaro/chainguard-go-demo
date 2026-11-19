@@ -1,0 +1,15 @@
+$ multipass exec k3s -- bash -c 'for p in $(pgrep -x hello-server); do echo "== pid $p: $(ps -o user=,comm= -p $p)"; grep -E "^(Uid|Gid|CapEff|CapBnd|NoNewPrivs|Seccomp):" /proc/$p/status; done'   (D's two app processes on the k3s node, 2026-11-17T15:22:13Z)
+== pid 54579: 65532    hello-server
+Uid:	65532	65532	65532	65532
+Gid:	65532	65532	65532	65532
+CapEff:	0000000000000000
+CapBnd:	0000000000000000
+NoNewPrivs:	1
+Seccomp:	2
+== pid 55560: 65532    hello-server
+Uid:	65532	65532	65532	65532
+Gid:	65532	65532	65532	65532
+CapEff:	0000000000000000
+CapBnd:	0000000000000000
+NoNewPrivs:	1
+Seccomp:	2

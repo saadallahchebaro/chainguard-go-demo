@@ -1,0 +1,93 @@
+
+===== STEP 38-live-ready · 2026-11-17T18:07:27Z · chainguard
+
+$ echo "== the age check, simulated: a 1-hour limit, no override"; GRYPE_DB_AUTO_UPDATE=false GRYPE_DB_MAX_ALLOWED_BUILT_AGE=1h grype hello:e --by-cve -q -o json | jq ".matches | length"; echo "grype exit ${PIPESTATUS[0]}"
+# at 18:07:28 in /home/ubuntu/chainguard-technical-challenge
+== the age check, simulated: a 1-hour limit, no override
+grype exit 1
+# exit 0
+
+$ echo "== the same limit, with GRYPE_DB_VALIDATE_AGE=false"; GRYPE_DB_AUTO_UPDATE=false GRYPE_DB_MAX_ALLOWED_BUILT_AGE=1h GRYPE_DB_VALIDATE_AGE=false grype hello:e --by-cve -q -o json | jq ".matches | length"; echo "grype exit ${PIPESTATUS[0]}"
+# at 18:07:35 in /home/ubuntu/chainguard-technical-challenge
+== the same limit, with GRYPE_DB_VALIDATE_AGE=false
+0
+grype exit 0
+# exit 0
+
+$ GRYPE_DB_AUTO_UPDATE=false GRYPE_DB_MAX_ALLOWED_BUILT_AGE=1h grype hello:e --by-cve 2>&1 | grep -iE "age|old|error" | head -3
+# at 18:07:45 in /home/ubuntu/chainguard-technical-challenge
+[0002] ERROR [31mfailed to load vulnerability db: the vulnerability database was built 1 day ago (max allowed age is 1 hour)[0m
+# exit 0
+
+$ echo "free before: $(df --output=avail -k / | tail -1) KB (q-scan-today needs 4000000)"; docker builder prune -f | tail -1; echo "free after:  $(df --output=avail -k / | tail -1) KB"; docker images hello --format "{{.Repository}}:{{.Tag}}" | sort | tr "\n" " "
+# at 18:09:30 in /home/ubuntu/chainguard-technical-challenge
+free before: 3924028 KB (q-scan-today needs 4000000)
+Total:	317.7MB
+free after:  4234532 KB
+hello:a hello:b hello:c hello:c-distroless hello:d hello:e hello:e-golang # exit 0
+
+$ bash /tmp/live38.sh
+# at 18:10:13 in /home/ubuntu/chainguard-technical-challenge
+### q-scan-d: Grype on D and E, live
+== hello:d
+No vulnerabilities found
+== hello:e
+No vulnerabilities found
+exit 0
+### q-scan-all: All five images, live: unique CVEs
+a: 734 unique CVEs (Grype)
+b: 161 unique CVEs (Grype)
+c: 69 unique CVEs (Grype)
+d: 0 unique CVEs (Grype)
+e: 0 unique CVEs (Grype)
+exit 0
+### q-scan-sbom: C: scan the image, then scan its SBOM
+C from the image: 69 unique CVEs
+C from its SBOM:  158 unique CVEs
+exit 0
+### q-explain: Explain one CVE: Rapid Reset in B
+    - Package: golang.org/x/net, version: v0.0.0-20210226172049-e18ecbb05110
+      PURL: pkg:golang/golang.org/x/net@v0.0.0-20210226172049-e18ecbb05110
+      Match explanation(s):
+          - github:language:go:CVE-2023-44487 Direct match (package name, version, and ecosystem) against golang.org/x/net (version v0.0.0-20210226172049-e18ecbb05110).
+      Locations:
+          - /usr/local/bin/hello-server
+URLs:
+    - https://github.com/advisories/GHSA-qppj-fm5r-hxr3
+exit 0
+# exit 0
+
+$ mkdir -p ~/.config/grype && printf "%s\n" "# step 38: every Grype run by this user keeps the recorded database (built 2026-11-16 06:30 UTC)" "db:" "  auto-update: false" "  validate-age: false" > ~/.config/grype/config.yaml && cat ~/.config/grype/config.yaml
+# at 18:21:36 in /home/ubuntu/chainguard-technical-challenge
+# step 38: every Grype run by this user keeps the recorded database (built 2026-11-16 06:30 UTC)
+db:
+  auto-update: false
+  validate-age: false
+# exit 0
+
+$ for d in ~/chainguard-technical-challenge ~/hello-ai /tmp; do echo "$d: $(cd $d && grype config --load 2>/dev/null | grep -E "^ *(auto-update|validate-age):" | tr -s " " | tr "\n" " ")"; done
+# at 18:21:36 in /home/ubuntu/chainguard-technical-challenge
+/home/ubuntu/chainguard-technical-challenge:  auto-update: false  validate-age: false 
+/home/ubuntu/hello-ai:  auto-update: false  validate-age: false 
+/tmp:  auto-update: false  validate-age: false 
+# exit 0
+
+$ echo "env over the config file: $(GRYPE_DB_AUTO_UPDATE=true grype config --load 2>/dev/null | grep -m1 -E "^ *auto-update:" | tr -s " ")"
+# at 18:21:51 in /home/ubuntu/chainguard-technical-challenge
+env over the config file:  auto-update: true
+# exit 0
+
+$ D=~/.cache/grype/db/6/vulnerability.db; B1="$(grype db status | grep -m1 Built | tr -s " ") / $(stat -c "%y %s bytes, inode %i" $D)"; (cd ~/hello-ai && GATE_COMMIT=warmup000000 ./gate.sh); echo "database before the gate: $B1"; echo "database after the gate:  $(grype db status | grep -m1 Built | tr -s " ") / $(stat -c "%y %s bytes, inode %i" $D)"; echo "free: $(df --output=avail -k / | tail -1) KB"
+# at 18:22:11 in /home/ubuntu/chainguard-technical-challenge
+PASS  base image   all from cgr.dev/chainguard, pinned by digest
+PASS  base signed  Chainguard's signature on each base image
+PASS  pinned deps  every line is name==version
+PASS  cooldown     nothing newer than 7 days
+PASS  build        docker build
+PASS  user         runs as 65532
+PASS  scan         no fixable high or critical finding
+GATE PASS for warmup0
+database before the gate: Built: 2026-11-16T06:30:54Z / 2026-11-17 20:55:27.839978747 +0400 3445293056 bytes, inode 823366
+database after the gate:  Built: 2026-11-16T06:30:54Z / 2026-11-17 20:55:27.839978747 +0400 3445293056 bytes, inode 823366
+free: 4233992 KB
+# exit 0

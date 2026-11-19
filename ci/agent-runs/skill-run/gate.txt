@@ -1,0 +1,8 @@
+PASS  base image   all from cgr.dev/chainguard, pinned by digest
+PASS  base signed  Chainguard's signature on each base image
+PASS  pinned deps  every line is name==version
+PASS  cooldown     nothing newer than 7 days
+PASS  build        docker build
+PASS  user         runs as 65532
+PASS  scan         no fixable high or critical finding
+GATE PASS for 7e2fbce

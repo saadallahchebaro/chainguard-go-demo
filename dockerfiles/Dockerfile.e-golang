@@ -1,0 +1,24 @@
+# Image E-golang (optional experiment, step 13, then called D-golang): image E with one change, the build stage is
+# Docker's official golang image.
+# Question it answers: does the builder's brand change what ships? Same go-patched/ context, same runtime base.
+# Build from the repo folder:  docker build -t hello:e-golang -f dockerfiles/Dockerfile.e-golang ./go-patched
+
+# Stage 1: build. Digest from `crane digest golang:latest` (Go 1.27.4 on Debian 13). Pinned, not signature-verified here.
+FROM golang:latest@sha256:fe517acaa580cc7915457080f850c37e618b3c1e750f98b58fc6429b605147a1 AS build
+# golang already sets GOTOOLCHAIN=local; kept so the difference from E is the FROM line only
+ENV GOTOOLCHAIN=local
+WORKDIR /app
+COPY go.mod go.sum ./
+RUN go mod download
+COPY . .
+RUN CGO_ENABLED=0 go build -o hello-server .
+
+# Stage 2: runtime. Same static digest as images C, D and E.
+FROM cgr.dev/chainguard/static:latest@sha256:fc42af33e643f20d08baf03cddcc1c02ba57052dfb02edb0d79f3fc47bcea8d9
+COPY --from=build /app/hello-server /usr/local/bin/hello-server
+# static's default user (nonroot, 65532:65532), kept as in B to E
+USER 65532
+# Gin's release mode: no debug output (finding F1)
+ENV GIN_MODE=release
+EXPOSE 8080
+ENTRYPOINT ["/usr/local/bin/hello-server"]

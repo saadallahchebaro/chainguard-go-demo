@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="console-token" content="__TOKEN__">
+<title>Presentation console</title>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body class="app" data-page="present">
+<header class="top">
+  <h1>Container security lab, live<small>Each proof runs live on the lab VMs, most of them read-only · Replay shows the lab's screenshot instead</small></h1>
+  <nav><a href="/ci">CI demo</a><a href="/present" aria-current="page">Full presentation</a><a href="/deck">Command deck</a></nav>
+  <span class="spacer"></span>
+  <button type="button" class="btn small" id="runall" data-run="all">Run every proof in this section</button>
+  <div class="mode" role="group" aria-label="Mode"><button type="button" data-mode="live">Live</button><button type="button" data-mode="replay">Replay</button></div>
+</header>
+
+<div class="grid pr-grid">
+  <aside class="pane" aria-label="Sections, in the order of the deck">
+    <nav class="toc card fill scroll" id="toc"></nav>
+  </aside>
+
+  <section class="pane" aria-label="Proofs, result and output">
+    <div class="prtop">
+      <main class="card sec scroll" id="sec"></main>
+      <div class="result presult" id="result"><p class="empty">Run a proof: its result, or the lab's screenshot in replay mode, appears here.</p></div>
+    </div>
+    <section class="term fill" aria-label="Command output">
+      <div class="termbar"><span class="live" id="livedot"></span><span class="now" id="now">idle</span><button type="button" id="stop" disabled>Stop</button><button type="button" id="clear">Clear</button></div>
+      <div class="termbody" id="termbody" role="log" aria-live="polite"></div>
+    </section>
+  </section>
+</div>
+<script src="/static/common.js"></script>
+<script src="/static/present.js"></script>
+</body>
+</html>

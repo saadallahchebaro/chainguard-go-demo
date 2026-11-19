@@ -1,0 +1,188 @@
+
+===== STEP 16-registry · 2026-11-16T14:22:20Z · chainguard
+
+# NOTE: RD=sha256:a3d8aaa63ed8681a604f1dea0aa03f100d5895b6a58ace528858a7b332415373
+
+$ echo "registry:2 = $RD"; crane config --platform linux/arm64 registry@$RD | jq -r "\"created: \" + .created, \"version: \" + ((.config.Env // [])[] | select(startswith(\"REGISTRY_VERSION\")) // \"(not in env)\"), \"user: \" + (if (.config.User // \"\") == \"\" then \"(not set: root)\" else .config.User end), \"entrypoint: \" + ((.config.Entrypoint // []) | join(\" \")) + \"  cmd: \" + ((.config.Cmd // []) | join(\" \"))"; docker run -d -p 5000:5000 --name registry --restart unless-stopped registry@$RD; sleep 2; docker ps --filter name=registry --format "{{.Names}}  {{.Image}}  {{.Status}}  {{.Ports}}"; echo "== the registry API answers:"; curl -s -i localhost:5000/v2/ | head -4; curl -s localhost:5000/v2/_catalog
+# at 14:22:21 in /home/ubuntu/chainguard-technical-challenge
+registry:2 = sha256:a3d8aaa63ed8681a604f1dea0aa03f100d5895b6a58ace528858a7b332415373
+created: 2023-10-02T18:42:41Z
+version: (not in env)
+user: (not set: root)
+entrypoint: /entrypoint.sh  cmd: /etc/docker/registry/config.yml
+Unable to find image 'registry@sha256:a3d8aaa63ed8681a604f1dea0aa03f100d5895b6a58ace528858a7b332415373' locally
+docker.io/library/registry@sha256:a3d8aaa63ed8681a604f1dea0aa03f100d5895b6a58ace528858a7b332415373: Pulling from library/registry
+ddcb6d98388d: Pulling fs layer
+95459497489f: Pulling fs layer
+8bbaad1488a8: Pulling fs layer
+9a6b3f59ebc2: Pulling fs layer
+bd39ca3613a6: Pulling fs layer
+95459497489f: Download complete
+bd39ca3613a6: Download complete
+ddcb6d98388d: Download complete
+8bbaad1488a8: Download complete
+9a6b3f59ebc2: Download complete
+95459497489f: Pull complete
+8bbaad1488a8: Pull complete
+bd39ca3613a6: Pull complete
+ddcb6d98388d: Pull complete
+9a6b3f59ebc2: Pull complete
+94a5ce400b19: Download complete
+c4472e68032e: Download complete
+Digest: sha256:a3d8aaa63ed8681a604f1dea0aa03f100d5895b6a58ace528858a7b332415373
+Status: Downloaded newer image for registry@sha256:a3d8aaa63ed8681a604f1dea0aa03f100d5895b6a58ace528858a7b332415373
+3f6c7ad7a2d875d7baccbce489f7ccfb5619c8d1aa7b725cd0774ab3f763dd68
+registry  a3d8aaa63ed8  Up 2 seconds  0.0.0.0:5000->5000/tcp, [::]:5000->5000/tcp
+== the registry API answers:
+HTTP/1.1 200 OK
+Content-Length: 2
+Content-Type: application/json; charset=utf-8
+Docker-Distribution-Api-Version: registry/2.0
+{"repositories":[]}
+# exit 0
+
+$ echo "== inside: $(docker exec registry registry --version 2>&1 | head -1)"; echo "== Grype on registry:2 (same database as the lab):"; GRYPE_DB_AUTO_UPDATE=false grype registry@$RD --by-cve -q -o json=reports/after/registry2-grype.json; bash tools/count.sh reports/after/registry2-grype.json | grep -E "unique|severity|layer"; echo "== the newer major tag, registry:3:"; R3=$(crane digest registry:3); echo "   digest $R3"; crane config --platform linux/arm64 registry@$R3 | jq -r "\"   created: \" + .created + \", user: \" + (if (.config.User // \"\") == \"\" then \"(not set: root)\" else .config.User end)"
+# at 14:22:47 in /home/ubuntu/chainguard-technical-challenge
+== inside: registry github.com/docker/distribution 2.8.3
+== Grype on registry:2 (same database as the lab):
+  unique IDs:  72
+  by severity: Critical=4  High=31  Medium=33  Low=3  Unknown=1
+  by layer:    go-stdlib=66  os-apk=6
+== the newer major tag, registry:3:
+   digest sha256:82f6ff4a7f982960c8aa51617fea3aabc485df6e55cce80d22deb1de36f1bc3c
+   created: 2026-11-05T19:06:47.079884411Z, user: (not set: root)
+# exit 0
+
+# NOTE: R3=sha256:82f6ff4a7f982960c8aa51617fea3aabc485df6e55cce80d22deb1de36f1bc3c
+
+$ GRYPE_DB_AUTO_UPDATE=false grype registry@$R3 --by-cve -q -o json=reports/after/registry3-grype.json; echo "== registry:2 (2023-10-02):"; bash tools/count.sh reports/after/registry2-grype.json | grep -E "unique|severity|layer"; echo "== registry:3 ($(crane config --platform linux/arm64 registry@$R3 | jq -r .created | cut -c1-10)):"; bash tools/count.sh reports/after/registry3-grype.json | grep -E "unique|severity|layer"; docker pull -q registry@$R3 >/dev/null; echo "   version inside: $(docker run --rm --entrypoint registry registry@$R3 --version 2>&1 | head -1)"
+# at 14:23:15 in /home/ubuntu/chainguard-technical-challenge
+== registry:2 (2023-10-02):
+  unique IDs:  72
+  by severity: Critical=4  High=31  Medium=33  Low=3  Unknown=1
+  by layer:    go-stdlib=66  os-apk=6
+== registry:3 (2026-11-05):
+  unique IDs:  22
+  by severity: Critical=2  High=11  Medium=7  Low=1  Unknown=1
+  by layer:    go-module=11  go-stdlib=14  os-apk=2
+   version inside: registry github.com/distribution/distribution/v3 3.1.2
+# exit 0
+
+$ docker rm -f registry >/dev/null && echo "registry:2 container removed (it held nothing)"; docker run -d -p 5000:5000 --name registry --restart unless-stopped registry@$R3 >/dev/null; sleep 2; docker ps --filter name=registry --format "{{.Names}}  registry@{{.Image}}  {{.Status}}  {{.Ports}}"; echo "== version: $(docker exec registry registry --version 2>&1 | head -1)"; echo "== API:"; curl -s -i localhost:5000/v2/ | grep -E "^HTTP|Api-Version"; curl -s localhost:5000/v2/_catalog; echo; echo "== reachable from the VM network too (for the k3s VM at step 18): $(curl -s -o /dev/null -w "%{http_code}" http://192.168.252.2:5000/v2/)"
+# at 14:24:00 in /home/ubuntu/chainguard-technical-challenge
+registry:2 container removed (it held nothing)
+registry  registry@82f6ff4a7f98  Up 2 seconds  0.0.0.0:5000->5000/tcp, [::]:5000->5000/tcp
+== version: registry github.com/distribution/distribution/v3 3.1.2
+== API:
+HTTP/1.1 200 OK
+Docker-Distribution-Api-Version: registry/2.0
+{"repositories":[]}
+
+== reachable from the VM network too (for the k3s VM at step 18): 200
+# exit 0
+
+$ for t in c d; do docker tag hello:$t localhost:5000/hello:$t; docker push localhost:5000/hello:$t 2>&1 | grep -v -E "Waiting|Preparing|Layer already exists|Pushing \["; done; echo "== catalog: $(curl -s localhost:5000/v2/_catalog)  tags: $(curl -s localhost:5000/v2/hello/tags/list)"; for t in c d; do echo "== hello:$t"; echo "   local image ID:  $(docker image inspect hello:$t --format "{{.Id}}")"; echo "   registry digest: $(crane digest localhost:5000/hello:$t)"; done
+# at 14:24:28 in /home/ubuntu/chainguard-technical-challenge
+The push refers to repository [localhost:5000/hello]
+378117a5f26b: Pushed
+4d64d4fc6908: Pushed
+d6ec563ed8c1: Pushed
+44136fa355b3: Pushed
+c: digest: sha256:4f75bad2bb90574ba25582652a5336cf4b67d9a56353fc2b9f3cc7dc51a23141 size: 855
+The push refers to repository [localhost:5000/hello]
+4af6169a8b08: Pushed
+44136fa355b3: Already exists
+722e3ba3f937: Pushed
+d: digest: sha256:c5ce9ddb3a8db38d7ef61bdd6c84905bd1d3e7ef61a3c51bbd0d6d7aa7270a08 size: 855
+== catalog: {"repositories":["hello"]}  tags: {"name":"hello","tags":["c","d"]}
+== hello:c
+   local image ID:  sha256:4f75bad2bb90574ba25582652a5336cf4b67d9a56353fc2b9f3cc7dc51a23141
+   registry digest: sha256:4f75bad2bb90574ba25582652a5336cf4b67d9a56353fc2b9f3cc7dc51a23141
+== hello:d
+   local image ID:  sha256:c5ce9ddb3a8db38d7ef61bdd6c84905bd1d3e7ef61a3c51bbd0d6d7aa7270a08
+   registry digest: sha256:c5ce9ddb3a8db38d7ef61bdd6c84905bd1d3e7ef61a3c51bbd0d6d7aa7270a08
+# exit 0
+
+$ echo "== the index for hello:d in the registry:"; crane manifest localhost:5000/hello:d | jq -c ".mediaType, (.manifests[] | {digest: .digest[0:19], platform: (.platform.os + \"/\" + .platform.architecture), type: (.annotations[\"vnd.docker.reference.type\"] // \"image\"), refers_to: ((.annotations[\"vnd.docker.reference.digest\"] // \"\")[0:19])})"; ATT=$(crane manifest localhost:5000/hello:d | jq -r ".manifests[] | select(.annotations[\"vnd.docker.reference.type\"] == \"attestation-manifest\") | .digest"); echo "== the attestation manifest ${ATT:0:19}: its layers"; crane manifest localhost:5000/hello@$ATT | jq -c ".layers[] | {mediaType, predicate: .annotations[\"in-toto.io/predicate-type\"], size}"; L=$(crane manifest localhost:5000/hello@$ATT | jq -r ".layers[0].digest"); echo "== the provenance statement:"; crane blob localhost:5000/hello@$L | jq -r "\"predicateType: \" + .predicateType, \"subject: \" + ([.subject[] | .name + \"@sha256:\" + .digest.sha256[0:12]] | join(\", \")), (.predicate | to_entries[] | \"  \" + .key + \": \" + (.value | tojson | .[0:200]))"; echo "== signed? $(crane manifest localhost:5000/hello@$ATT | jq -r "[.layers[].mediaType] | join(\",\")" | grep -q sigstore && echo yes || echo "no: a plain in-toto statement, no signature layer")"
+# at 14:24:59 in /home/ubuntu/chainguard-technical-challenge
+== the index for hello:d in the registry:
+"application/vnd.oci.image.index.v1+json"
+{"digest":"sha256:712af371a935","platform":"linux/arm64","type":"image","refers_to":""}
+{"digest":"sha256:da9c45096d45","platform":"unknown/unknown","type":"attestation-manifest","refers_to":"sha256:712af371a935"}
+== the attestation manifest sha256:da9c45096d45: its layers
+{"mediaType":"application/vnd.in-toto+json","predicate":"https://slsa.dev/provenance/v1","size":1979}
+== the provenance statement:
+predicateType: https://slsa.dev/provenance/v1
+subject: pkg:docker/hello@d?platform=linux%2Farm64@sha256:712af371a935
+  buildDefinition: {"buildType":"https://github.com/moby/buildkit/blob/master/docs/attestations/slsa-definitions.md","resolvedDependencies":[{"uri":"pkg:docker/cgr.dev/chainguard/go@latest?digest=sha256:64c93a14feeb5320
+  runDetails: {"builder":{"id":""},"metadata":{"invocationId":"6ge37p5tz2t1czlefyexo799b","startedOn":"2026-11-16T17:27:51.016827284+04:00","finishedOn":"2026-11-16T17:28:09.733269563+04:00","buildkit_metadata":{"v
+== signed? no: a plain in-toto statement, no signature layer
+# exit 0
+
+$ ATT=$(crane manifest localhost:5000/hello:d | jq -r ".manifests[] | select(.annotations[\"vnd.docker.reference.type\"] == \"attestation-manifest\") | .digest"); L=$(crane manifest localhost:5000/hello@$ATT | jq -r ".layers[0].digest"); crane blob localhost:5000/hello@$L > /tmp/d-provenance.json; echo "== resolvedDependencies (what D was built from):"; jq -r ".predicate.buildDefinition.resolvedDependencies[] | \"   \" + .uri + \"\n      digest \" + (.digest | to_entries | map(.key + \":\" + .value) | join(\" \"))" /tmp/d-provenance.json; echo "== externalParameters:"; jq -c ".predicate.buildDefinition.externalParameters" /tmp/d-provenance.json | cut -c1-220; echo "== internalParameters: $(jq -c ".predicate.buildDefinition.internalParameters" /tmp/d-provenance.json | cut -c1-200)"; echo "== Dockerfile pins, for comparison:"; grep "^FROM" dockerfiles/Dockerfile.d-patched | sed "s/^/   /"; mkdir -p reports/provenance; cp /tmp/d-provenance.json reports/provenance/d-buildkit-provenance.json; echo "(saved: reports/provenance/d-buildkit-provenance.json)"
+# at 14:25:11 in /home/ubuntu/chainguard-technical-challenge
+== resolvedDependencies (what D was built from):
+   pkg:docker/cgr.dev/chainguard/go@latest?digest=sha256:64c93a14feeb5320f251691bab838fd580721f45cb090697a5c1b0a482e503cb&platform=linux%2Farm64
+      digest sha256:64c93a14feeb5320f251691bab838fd580721f45cb090697a5c1b0a482e503cb
+   pkg:docker/cgr.dev/chainguard/static@latest?digest=sha256:fc42af33e643f20d08baf03cddcc1c02ba57052dfb02edb0d79f3fc47bcea8d9&platform=linux%2Farm64
+      digest sha256:fc42af33e643f20d08baf03cddcc1c02ba57052dfb02edb0d79f3fc47bcea8d9
+== externalParameters:
+{"configSource":{"path":"Dockerfile.d-patched"},"request":{"frontend":"dockerfile.v0","locals":[{"name":"context"},{"name":"dockerfile"}],"root":{"configSource":{"path":"Dockerfile.d-patched"},"request":{"args":{"vcs:loc
+== internalParameters: {"builderPlatform":"linux/arm64","dockerfileVersion":"1.28.0","targetPlatform":"linux/arm64"}
+== Dockerfile pins, for comparison:
+   FROM cgr.dev/chainguard/go:latest@sha256:64c93a14feeb5320f251691bab838fd580721f45cb090697a5c1b0a482e503cb AS build
+   FROM cgr.dev/chainguard/static:latest@sha256:fc42af33e643f20d08baf03cddcc1c02ba57052dfb02edb0d79f3fc47bcea8d9
+(saved: reports/provenance/d-buildkit-provenance.json)
+# exit 0
+
+$ echo "== the provenance index entry and statement, in summary:"; crane manifest localhost:5000/hello:d | jq -c ".manifests[] | {digest: .digest[0:19], platform: (.platform.os + \"/\" + .platform.architecture), type: (.annotations[\"vnd.docker.reference.type\"] // \"image\")}"; jq -r "\"predicateType: \" + .predicateType, \"builder.id: \\\"\" + .predicate.runDetails.builder.id + \"\\\"\", \"build args recorded: \" + (.predicate.buildDefinition.externalParameters.request.args | tojson), \"started \" + .predicate.runDetails.metadata.startedOn + \", finished \" + .predicate.runDetails.metadata.finishedOn" reports/provenance/d-buildkit-provenance.json; echo "== git history at build time vs the args: $(git log -1 --format=%h --before="2026-11-16T13:28:00Z")"
+# at 14:25:25 in /home/ubuntu/chainguard-technical-challenge
+== the provenance index entry and statement, in summary:
+{"digest":"sha256:712af371a935","platform":"linux/arm64","type":"image"}
+{"digest":"sha256:da9c45096d45","platform":"unknown/unknown","type":"attestation-manifest"}
+predicateType: https://slsa.dev/provenance/v1
+builder.id: ""
+build args recorded: null
+started 2026-11-16T17:27:51.016827284+04:00, finished 2026-11-16T17:28:09.733269563+04:00
+== git history at build time vs the args: ca39930
+# exit 0
+
+$ echo "== every build argument recorded anywhere in the provenance:"; jq -c "[.. | objects | select(has(\"args\")) | .args] | add" reports/provenance/d-buildkit-provenance.json; echo "== is the git repository or commit recorded? $(grep -o -E "vcs:(source|revision)[^,}]*" reports/provenance/d-buildkit-provenance.json | head -3 | tr "\n" " " || true)$(grep -q -E "vcs:(source|revision)" reports/provenance/d-buildkit-provenance.json || echo "no vcs:source or vcs:revision")"
+# at 14:25:34 in /home/ubuntu/chainguard-technical-challenge
+== every build argument recorded anywhere in the provenance:
+{"vcs:localdir:context":"go-patched","vcs:localdir:dockerfile":"dockerfiles","vcs:revision":"ca39930e14cc5ad3a6708bb50f5ede0f7e338910","vcs:source":"git@github.com:saadallahchebaro/chainguard-technical-challenge.git"}
+== is the git repository or commit recorded? vcs:revision":"ca39930e14cc5ad3a6708bb50f5ede0f7e338910" vcs:source":"git@github.com:saadallahchebaro/chainguard-technical-challenge.git" 
+# exit 0
+
+$ echo "== the provenance says: source $(jq -r "[.. | objects | select(has(\"args\")) | .args] | add | .[\"vcs:source\"] + \" at \" + .[\"vcs:revision\"][0:7]" reports/provenance/d-buildkit-provenance.json), build started $(jq -r .predicate.runDetails.metadata.startedOn reports/provenance/d-buildkit-provenance.json)"; echo "== at that commit, go-patched/ still had the ORIGINAL code:"; git show ca39930:go-patched/go.mod | grep -E "^go |gin-gonic/gin "; git show ca39930:go-patched/main.go | grep -c "SetTrustedProxies" | sed "s/^/   SetTrustedProxies lines in main.go: /"; echo "== the code D was actually built from was committed later:"; git log --format="   %h %ad %s" --date=format:"%Y-%m-%d %H:%M" -1 -- go-patched/go.mod; git show HEAD:go-patched/go.mod | grep -E "^go |gin-gonic/gin "; echo "== any dirty-tree marker in the provenance? $(grep -c -i -E "dirty|modified" reports/provenance/d-buildkit-provenance.json)"
+# at 14:25:46 in /home/ubuntu/chainguard-technical-challenge
+== the provenance says: source git@github.com:saadallahchebaro/chainguard-technical-challenge.git at ca39930, build started 2026-11-16T17:27:51.016827284+04:00
+== at that commit, go-patched/ still had the ORIGINAL code:
+go 1.18
+require github.com/gin-gonic/gin v1.8.1
+   SetTrustedProxies lines in main.go: 0
+== the code D was actually built from was committed later:
+   cac3592 2026-11-16 17:40 step 13: image D, patched app built with chainguard go; Grype, Trivy and govulncheck all 0
+go 1.26.10
+require github.com/gin-gonic/gin v1.12.0
+== any dirty-tree marker in the provenance? 0
+# exit 0
+
+$ D=$(crane digest localhost:5000/hello:d); echo "== crane validate, every blob of hello@${D:0:19}… re-read and checked:"; crane validate --remote localhost:5000/hello@$D && echo "   PASS"; echo "== run D from the registry, by digest:"; docker run -d --rm --name hello-d-reg -p 8084:8080 localhost:5000/hello@$D >/dev/null; sleep 2; curl -s localhost:8084; echo; docker inspect hello-d-reg --format "   image: {{.Config.Image}}"; ps -o uid=,gid= -p $(docker inspect -f "{{.State.Pid}}" hello-d-reg) | awk "{print \"   runs as \" \$1 \":\" \$2}"; docker rm -f hello-d-reg >/dev/null && echo "   stopped"
+# at 14:26:06 in /home/ubuntu/chainguard-technical-challenge
+== crane validate, every blob of hello@sha256:c5ce9ddb3a8d… re-read and checked:
+PASS: localhost:5000/hello@sha256:c5ce9ddb3a8db38d7ef61bdd6c84905bd1d3e7ef61a3c51bbd0d6d7aa7270a08
+   PASS
+== run D from the registry, by digest:
+Hello World!
+   image: localhost:5000/hello@sha256:c5ce9ddb3a8db38d7ef61bdd6c84905bd1d3e7ef61a3c51bbd0d6d7aa7270a08
+   runs as 65532:65532
+   stopped
+# exit 0
+
+$ git add -A && git status --short | wc -l && git commit -q -m "step 16: local registry (registry:3, pinned) with C and D pushed by digest; default provenance inspected" && git push -q origin main && git log --oneline -1 && git status -sb | head -1
+# at 14:27:23 in /home/ubuntu/chainguard-technical-challenge
+17
+609183a step 16: local registry (registry:3, pinned) with C and D pushed by digest; default provenance inspected
+## main...origin/main
+# exit 0

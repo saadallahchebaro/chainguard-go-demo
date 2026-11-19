@@ -1,0 +1,43 @@
+# hello-ai on k3s: deploy.sh replaces IMAGE_PLACEHOLDER with the signed digest. Meets the "restricted"
+# Pod Security level that the default namespace enforces; Kyverno admits it only if the image is signed.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hello-ai
+  labels:
+    app: hello-ai
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: hello-ai
+  template:
+    metadata:
+      labels:
+        app: hello-ai
+    spec:
+      automountServiceAccountToken: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65532
+        runAsGroup: 65532
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: hello-ai
+          image: IMAGE_PLACEHOLDER
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+          resources:
+            requests: { cpu: 50m, memory: 64Mi }
+            limits: { cpu: 500m, memory: 256Mi }
+          readinessProbe:
+            httpGet: { path: /, port: 8080 }
+          livenessProbe:
+            httpGet: { path: /, port: 8080 }

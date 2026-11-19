@@ -1,0 +1,18 @@
+[mcp-sdk] SEP-2352: stored OAuth credential has no 'issuer' stamp (pre-upgrade storage or provider not round-tripping the value). SEP-2352 isolation is inactive for this read; ensure your provider round-trips the issuer field.
+I added the Dockerfile and the httpx dependency, but I haven't built or run anything. My attempts to run `docker --version` and to look up package versions with `pip index versions` were blocked waiting for approval.
+
+**What changed**
+- **`requirements.txt`**: added `httpx==0.28.1` and the package it needs underneath, `httpcore==1.0.9`. I pinned them to match the rest of your file. They work with the `h11==0.16.0` you already have, and httpx's other requirements (anyio, certifi, idna) were already listed. These are the latest versions I know of, but I couldn't check PyPI, so newer ones may exist.
+- **`Dockerfile`** (new): uses `python:3.13-slim` in two stages. The first installs the dependencies; the second copies them into a clean image that runs as a non-root `app` user. It starts the app with `uvicorn app.main:app` on port 8000.
+- **`.dockerignore`** (new): keeps `.env*`, `.git`, virtualenvs and caches out of the image.
+
+Nothing in `app/main.py` calls httpx yet; it's installed so you can use it.
+
+**To check it:**
+```sh
+docker build -t agent-bare .
+docker run --rm -p 8000:8000 agent-bare
+curl localhost:8000/
+```
+
+**Decision for you:** the folder is named "ChainGuard Project". If you're aiming for Chainguard base images, I can switch the build stage to `cgr.dev/chainguard/python:latest-dev` and the runtime stage to `cgr.dev/chainguard/python:latest`. That image has no shell or `useradd` and already runs as non-root, so the user-creation step would come out.

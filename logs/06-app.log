@@ -1,0 +1,207 @@
+
+===== STEP 06-app · 2026-11-16T09:36:52Z · chainguard
+
+$ cat -n go/main.go && echo && cat go/go.mod && echo && echo "direct: $(grep -c "^require github" go/go.mod)   indirect: $(grep -c "// indirect" go/go.mod)   go.sum lines: $(wc -l < go/go.sum)"
+# at 09:36:52 in /home/ubuntu/chainguard-technical-challenge
+     1	package main
+     2	
+     3	import (
+     4		"net/http"
+     5	
+     6		"github.com/gin-gonic/gin"
+     7	)
+     8	
+     9	func main() {
+    10		r := gin.Default()
+    11		r.GET("/", func(c *gin.Context) {
+    12			c.String(http.StatusOK, "Hello World!")
+    13		})
+    14		r.Run() // listen on 0.0.0.0:8080
+    15	}
+
+module hello-server
+
+go 1.18
+
+require github.com/gin-gonic/gin v1.8.1
+
+require (
+	github.com/gin-contrib/sse v0.1.0 // indirect
+	github.com/go-playground/locales v0.14.0 // indirect
+	github.com/go-playground/universal-translator v0.18.0 // indirect
+	github.com/go-playground/validator/v10 v10.10.0 // indirect
+	github.com/goccy/go-json v0.9.7 // indirect
+	github.com/json-iterator/go v1.1.12 // indirect
+	github.com/leodido/go-urn v1.2.1 // indirect
+	github.com/mattn/go-isatty v0.0.14 // indirect
+	github.com/modern-go/concurrent v0.0.0-20180228061459-e0a39a4cb421 // indirect
+	github.com/modern-go/reflect2 v1.0.2 // indirect
+	github.com/pelletier/go-toml/v2 v2.0.1 // indirect
+	github.com/ugorji/go/codec v1.2.7 // indirect
+	golang.org/x/crypto v0.0.0-20210711020723-a769d52b0f97 // indirect
+	golang.org/x/net v0.0.0-20210226172049-e18ecbb05110 // indirect
+	golang.org/x/sys v0.0.0-20210806184541-e5e7981a1069 // indirect
+	golang.org/x/text v0.3.6 // indirect
+	google.golang.org/protobuf v1.28.0 // indirect
+	gopkg.in/yaml.v2 v2.4.0 // indirect
+)
+
+direct: 1   indirect: 18   go.sum lines: 86
+# exit 0
+
+$ go version -m go/hello-server && echo && echo "dep lines in the binary: $(go version -m go/hello-server | grep -c "^\sdep")   modules in go.mod: $(grep -c "^\s*[a-z].* v[0-9]" go/go.mod)"
+# at 09:37:03 in /home/ubuntu/chainguard-technical-challenge
+go/hello-server: go1.18.10
+	path	hello-server
+	mod	hello-server	(devel)	
+	dep	github.com/gin-contrib/sse	v0.1.0	h1:Y/yl/+YNO8GZSjAhjMsSuLt29uWRFHdHYUb5lYOV9qE=
+	dep	github.com/gin-gonic/gin	v1.8.1	h1:4+fr/el88TOO3ewCmQr8cx/CtZ/umlIRIs5M4NTNjf8=
+	dep	github.com/go-playground/locales	v0.14.0	h1:u50s323jtVGugKlcYeyzC0etD1HifMjqmJqb8WugfUU=
+	dep	github.com/go-playground/universal-translator	v0.18.0	h1:82dyy6p4OuJq4/CByFNOn/jYrnRPArHwAcmLoJZxyho=
+	dep	github.com/go-playground/validator/v10	v10.10.0	h1:I7mrTYv78z8k8VXa/qJlOlEXn/nBh+BF8dHX5nt/dr0=
+	dep	github.com/leodido/go-urn	v1.2.1	h1:BqpAaACuzVSgi/VLzGZIobT2z4v53pjosyNd9Yv6n/w=
+	dep	github.com/mattn/go-isatty	v0.0.14	h1:yVuAays6BHfxijgZPzw+3Zlu5yQgKGP2/hcQbHb7S9Y=
+	dep	github.com/pelletier/go-toml/v2	v2.0.1	h1:8e3L2cCQzLFi2CR4g7vGFuFxX7Jl1kKX8gW+iV0GUKU=
+	dep	github.com/ugorji/go/codec	v1.2.7	h1:YPXUKf7fYbp/y8xloBqZOw2qaVggbfwMlI8WM3wZUJ0=
+	dep	golang.org/x/crypto	v0.0.0-20210711020723-a769d52b0f97	h1:/UOmuWzQfxxo9UtlXMwuQU8CMgg1eZXqTRwkSQJWKOI=
+	dep	golang.org/x/net	v0.0.0-20210226172049-e18ecbb05110	h1:qWPm9rbaAMKs8Bq/9LRpbMqxWRVUAQwMI9fVrssnTfw=
+	dep	golang.org/x/sys	v0.0.0-20210806184541-e5e7981a1069	h1:siQdpVirKtzPhKl3lZWozZraCFObP8S1v6PRp0bLrtU=
+	dep	golang.org/x/text	v0.3.6	h1:aRYxNxv6iGQlyVaZmk6ZgYEDa+Jg18DxebPSrd6bg1M=
+	dep	google.golang.org/protobuf	v1.28.0	h1:w43yiav+6bVFTBQFZX0r7ipe9JQ1QsbMgHwbBziscLw=
+	dep	gopkg.in/yaml.v2	v2.4.0	h1:D8xgwECY7CYvx+Y2n4sBz93Jn9JRvxdiyyo8CTfuKaY=
+	build	-compiler=gc
+	build	CGO_ENABLED=0
+	build	GOARCH=arm64
+	build	GOOS=linux
+
+dep lines in the binary: 15   modules in go.mod: 19
+# exit 0
+
+$ echo "== Gin v1.8.1 gin.go: what r.Run() does"; curl -s https://raw.githubusercontent.com/gin-gonic/gin/v1.8.1/gin.go | sed -n "372,384p"; echo; echo "== net/http: what a zero timeout means"; go doc net/http.Server | grep -B1 -A3 "ReadHeaderTimeout time.Duration"; echo; echo "== Gin v1.8.1 internal/json: which JSON code is compiled by default"; for f in json.go jsoniter.go go_json.go; do printf "%-12s " $f; curl -s https://raw.githubusercontent.com/gin-gonic/gin/v1.8.1/internal/json/$f | grep -m1 "^//go:build"; done
+# at 09:37:37 in /home/ubuntu/chainguard-technical-challenge
+== Gin v1.8.1 gin.go: what r.Run() does
+func (engine *Engine) Run(addr ...string) (err error) {
+	defer func() { debugPrintError(err) }()
+
+	if engine.isUnsafeTrustedProxies() {
+		debugPrint("[WARNING] You trusted all proxies, this is NOT safe. We recommend you to set a value.\n" +
+			"Please check https://pkg.go.dev/github.com/gin-gonic/gin#readme-don-t-trust-all-proxies for details.")
+	}
+
+	address := resolveAddress(addr)
+	debugPrint("Listening and serving HTTP on %s\n", address)
+	err = http.ListenAndServe(address, engine.Handler())
+	return
+}
+
+== net/http: what a zero timeout means
+	// is zero or negative, there is no timeout.
+	ReadHeaderTimeout time.Duration
+
+	// WriteTimeout is the maximum duration before timing out
+	// writes of the response. It is reset whenever a new
+
+== Gin v1.8.1 internal/json: which JSON code is compiled by default
+json.go      //go:build !jsoniter && !go_json
+jsoniter.go  //go:build jsoniter
+go_json.go   //go:build go_json
+# exit 0
+
+$ echo "== Gin v1.8.1 gin.go: what r.Run() does"; curl -s https://raw.githubusercontent.com/gin-gonic/gin/v1.8.1/gin.go | sed -n "372,384p"; echo; echo "== net/http: what a zero timeout means"; go doc net/http.Server | grep -B6 "ReadHeaderTimeout time.Duration"; echo; echo "== Gin v1.8.1 internal/json: which JSON code is compiled by default"; for f in json.go jsoniter.go go_json.go; do printf "%-12s " $f; curl -s https://raw.githubusercontent.com/gin-gonic/gin/v1.8.1/internal/json/$f | grep -m1 "^//go:build"; done
+# at 09:37:48 in /home/ubuntu/chainguard-technical-challenge
+== Gin v1.8.1 gin.go: what r.Run() does
+func (engine *Engine) Run(addr ...string) (err error) {
+	defer func() { debugPrintError(err) }()
+
+	if engine.isUnsafeTrustedProxies() {
+		debugPrint("[WARNING] You trusted all proxies, this is NOT safe. We recommend you to set a value.\n" +
+			"Please check https://pkg.go.dev/github.com/gin-gonic/gin#readme-don-t-trust-all-proxies for details.")
+	}
+
+	address := resolveAddress(addr)
+	debugPrint("Listening and serving HTTP on %s\n", address)
+	err = http.ListenAndServe(address, engine.Handler())
+	return
+}
+
+== net/http: what a zero timeout means
+	// ReadHeaderTimeout is the amount of time allowed to read
+	// request headers. The connection's read deadline is reset
+	// after reading the headers and the Handler can decide what
+	// is considered too slow for the body. If zero, the value of
+	// ReadTimeout is used. If negative, or if zero and ReadTimeout
+	// is zero or negative, there is no timeout.
+	ReadHeaderTimeout time.Duration
+
+== Gin v1.8.1 internal/json: which JSON code is compiled by default
+json.go      //go:build !jsoniter && !go_json
+jsoniter.go  //go:build jsoniter
+go_json.go   //go:build go_json
+# exit 0
+
+$ file go/hello-server; echo; ldd go/hello-server; echo "ldd exit code: $?"; echo; ls -l go/hello-server
+# at 09:37:56 in /home/ubuntu/chainguard-technical-challenge
+go/hello-server: ELF 64-bit LSB executable, ARM aarch64, version 1 (SYSV), statically linked, Go BuildID=u2VYIpSZ_ZmBYqo9jp1-/2-6cn_c_jHfcsD7gdlrY/nXyPeRO8IDZ4yQ8x7koM/dmiWG_cd6xIgV4A8OdsO, not stripped
+
+	not a dynamic executable
+ldd exit code: 1
+
+-rwxr-xr-x 1 root root 9761868 Nov 16 13:20 go/hello-server
+# exit 0
+
+$ cp -r go go-patched && rm -f go-patched/hello-server && ls -la go go-patched && diff -r --exclude=hello-server go go-patched && echo "go/ and go-patched/ are identical (apart from the built binary)"
+# at 09:38:06 in /home/ubuntu/chainguard-technical-challenge
+go:
+total 9568
+drwxrwxr-x  2 ubuntu ubuntu    4096 Nov 16 13:20 .
+drwxrwxr-x 12 ubuntu ubuntu    4096 Nov 16 13:38 ..
+-rw-rw-r--  1 ubuntu ubuntu      56 Nov 16 12:22 .gitignore
+-rw-rw-r--  1 ubuntu ubuntu     372 Nov 16 12:22 README.md
+-rw-rw-r--  1 ubuntu ubuntu    1050 Nov 16 12:22 go.mod
+-rw-rw-r--  1 ubuntu ubuntu    7924 Nov 16 12:22 go.sum
+-rwxr-xr-x  1 root   root   9761868 Nov 16 13:20 hello-server
+-rw-rw-r--  1 ubuntu ubuntu     219 Nov 16 12:22 main.go
+
+go-patched:
+total 32
+drwxrwxr-x  2 ubuntu ubuntu 4096 Nov 16 13:38 .
+drwxrwxr-x 12 ubuntu ubuntu 4096 Nov 16 13:38 ..
+-rw-rw-r--  1 ubuntu ubuntu   56 Nov 16 13:38 .gitignore
+-rw-rw-r--  1 ubuntu ubuntu  372 Nov 16 13:38 README.md
+-rw-rw-r--  1 ubuntu ubuntu 1050 Nov 16 13:38 go.mod
+-rw-rw-r--  1 ubuntu ubuntu 7924 Nov 16 13:38 go.sum
+-rw-rw-r--  1 ubuntu ubuntu  219 Nov 16 13:38 main.go
+go/ and go-patched/ are identical (apart from the built binary)
+# exit 0
+
+$ echo "== go/.gitignore (shipped with the challenge):"; cat go/.gitignore
+# at 09:38:29 in /home/ubuntu/chainguard-technical-challenge
+== go/.gitignore (shipped with the challenge):
+melange.rsa
+melange.rsa.pub
+packages/
+output.tar
+sbom-*
+# exit 0
+
+$ git add -A && git status --short && git commit -q -m "step 06: app inspected (build record, static binary, no server timeouts); go-patched copy" && git push -q origin main && git log --oneline -1 && git status -sb | head -1
+# at 09:39:10 in /home/ubuntu/chainguard-technical-challenge
+M  JOURNAL.md
+M  REPORT.md
+M  RUNBOOK.md
+A  demo/screenshots/06-app-buildinfo.png
+A  demo/screenshots/06-app-gin-source.png
+A  demo/screenshots/06-app-gitignore-melange.png
+A  demo/screenshots/06-app-source.png
+A  demo/screenshots/06-app-static.png
+A  go-patched/.gitignore
+A  go-patched/README.md
+A  go-patched/go.mod
+A  go-patched/go.sum
+A  go-patched/main.go
+M  logs/05-sanity.log
+A  logs/06-app-mac.log
+A  logs/06-app.log
+ccbc17e step 06: app inspected (build record, static binary, no server timeouts); go-patched copy
+## main...origin/main
+# exit 0

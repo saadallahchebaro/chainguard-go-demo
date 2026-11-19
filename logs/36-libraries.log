@@ -1,0 +1,30 @@
+
+===== STEP 36-libraries · 2026-11-17T16:16:34Z · chainguard
+
+$ echo "== where D got its modules: GOPROXY in Dockerfile D and in the go image"; echo "   Dockerfile.d-patched: $(grep -c GOPROXY dockerfiles/Dockerfile.d-patched) GOPROXY lines"; G=$(grep -o "cgr.dev/chainguard/go[^ ]*@sha256:[0-9a-f]*" dockerfiles/Dockerfile.d-patched); echo "   go image env: $(crane config --platform linux/arm64 $G | jq -r "[.config.Env[] | split(\"=\")[0]] | join(\" \")")"; echo "   so Go default: $(go env GOPROXY)"; echo "== D modules, dated by the Go proxy (D built 2026-11-16; today $(date -u +%F))"; cd go-patched; M=$(go list -deps -f "{{with .Module}}{{.Path}}{{end}}" . | sort -u | grep -v "^hello-server$"); go list -m -f "{{.Time.Format \"2006-01-02\"}} {{.Path}} {{.Version}}" $M | sort | sed "s/^/   /"; cd ..
+# at 16:16:35 in /home/ubuntu/chainguard-technical-challenge
+== where D got its modules: GOPROXY in Dockerfile D and in the go image
+   Dockerfile.d-patched: 0 GOPROXY lines
+   go image env: GODEBUG GOTOOLCHAIN PATH SSL_CERT_FILE
+   so Go default: https://proxy.golang.org,direct
+== D modules, dated by the Go proxy (D built 2026-11-16; today 2026-11-17)
+   2025-11-17 github.com/quic-go/qpack v0.6.0
+   2026-01-08 github.com/goccy/go-yaml v1.19.2
+   2026-02-28 github.com/gin-gonic/gin v1.12.0
+   2026-07-05 github.com/pelletier/go-toml/v2 v2.4.3
+   2026-07-22 github.com/leodido/go-urn v1.5.0
+   2026-07-23 github.com/mattn/go-isatty v0.0.24
+   2026-08-04 github.com/ugorji/go/codec v1.3.2
+   2026-08-10 google.golang.org/protobuf v1.36.12
+   2026-09-20 github.com/go-playground/universal-translator v0.18.2
+   2026-09-28 github.com/go-playground/locales v0.14.2
+   2026-10-17 github.com/gabriel-vasile/mimetype v1.4.16
+   2026-10-27 golang.org/x/net v0.62.0
+   2026-10-29 github.com/go-playground/validator/v10 v10.30.6
+   2026-11-03 github.com/quic-go/quic-go v0.65.0
+   2026-11-04 github.com/gin-contrib/sse v1.2.1
+   2026-11-06 go.mongodb.org/mongo-driver/v2 v2.10.0
+   2026-11-06 golang.org/x/sys v0.50.0
+   2026-11-09 golang.org/x/text v0.44.0
+   2026-11-11 golang.org/x/crypto v0.59.0
+# exit 0

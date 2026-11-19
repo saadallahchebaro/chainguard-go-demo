@@ -1,0 +1,189 @@
+
+===== STEP 03-tools · 2026-11-16T09:03:10Z · chainguard
+
+# NOTE: GOV=go1.27.4
+
+$ curl -sSfLO "https://go.dev/dl/$GOV.linux-arm64.tar.gz" && ls -l $GOV.linux-arm64.tar.gz
+# at 09:03:17 in /home/ubuntu/downloads
+-rw-rw-r-- 1 ubuntu ubuntu 67129258 Nov 16 13:03 go1.27.4.linux-arm64.tar.gz
+# exit 0
+
+$ curl -s "https://go.dev/dl/?mode=json" | jq -r --arg f "$GOV.linux-arm64.tar.gz" ".[].files[] | select(.filename == \$f) | .sha256 + \"  \" + .filename" > go.sha256 && cat go.sha256 && sha256sum -c go.sha256
+# at 09:03:21 in /home/ubuntu/downloads
+3392582988a273a87ab5043ee1b2c9c17a2c3c00580bf9326c47a2e0aaaeac92  go1.27.4.linux-arm64.tar.gz
+go1.27.4.linux-arm64.tar.gz: OK
+# exit 0
+
+$ sudo rm -rf /usr/local/go && sudo tar -C /usr/local -xzf $GOV.linux-arm64.tar.gz && which go && go version && go env GOPATH GOOS GOARCH
+# at 09:03:28 in /home/ubuntu/downloads
+/usr/local/go/bin/go
+go version go1.27.4 linux/arm64
+/home/ubuntu/go
+linux
+arm64
+# exit 0
+
+$ ls -l $GOV.linux-arm64.tar.gz && cat go.sha256 && sha256sum -c go.sha256 && which go && go version
+# at 09:03:47 in /home/ubuntu/downloads
+-rw-rw-r-- 1 ubuntu ubuntu 67129258 Nov 16 13:03 go1.27.4.linux-arm64.tar.gz
+3392582988a273a87ab5043ee1b2c9c17a2c3c00580bf9326c47a2e0aaaeac92  go1.27.4.linux-arm64.tar.gz
+go1.27.4.linux-arm64.tar.gz: OK
+/usr/local/go/bin/go
+go version go1.27.4 linux/arm64
+# exit 0
+
+$ ls -l $GOV.linux-arm64.tar.gz && cat go.sha256 && sha256sum -c go.sha256 && which go && go version
+# at 09:03:59 in /home/ubuntu/downloads
+-rw-rw-r-- 1 ubuntu ubuntu 67129258 Nov 16 13:03 go1.27.4.linux-arm64.tar.gz
+3392582988a273a87ab5043ee1b2c9c17a2c3c00580bf9326c47a2e0aaaeac92  go1.27.4.linux-arm64.tar.gz
+go1.27.4.linux-arm64.tar.gz: OK
+/usr/local/go/bin/go
+go version go1.27.4 linux/arm64
+# exit 0
+
+$ go install golang.org/x/vuln/cmd/govulncheck@latest && go install github.com/google/go-containerregistry/cmd/crane@latest && ls -l ~/go/bin && govulncheck -version && crane version
+# at 09:04:08 in /home/ubuntu/downloads
+go: downloading golang.org/x/vuln v1.9.0
+go: downloading golang.org/x/telemetry v0.0.0-20261010193011-f71dc92da45e
+go: downloading golang.org/x/mod v0.42.0
+go: downloading golang.org/x/tools v0.52.0
+go: downloading golang.org/x/sync v0.24.0
+go: downloading github.com/google/go-containerregistry v0.22.1
+go: downloading github.com/docker/cli v29.7.2+incompatible
+go: downloading github.com/opencontainers/image-spec v1.1.1
+go: downloading github.com/spf13/cobra v1.10.2
+go: downloading golang.org/x/sync v0.22.0
+go: downloading github.com/opencontainers/go-digest v1.0.0
+go: downloading github.com/google/go-cmp v0.7.0
+go: downloading github.com/spf13/pflag v1.0.10
+go: downloading github.com/klauspost/compress v1.19.2
+go: downloading github.com/docker/docker-credential-helpers v0.9.3
+go: downloading github.com/sirupsen/logrus v1.9.4
+go: downloading golang.org/x/sys v0.47.0
+total 31148
+-rwxrwxr-x 1 ubuntu ubuntu 17165042 Nov 16 13:04 crane
+-rwxrwxr-x 1 ubuntu ubuntu 14725208 Nov 16 13:04 govulncheck
+Go: go1.27.4
+Scanner: govulncheck@v1.9.0
+DB: https://vuln.go.dev
+DB updated: 2026-11-11 02:51:11 +0000 UTC
+
+v0.22.1
+# exit 0
+
+$ KV=$(curl -Ls https://dl.k8s.io/release/stable.txt) && echo "kubectl stable: $KV" && curl -sSfLO "https://dl.k8s.io/release/$KV/bin/linux/arm64/kubectl" && curl -sSfLO "https://dl.k8s.io/release/$KV/bin/linux/arm64/kubectl.sha256" && echo "$(cat kubectl.sha256)  kubectl" | sha256sum -c && sudo install -m 0755 kubectl /usr/local/bin/kubectl && kubectl version --client
+# at 09:04:39 in /home/ubuntu/downloads
+kubectl stable: v1.37.2
+kubectl: OK
+Client Version: v1.37.2
+Kustomize Version: v5.8.1
+# exit 0
+
+$ curl -sSfLO https://github.com/sigstore/cosign/releases/latest/download/cosign-linux-arm64 && curl -sSfLO https://github.com/sigstore/cosign/releases/latest/download/cosign_checksums.txt && grep " cosign-linux-arm64$" cosign_checksums.txt | sha256sum -c && sudo install -m 0755 cosign-linux-arm64 /usr/local/bin/cosign && cosign version | grep -E "GitVersion|GitCommit|BuildDate"
+# at 09:05:11 in /home/ubuntu/downloads
+cosign-linux-arm64: OK
+GitVersion:    v3.1.4
+GitCommit:     0e48502cf5ef34e2e60bbd3617aa19945712f705
+BuildDate:     2026-10-20T17:33:02Z
+# exit 0
+
+$ curl -sSfL https://get.anchore.io/grype -o grype-install.sh && curl -sSfL https://get.anchore.io/syft -o syft-install.sh && wc -l grype-install.sh syft-install.sh && grep -n -E "^(OWNER|REPO)=" grype-install.sh syft-install.sh && grep -n -E "hash_sha256_verify\(\)|checksums.txt\"|verify-blob|certificate-identity|certificate-oidc-issuer|v\) VERIFY_SIGN" grype-install.sh
+# at 09:05:30 in /home/ubuntu/downloads
+  901 grype-install.sh
+  904 syft-install.sh
+ 1805 total
+grype-install.sh:6:OWNER=anchore
+grype-install.sh:7:REPO="${PROJECT_NAME}"
+syft-install.sh:6:OWNER=anchore
+syft-install.sh:7:REPO="${PROJECT_NAME}"
+266:hash_sha256_verify() (
+401:  download_github_release_checksums_files "$@" "checksums.txt"
+601:    verify-blob "$checksums_file" \
+603:      --certificate-identity "https://github.com/${OWNER}/${REPO}/.github/workflows/release.yaml@refs/heads/main" \
+604:      --certificate-oidc-issuer "https://token.actions.githubusercontent.com" > "${log_file}" 2>&1
+810:      v) VERIFY_SIGN=true;;
+# exit 0
+
+$ sudo sh grype-install.sh -v -b /usr/local/bin && sudo sh syft-install.sh -v -b /usr/local/bin
+# at 09:05:42 in /home/ubuntu/downloads
+[info] checking github for the current release tag 
+[info] fetching release script for tag='v0.121.3' 
+[info] checking github for the current release tag 
+[info] using release tag='v0.121.3' version='0.121.3' os='linux' arch='arm64' 
+[info] signature verification succeeded 
+[info] installed /usr/local/bin/grype 
+[info] checking github for the current release tag 
+[info] fetching release script for tag='v1.57.1' 
+[info] checking github for the current release tag 
+[info] using release tag='v1.57.1' version='1.57.1' os='linux' arch='arm64' 
+[info] signature verification succeeded 
+[info] installed /usr/local/bin/syft 
+# exit 0
+
+$ grep -n -B3 -A12 "fetching release script" grype-install.sh
+# at 09:06:03 in /home/ubuntu/downloads
+865-  # to indicate if we should continue processing with the existing script or to download the script from the given tag.
+866-  if [ "${DOWNLOAD_TAG_INSTALL_SCRIPT}" = "true" ]; then
+867-      export DOWNLOAD_TAG_INSTALL_SCRIPT=false
+868:      log_info "fetching release script for tag='${tag}'"
+869-      if ! install_script=$(http_copy "${INSTALL_SH_BASE_URL}/${tag}/install.sh" ""); then
+870-          log_warn "failed to fetch from ${INSTALL_SH_BASE_URL}, trying fallback URL"
+871-          install_script=$(http_copy "${LEGACY_INSTALL_SH_BASE_URL}/${tag}/install.sh" "")
+872-      fi
+873-      echo "${install_script}" | sh -s -- "$@"
+874-      exit $?
+875-  fi
+876-
+877-  log_info "using release tag='${tag}' version='${version}' os='${os}' arch='${arch}'"
+878-
+879-  download_dir=$(mktemp -d)
+880-  trap 'rm -rf -- "$download_dir"' EXIT
+# exit 0
+
+$ U=https://github.com/anchore/$T/releases/download/v$V && curl -sSfLO $U/${T}_${V}_linux_arm64.tar.gz -O $U/${T}_${V}_checksums.txt -O $U/${T}_${V}_checksums.txt.sigstore.json && cosign verify-blob ${T}_${V}_checksums.txt --bundle ${T}_${V}_checksums.txt.sigstore.json --certificate-identity "https://github.com/anchore/$T/.github/workflows/release.yaml@refs/heads/main" --certificate-oidc-issuer https://token.actions.githubusercontent.com && sha256sum -c --ignore-missing ${T}_${V}_checksums.txt && tar -xzf ${T}_${V}_linux_arm64.tar.gz $T && sha256sum $T /usr/local/bin/$T
+# at 09:06:45 in /home/ubuntu/downloads
+Verified OK
+grype_0.121.3_linux_arm64.tar.gz: OK
+9d7014d4d96f5d91a8bf0cbc439fcc34750a06a079e30df7c684dc3f7d89d431  grype
+9d7014d4d96f5d91a8bf0cbc439fcc34750a06a079e30df7c684dc3f7d89d431  /usr/local/bin/grype
+# exit 0
+
+$ U=https://github.com/anchore/$T/releases/download/v$V && curl -sSfLO $U/${T}_${V}_linux_arm64.tar.gz -O $U/${T}_${V}_checksums.txt -O $U/${T}_${V}_checksums.txt.sigstore.json && cosign verify-blob ${T}_${V}_checksums.txt --bundle ${T}_${V}_checksums.txt.sigstore.json --certificate-identity "https://github.com/anchore/$T/.github/workflows/release.yaml@refs/heads/main" --certificate-oidc-issuer https://token.actions.githubusercontent.com && sha256sum -c --ignore-missing ${T}_${V}_checksums.txt && tar -xzf ${T}_${V}_linux_arm64.tar.gz $T && sha256sum $T /usr/local/bin/$T
+# at 09:06:49 in /home/ubuntu/downloads
+Verified OK
+syft_1.57.1_linux_arm64.tar.gz: OK
+b0b37d4e18dbb923c9321a332c2f5b1ef2db13f599e58d6f3aee3a1ba3545365  syft
+b0b37d4e18dbb923c9321a332c2f5b1ef2db13f599e58d6f3aee3a1ba3545365  /usr/local/bin/syft
+# exit 0
+
+$ go version; govulncheck -version | head -2; echo "crane $(crane version)"; kubectl version --client | head -1; cosign version | grep GitVersion; grype version | grep -E "^(Application|Version):"; syft version | grep -E "^(Application|Version):"; docker --version
+# at 09:07:07 in /home/ubuntu/chainguard-technical-challenge
+go version go1.27.4 linux/arm64
+Go: go1.27.4
+Scanner: govulncheck@v1.9.0
+crane v0.22.1
+Client Version: v1.37.2
+GitVersion:    v3.1.4
+Application:         grype
+Version:             0.121.3
+Application:   syft
+Version:       1.57.1
+Docker version 29.9.3, build 5457199
+# exit 0
+
+$ git add -A && git status --short && git commit -q -m "step 03: tools installed and verified (Go, govulncheck, crane, kubectl, cosign, Grype, Syft)" && git push -q origin main && git log --oneline -1 && git status -sb | head -1
+# at 09:08:04 in /home/ubuntu/chainguard-technical-challenge
+M  JOURNAL.md
+M  REPORT.md
+M  RUNBOOK.md
+A  demo/screenshots/03-tools-anchore-installer-review.png
+A  demo/screenshots/03-tools-go-verified.png
+A  demo/screenshots/03-tools-grype-syft-verified.png
+A  demo/screenshots/03-tools-kubectl-cosign-verified.png
+A  demo/screenshots/03-tools-versions.png
+M  logs/02-docker.log
+A  logs/03-tools-mac.log
+A  logs/03-tools.log
+811ac9e step 03: tools installed and verified (Go, govulncheck, crane, kubectl, cosign, Grype, Syft)
+## main...origin/main
+# exit 0

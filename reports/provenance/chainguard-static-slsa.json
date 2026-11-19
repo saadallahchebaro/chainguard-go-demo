@@ -1,0 +1,34 @@
+{
+  "_type": "https://in-toto.io/Statement/v0.1",
+  "subject": [
+    {
+      "name": "cgr.dev/chainguard/static",
+      "digest": {
+        "sha256": "8f9c7533c7709270342660bca209e5fc593483c27f95283e1082424c1e0da967"
+      }
+    }
+  ],
+  "predicateType": "https://slsa.dev/provenance/v1",
+  "predicate": {
+    "buildDefinition": {
+      "buildType": "https://apko.dev/slsa-build-type@v1",
+      "internalParameters": {
+        "ca-certificates-bundle": "20261020-r0",
+        "tzdata": "2026f-r0",
+        "wolfi-baselayout": "20230201-r31"
+      }
+    },
+    "runDetails": {
+      "builder": {
+        "id": "https://github.com/chainguard-dev/terraform-provider-apko",
+        "version": {
+          "apko": "v1.4.14",
+          "terraform-provider-apko": "v1.2.28"
+        }
+      },
+      "metadata": {
+        "invocationId": "cgr.dev/chainguard/static@sha256:fc42af33e643f20d08baf03cddcc1c02ba57052dfb02edb0d79f3fc47bcea8d9"
+      }
+    }
+  }
+}

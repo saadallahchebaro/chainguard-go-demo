@@ -1,0 +1,2 @@
+$ multipass transfer JOURNAL.md RUNBOOK.md REPORT.md, demo/screenshots/07-*.png -> repo (Dockerfile.a-single copied earlier)
+transferred OK

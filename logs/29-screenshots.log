@@ -1,0 +1,61 @@
+
+===== STEP 29-screenshots · 2026-11-17T10:11:38Z · chainguard
+
+$ D=$(crane digest localhost:5000/hello:d); C=$(crane digest localhost:5000/hello:c); rm -f /tmp/other.key /tmp/other.pub; COSIGN_PASSWORD="" cosign generate-key-pair --output-key-prefix /tmp/other >/dev/null 2>&1; v() { cosign verify --key $1 --insecure-ignore-tlog=true localhost:5000/hello@$2 > /tmp/v.json 2> /tmp/v.err; rc=$?; if [ $rc = 0 ]; then m="PASS (exit 0). Signed digest: $(jq -r ".[0].critical.image[\"docker-manifest-digest\"]" /tmp/v.json)"; else m="FAIL (exit $rc): $(grep -i -E "error|no " /tmp/v.err | grep -v -i warning | head -2 | tr "\n" " " | cut -c1-160)"; fi; echo "$m" | fold -s -w 70 | sed "s/^/   /"; }; clear; echo "== 1. D with our key (cosign.pub):"; v cosign.pub $D; echo "== 2. C with our key (C was never signed):"; v cosign.pub $C; echo "== 3. D with a different key (a throwaway pair):"; v /tmp/other.pub $D; rm -f /tmp/other.key /tmp/other.pub
+# at 10:11:38 in /home/ubuntu/chainguard-technical-challenge
+[H[J[3J== 1. D with our key (cosign.pub):
+   PASS (exit 0). Signed digest: 
+   sha256:c5ce9ddb3a8db38d7ef61bdd6c84905bd1d3e7ef61a3c51bbd0d6d7aa7270a0
+   8
+== 2. C with our key (C was never signed):
+   FAIL (exit 10): Error: no signatures found error during command 
+   execution: no signatures found 
+== 3. D with a different key (a throwaway pair):
+   FAIL (exit 1): Error: no matching attestations: failed to verify 
+   signature: could not verify envelope: accepted signatures do not 
+   match threshold, Found: 0, Expected 1 error d
+# exit 0
+
+$ D=$(crane digest localhost:5000/hello:d); C=$(crane digest localhost:5000/hello:c); rm -f /tmp/other.key /tmp/other.pub; COSIGN_PASSWORD="" cosign generate-key-pair --output-key-prefix /tmp/other >/dev/null 2>&1; v() { cosign verify --key $1 --insecure-ignore-tlog=true localhost:5000/hello@$2 > /tmp/v.json 2> /tmp/v.err; rc=$?; if [ $rc = 0 ]; then m="PASS (exit 0). Signed digest: $(jq -r ".[0].critical.image[\"docker-manifest-digest\"]" /tmp/v.json)"; else m="FAIL (exit $rc): $(grep -i -E "error|no " /tmp/v.err | grep -v -i warning | head -2 | tr "\n" " " | cut -c1-140)"; fi; echo "$m" | fold -s -w 74 | sed "s/^/   /"; }; echo "== 1. D with our key (cosign.pub):"; v cosign.pub $D; echo "== 2. C with our key (C was never signed):"; v cosign.pub $C; echo "== 3. D with a different key (a throwaway pair):"; v /tmp/other.pub $D; rm -f /tmp/other.key /tmp/other.pub
+# at 10:11:52 in /home/ubuntu/chainguard-technical-challenge
+== 1. D with our key (cosign.pub):
+   PASS (exit 0). Signed digest: 
+   sha256:c5ce9ddb3a8db38d7ef61bdd6c84905bd1d3e7ef61a3c51bbd0d6d7aa7270a08
+== 2. C with our key (C was never signed):
+   FAIL (exit 10): Error: no signatures found error during command 
+   execution: no signatures found 
+== 3. D with a different key (a throwaway pair):
+   FAIL (exit 1): Error: no matching attestations: failed to verify 
+   signature: could not verify envelope: accepted signatures do not match 
+   threshold, Found: 0
+# exit 0
+
+$ S64=sha256:8f9c7533c7709270342660bca209e5fc593483c27f95283e1082424c1e0da967; wrap() { awk -v W=74 "{ s=\$0; ind=\"\"; while (length(ind s) > W) { n=W-length(ind); cut=0; for (i=n; i>20; i--) { c=substr(s,i,1); if (c==\" \") { cut=i; k=i-1; break } if (c==\"/\") { cut=i; k=i; break } } if (cut==0) { cut=n; k=n } print ind substr(s,1,k); s=substr(s,cut+1); ind=\"    \" } print ind s }"; }; { echo "== cosign verify-attestation --type https://slsa.dev/provenance/v1 on cgr.dev/chainguard/static@${S64:0:19}…"; cosign verify-attestation --type https://slsa.dev/provenance/v1 --certificate-oidc-issuer=https://token.actions.githubusercontent.com --certificate-identity=https://github.com/chainguard-images/images/.github/workflows/release.yaml@refs/heads/main cgr.dev/chainguard/static@$S64 2>/tmp/slsa.err >/tmp/slsa.json; echo "exit $?, attestations returned: $(wc -l < /tmp/slsa.json)"; grep -E "^  - |^Certificate subject|^Error" /tmp/slsa.err; head -1 /tmp/slsa.json | jq -r .payload | base64 -d | jq -r "\"predicateType: \" + .predicateType, \"subject:       sha256:\" + .subject[0].digest.sha256[0:12] + \"… (the image verified: \" + ((\"sha256:\" + .subject[0].digest.sha256) == \"$S64\" | tostring) + \")\", \"buildType:     \" + (.predicate.buildDefinition.buildType // \"-\"), \"builder:       \" + (.predicate.runDetails.builder.id // \"-\"), \"resolved deps: \" + (.predicate.buildDefinition.resolvedDependencies // [] | length | tostring)"; } | wrap
+# at 10:22:46 in /home/ubuntu/chainguard-technical-challenge
+== cosign verify-attestation --type https://slsa.dev/provenance/v1 on
+    cgr.dev/chainguard/static@sha256:8f9c7533c770…
+exit 0, attestations returned: 1
+  - The cosign claims were validated
+  - Existence of the claims in the transparency log was verified offline
+  - The code-signing certificate was verified using trusted certificate
+    authority certificates
+Certificate subject: https://github.com/chainguard-images/images/.github/
+    workflows/release.yaml@refs/heads/main
+predicateType: https://slsa.dev/provenance/v1
+subject:       sha256:8f9c7533c770… (the image verified: true)
+buildType:     https://apko.dev/slsa-build-type@v1
+builder:       https://github.com/chainguard-dev/terraform-provider-apko
+resolved deps: 0
+# exit 0
+
+$ git add -A && git commit -q -m "Steps 27 to 29: readable Grype against Trivy comparison (tools/comparison.py), image C on Google distroless static measured against Chainguard static (tools/compare-bases.sh, reports/distroless), readable signature and provenance screenshots, console and showcase updates (surprises 54 and 55)" && git push -q origin main && git log --oneline -1 && git status -sb | head -1
+# at 10:33:20 in /home/ubuntu/chainguard-technical-challenge
+abb25b9 Steps 27 to 29: readable Grype against Trivy comparison (tools/comparison.py), image C on Google distroless static measured against Chainguard static (tools/compare-bases.sh, reports/distroless), readable signature and provenance screenshots, console and showcase updates (surprises 54 and 55)
+## main...origin/main
+# exit 0
+
+$ git add -A && git commit -q -m "Journal step 29: the console provenance replay is p-provenance; step 29 log records the steps 27 to 29 commit" && git push -q origin main && git log --oneline -1 && git status -sb | head -1
+# at 10:56:08 in /home/ubuntu/chainguard-technical-challenge
+daef5d2 Journal step 29: the console provenance replay is p-provenance; step 29 log records the steps 27 to 29 commit
+## main...origin/main
+# exit 0

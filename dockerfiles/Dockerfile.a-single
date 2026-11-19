@@ -1,0 +1,17 @@
+# Image A: single-stage. Builds and runs in the same image, golang:1.18 (Debian 11 + Go 1.18).
+# The baseline: what you get with the defaults. It ships everything used to build the app.
+# Build from the repo folder:  docker build -t hello:a -f dockerfiles/Dockerfile.a-single ./go
+FROM golang:1.18
+WORKDIR /app
+
+# Dependencies first, so this slow step stays cached when only the code changes
+COPY go.mod go.sum ./
+RUN go mod download
+
+# The code, then a static binary (no C library needed)
+COPY . .
+RUN CGO_ENABLED=0 go build -o hello-server .
+
+EXPOSE 8080
+# No USER line, so it runs as root
+CMD ["./hello-server"]

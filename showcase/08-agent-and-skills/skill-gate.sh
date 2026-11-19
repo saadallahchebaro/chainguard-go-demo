@@ -1,0 +1,1 @@
+../../ci/skills/skill-gate.sh

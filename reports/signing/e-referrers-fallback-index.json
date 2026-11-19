@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 2,
+  "mediaType": "application/vnd.oci.image.index.v1+json",
+  "manifests": [
+    {
+      "mediaType": "application/vnd.oci.image.manifest.v1+json",
+      "size": 1011,
+      "digest": "sha256:b413e1c99dcfcd313a009ecb8d6a15ac6ad98489a81d91b80c246438861f5db3",
+      "annotations": {
+        "dev.sigstore.bundle.content": "dsse-envelope",
+        "dev.sigstore.bundle.predicateType": "https://sigstore.dev/cosign/sign/v1",
+        "org.opencontainers.image.created": "2026-11-16T14:42:15Z"
+      },
+      "artifactType": "application/vnd.dev.sigstore.bundle.v0.3+json"
+    },
+    {
+      "mediaType": "application/vnd.oci.image.manifest.v1+json",
+      "size": 1005,
+      "digest": "sha256:db87215bd550c9171ed04514fa85af4c219b9521f33828292d2f47b7d58c563e",
+      "annotations": {
+        "dev.sigstore.bundle.content": "dsse-envelope",
+        "dev.sigstore.bundle.predicateType": "https://spdx.dev/Document",
+        "org.opencontainers.image.created": "2026-11-16T14:47:38Z"
+      },
+      "artifactType": "application/vnd.dev.sigstore.bundle.v0.3+json"
+    }
+  ]
+}

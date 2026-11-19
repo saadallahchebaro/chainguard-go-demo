@@ -1,0 +1,2 @@
+$ multipass transfer JOURNAL.md RUNBOOK.md REPORT.md, demo/screenshots/04-*.png -> repo
+transferred OK

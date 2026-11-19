@@ -1,0 +1,35 @@
+# Kyverno ImageValidatingPolicy (tested on Kyverno v1.19.2): the cluster admits a pod only if every image it
+# pulls from the lab registry is signed with the lab key (cosign.pub). deploy.sh signs with that key.
+apiVersion: policies.kyverno.io/v1
+kind: ImageValidatingPolicy
+metadata:
+  name: require-lab-signature
+spec:
+  validationActions: [Deny]
+  failurePolicy: Fail
+  matchConstraints:
+    resourceRules:
+      - apiGroups: ['']
+        apiVersions: ['v1']
+        resources: ['pods']
+        operations: ['CREATE', 'UPDATE']
+  matchImageReferences:
+    - glob: '192.168.252.2:5000/*'
+  credentials:
+    allowInsecureRegistry: true      # the lab registry speaks plain HTTP
+  attestors:
+    - name: lab
+      cosign:
+        key:
+          data: |
+            -----BEGIN PUBLIC KEY-----
+            MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEwLz3+xvNZWny3DYOaugo+IB/Do9w
+            xUkzJsg/x3WmsNz5AQcgFnUY4WC6204sspYejcsn6QDoCvOfkJi6TMCN6g==
+            -----END PUBLIC KEY-----
+        ctlog:
+          insecureIgnoreTlog: true     # signed without the public transparency log
+          insecureIgnoreSCT: true
+  validations:
+    - expression: >-
+        images.containers.map(image, verifyImageSignatures(image, [attestors.lab])).all(e, e > 0)
+      message: 'The image must be signed with the lab key (cosign.pub)'

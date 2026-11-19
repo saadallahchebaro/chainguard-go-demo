@@ -1,0 +1,313 @@
+
+===== STEP 20-ci · 2026-11-16T15:17:06Z · chainguard
+
+$ mkdir -p ~/ci && curl -sSfL https://github.com/kyverno/kyverno/releases/download/v1.19.2/install.yaml -o ~/ci/kyverno-v1.19.2-install.yaml && echo "== install.yaml: $(wc -l < ~/ci/kyverno-v1.19.2-install.yaml) lines, sha256 $(sha256sum ~/ci/kyverno-v1.19.2-install.yaml | cut -c1-16)…"; echo "== the images it will run:"; grep -E "^\s+image:" ~/ci/kyverno-v1.19.2-install.yaml | sort -u | sed "s/^ */   /"; echo "== the kinds it creates:"; grep -E "^kind:" ~/ci/kyverno-v1.19.2-install.yaml | sort | uniq -c | sort -rn | head -12 | sed "s/^/   /"; echo "== ImageValidatingPolicy versions in this release: $(grep -A40 "name: imagevalidatingpolicies.policies.kyverno.io" ~/ci/kyverno-v1.19.2-install.yaml | grep -oE "name: v1[a-z0-9]*" | sort -u | tr "\n" " ")"
+# at 15:17:06 in /home/ubuntu/chainguard-technical-challenge
+== install.yaml: 91473 lines, sha256 4f785937dc7fe49a…
+== the images it will run:
+   image:
+   image:
+   image: "reg.kyverno.io/kyverno/background-controller:v1.19.2"
+   image: "reg.kyverno.io/kyverno/cleanup-controller:v1.19.2"
+   image: "reg.kyverno.io/kyverno/kyverno:v1.19.2"
+   image: "reg.kyverno.io/kyverno/kyvernopre:v1.19.2"
+   image: "reg.kyverno.io/kyverno/reports-controller:v1.19.2"
+== the kinds it creates:
+        22 kind: CustomResourceDefinition
+        16 kind: ClusterRole
+         7 kind: ClusterRoleBinding
+         6 kind: Service
+         4 kind: ServiceAccount
+         4 kind: RoleBinding
+         4 kind: Role
+         4 kind: Deployment
+         2 kind: ConfigMap
+         1 kind: Namespace
+== ImageValidatingPolicy versions in this release: name: v1 
+# exit 0
+
+$ grep -n -E "allowInsecureRegistry|registryCredentialHelpers|imageVerifyCacheEnabled" ~/ci/kyverno-v1.19.2-install.yaml | head -8 | cut -c1-150; echo "== the admission controller args:"; awk "/name: kyverno-admission-controller$/{f=1} f && /args:/{a=1} a{print} a && /^ *env:/{exit}" ~/ci/kyverno-v1.19.2-install.yaml | head -30 | cut -c1-120
+# at 15:17:15 in /home/ubuntu/chainguard-technical-challenge
+505:                            allowInsecureRegistry:
+1802:                            allowInsecureRegistry:
+3124:                            allowInsecureRegistry:
+4421:                            allowInsecureRegistry:
+5779:                                  allowInsecureRegistry:
+6820:                                            allowInsecureRegistry:
+7917:                                            allowInsecureRegistry:
+8301:                                            allowInsecureRegistry:
+== the admission controller args:
+          args:
+            - --loggingFormat=text
+            - --v=2
+            - --openreportsEnabled=false
+          resources:
+            limits:
+              cpu: 100m
+              memory: 256Mi
+            requests:
+              cpu: 10m
+              memory: 64Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+              - ALL
+            privileged: false
+            readOnlyRootFilesystem: true
+            runAsGroup: 65534
+            runAsNonRoot: true
+            runAsUser: 65534
+            seccompProfile:
+              type: RuntimeDefault
+          env:
+# exit 0
+
+$ kubectl apply --server-side -f ~/ci/kyverno-v1.19.2-install.yaml 2>&1 | awk "{print \$NF}" | sort | uniq -c | sed "s/^/   /"; echo "== waiting for the Kyverno controllers:"; kubectl -n kyverno wait --for=condition=Available deployment --all --timeout=300s 2>&1 | sed "s/^/   /"; kubectl -n kyverno get pods | sed "s/^/   /"
+# at 15:17:33 in /home/ubuntu/chainguard-technical-challenge
+        70 serverside-applied
+== waiting for the Kyverno controllers:
+   deployment.apps/kyverno-admission-controller condition met
+   deployment.apps/kyverno-background-controller condition met
+   deployment.apps/kyverno-cleanup-controller condition met
+   deployment.apps/kyverno-reports-controller condition met
+   NAME                                             READY   STATUS    RESTARTS   AGE
+   kyverno-admission-controller-7d999b5798-gv9mt    1/1     Running   0          31s
+   kyverno-background-controller-6ccc87f6d9-xh8bc   1/1     Running   0          31s
+   kyverno-cleanup-controller-7d875b7bc7-58m9q      1/1     Running   0          31s
+   kyverno-reports-controller-79bd5dfc55-wgdsg      1/1     Running   0          31s
+# exit 0
+
+$ kubectl apply -f ~/ci/policy-test.yaml | sed "s/^/   /"; sleep 5; kubectl get imagevalidatingpolicies 2>&1 | sed "s/^/   /"; kubectl create namespace policytest >/dev/null; R=192.168.252.2:5000/hello; D=$(crane digest localhost:5000/hello:d); C=$(crane digest localhost:5000/hello:c); echo "== D (signed with the lab key):"; kubectl run t-d -n policytest --image=$R@$D --restart=Never 2>&1 | fold -s -w 150 | sed "s/^/   /"; echo "== C (never signed):"; kubectl run t-c -n policytest --image=$R@$C --restart=Never 2>&1 | fold -s -w 150 | sed "s/^/   /"; sleep 3; echo "== pods in policytest:"; kubectl get pods -n policytest 2>&1 | sed "s/^/   /"
+# at 15:18:33 in /home/ubuntu/chainguard-technical-challenge
+   imagevalidatingpolicy.policies.kyverno.io/require-lab-signature created
+   NAME                    AGE   READY
+   require-lab-signature   5s    true
+== D (signed with the lab key):
+   pod/t-d created
+== C (never signed):
+   Error from server: admission webhook "ivpol.validate.kyverno.svc-fail" denied the request: Policy require-lab-signature failed: The image must be 
+   signed with the lab key (cosign.pub)
+== pods in policytest:
+   NAME   READY   STATUS    RESTARTS   AGE
+   t-d    1/1     Running   0          3s
+# exit 0
+
+$ kubectl delete namespace policytest | sed "s/^/   /"
+# at 15:19:02 in /home/ubuntu/chainguard-technical-challenge
+   namespace "policytest" deleted
+# exit 0
+
+$ V=2.338.2; F=actions-runner-linux-arm64-$V.tar.gz; mkdir -p ~/actions-runner; curl -sSfL -o ~/actions-runner/$F https://github.com/actions/runner/releases/download/v$V/$F && ls -l ~/actions-runner/$F; EXP=$(curl -s https://api.github.com/repos/actions/runner/releases/tags/v$V | jq -r .body | grep -oP "(?<=BEGIN SHA linux-arm64 -->)[0-9a-f]{64}"); echo "== SHA-256 published in the v$V release notes: $EXP"; (cd ~/actions-runner && echo "$EXP  $F" | sha256sum -c) && tar -xzf ~/actions-runner/$F -C ~/actions-runner && echo "== extracted: $(ls ~/actions-runner | tr "\n" " ")"
+# at 15:19:37 in /home/ubuntu/chainguard-technical-challenge
+-rw-rw-r-- 1 ubuntu ubuntu 140231317 Nov 16 19:19 /home/ubuntu/actions-runner/actions-runner-linux-arm64-2.338.2.tar.gz
+== SHA-256 published in the v2.338.2 release notes: 670adb2f268fe21dcbb58b3db0e0aa9d5b3bddfe2c651481336e561ff86de945
+actions-runner-linux-arm64-2.338.2.tar.gz: OK
+== extracted: actions-runner-linux-arm64-2.338.2.tar.gz bin config.sh env.sh externals run-helper.cmd.template run-helper.sh.template run.sh safe_sleep.sh 
+# exit 0
+
+# NOTE: runner registered with ./config.sh: exit 0 (registration token pasted at a hidden prompt, never logged, unset afterwards)
+
+$ tmux new-window -d -n runner -t lab "cd ~/actions-runner && ./run.sh 2>&1 | tee -a ~/ci/runner.log"; sleep 6; tmux list-windows -t lab | sed "s/^/   /"; echo "== runner output so far:"; tail -4 ~/ci/runner.log | sed "s/^/   /"
+# at 15:33:04 in /home/ubuntu/chainguard-technical-challenge
+   0: bash* (1 panes) [164x42] [layout b5fd,164x42,0,0,0] @0 (active)
+   1: runner (1 panes) [164x42] [layout b5ff,164x42,0,0,2] @1
+== runner output so far:
+   √ Connected to GitHub
+   
+   Current runner version: '2.338.2'
+   2026-11-16 15:33:07Z: Listening for Jobs
+# exit 0
+
+$ PYDEV=cgr.dev/chainguard/python:latest-dev@sha256:e0df0ab3cb72380c82f8c5513538152e822a6d8994252663060adea9fdc450c2; docker run --rm -v ~/ci:/ci:ro $PYDEV python --version; docker run --rm -v ~/ci:/ci:ro $PYDEV python /ci/resolve.py > ~/ci/requirements.txt; echo "== requirements.txt (every package pinned, each at least 7 days old):"; cat ~/ci/requirements.txt | sed "s/^/   /"
+# at 15:34:28 in /home/ubuntu/chainguard-technical-challenge
+Unable to find image 'cgr.dev/chainguard/python:latest-dev@sha256:e0df0ab3cb72380c82f8c5513538152e822a6d8994252663060adea9fdc450c2' locally
+cgr.dev/chainguard/python@sha256:e0df0ab3cb72380c82f8c5513538152e822a6d8994252663060adea9fdc450c2: Pulling from chainguard/python
+ddcb85904545: Pulling fs layer
+d0333369b0a2: Pulling fs layer
+3aead6092d25: Pulling fs layer
+f03ee4ef12c6: Pulling fs layer
+cfea6f3d9c46: Pulling fs layer
+ff7fe1cbe1ad: Pulling fs layer
+1f2a887ac47c: Pulling fs layer
+c97971df290c: Pulling fs layer
+3a5678c3c010: Pulling fs layer
+9360c5017f06: Pulling fs layer
+0dd0a7dae504: Pulling fs layer
+ff7fe1cbe1ad: Already exists
+3a5678c3c010: Already exists
+ddcb85904545: Already exists
+f03ee4ef12c6: Already exists
+d0333369b0a2: Download complete
+cfea6f3d9c46: Download complete
+0dd0a7dae504: Download complete
+1f2a887ac47c: Download complete
+3aead6092d25: Download complete
+3aead6092d25: Pull complete
+d0333369b0a2: Pull complete
+f03ee4ef12c6: Pull complete
+cfea6f3d9c46: Pull complete
+ff7fe1cbe1ad: Pull complete
+c97971df290c: Download complete
+c97971df290c: Pull complete
+3a5678c3c010: Pull complete
+0dd0a7dae504: Pull complete
+9360c5017f06: Download complete
+9360c5017f06: Pull complete
+1f2a887ac47c: Pull complete
+Digest: sha256:e0df0ab3cb72380c82f8c5513538152e822a6d8994252663060adea9fdc450c2
+Status: Downloaded newer image for cgr.dev/chainguard/python@sha256:e0df0ab3cb72380c82f8c5513538152e822a6d8994252663060adea9fdc450c2
+/usr/bin/python: can't open file '//python': [Errno 2] No such file or directory
+/usr/bin/python: can't open file '//python': [Errno 2] No such file or directory
+== requirements.txt (every package pinned, each at least 7 days old):
+# exit 0
+
+$ PYDEV=cgr.dev/chainguard/python:latest-dev@sha256:e0df0ab3cb72380c82f8c5513538152e822a6d8994252663060adea9fdc450c2; echo "== entrypoint: $(docker image inspect $PYDEV --format "{{json .Config.Entrypoint}}")  $(docker run --rm $PYDEV --version)"; docker run --rm -v ~/ci:/ci:ro $PYDEV /ci/resolve.py > ~/ci/requirements.txt; echo "== requirements.txt (every package pinned, each at least 7 days old):"; sed "s/^/   /" ~/ci/requirements.txt
+# at 15:35:18 in /home/ubuntu/chainguard-technical-challenge
+== entrypoint: ["/usr/bin/python"]  Python 3.15.2
+
+[notice] A new release of pip is available: 26.2.2 -> 26.3
+[notice] To update, run: pip install --upgrade pip
+# attempt 1: 14 packages, too new: {'annotated-doc': '0.0.6'}
+
+[notice] A new release of pip is available: 26.2.2 -> 26.3
+[notice] To update, run: pip install --upgrade pip
+# attempt 2: 14 packages, too new: none
+== requirements.txt (every package pinned, each at least 7 days old):
+   annotated-doc==0.0.5
+   annotated-types==0.8.0
+   anyio==4.16.0
+   click==8.5.1
+   fastapi==0.162.2
+   h11==0.16.0
+   idna==3.20
+   opentelemetry-api==1.45.2
+   pydantic==2.14.3
+   pydantic-core==2.50.4
+   starlette==1.10.0
+   typing-extensions==4.16.0
+   typing-inspection==0.4.5
+   uvicorn==0.54.0
+# exit 0
+
+$ rm -rf ~/ci/hello-ai-local && mkdir -p ~/ci/hello-ai-local && tar -xzf ~/ci/hello-ai.tgz -C ~/ci/hello-ai-local && cd ~/ci/hello-ai-local && echo "== gate.sh, run by hand on the starting version:" && time GATE_COMMIT=localtest0000000 ./gate.sh; echo "exit $?"; cat verdict.json
+# at 15:37:25 in /home/ubuntu/chainguard-technical-challenge
+tar: Ignoring unknown extended header keyword 'LIBARCHIVE.xattr.com.apple.macl'
+== gate.sh, run by hand on the starting version:
+PASS  base image   all from cgr.dev/chainguard, pinned by digest
+PASS  base signed  Chainguard's signature on each base image
+PASS  pinned deps  every line is name==version
+PASS  cooldown     nothing newer than 7 days
+PASS  build        docker build
+PASS  user         runs as 65532
+PASS  scan         no fixable high or critical finding
+GATE PASS for localte
+
+real	0m58.456s
+user	0m2.791s
+sys	0m2.884s
+exit 0
+{
+  "commit": "localtest0000000",
+  "result": "pass",
+  "checkedAt": "2026-11-16T15:38:23Z"
+}
+# exit 0
+
+$ kubectl apply -f ~/ci/hello-ai-local/policy/require-signature.yaml | sed "s/^/   /"; sleep 3; kubectl get imagevalidatingpolicies -o custom-columns=NAME:.metadata.name,READY:.status.conditionStatus.ready,GLOB:.spec.matchImageReferences[0].glob 2>&1 | sed "s/^/   /"; echo "== the hello deployment (image D, signed) is unaffected:"; kubectl get deploy hello | sed "s/^/   /"
+# at 15:38:38 in /home/ubuntu/chainguard-technical-challenge
+   imagevalidatingpolicy.policies.kyverno.io/require-lab-signature configured
+   NAME                    READY   GLOB
+   require-lab-signature   true    192.168.252.2:5000/*
+== the hello deployment (image D, signed) is unaffected:
+   NAME    READY   UP-TO-DATE   AVAILABLE   AGE
+   hello   2/2     2            2           39m
+# exit 0
+
+$ ssh-keygen -q -t ed25519 -N "" -C "chainguard build VM: hello-ai deploy key" -f ~/.ssh/hello_ai_deploy && ls -l ~/.ssh/hello_ai_deploy*; echo "== public half (goes to GitHub, for hello-ai only):"; cat ~/.ssh/hello_ai_deploy.pub; ssh-keygen -l -f ~/.ssh/hello_ai_deploy.pub
+# at 15:46:03 in /home/ubuntu/chainguard-technical-challenge
+-rw------- 1 ubuntu ubuntu 444 Nov 16 19:46 /home/ubuntu/.ssh/hello_ai_deploy
+-rw-r--r-- 1 ubuntu ubuntu 122 Nov 16 19:46 /home/ubuntu/.ssh/hello_ai_deploy.pub
+== public half (goes to GitHub, for hello-ai only):
+ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJZwNHWtuo9IxhwO6RyDAfRAipl99OesT4lRTTYJUeW6 chainguard build VM: hello-ai deploy key
+256 SHA256:y8qZ2uiPt/ZhlTY5l+jIG8nKNNZqfPs+p5eod8GJIhM chainguard build VM: hello-ai deploy key (ED25519)
+# exit 0
+
+$ git clone -q ~/ci/hello-ai.bundle ~/hello-ai && cd ~/hello-ai && git remote set-url origin git@github.com:saadallahchebaro/hello-ai.git && git config core.sshCommand "ssh -i ~/.ssh/hello_ai_deploy -o IdentitiesOnly=yes" && git config user.name "Saadallah Chebaro" && git config user.email "84092091+saadallahchebaro@users.noreply.github.com" && git log --oneline -1 && git push -u origin main 2>&1 | tail -3
+# at 15:46:29 in /home/ubuntu/chainguard-technical-challenge
+33ba9d7 Starting version: FastAPI app, gate, deploy, workflows, signature policy
+To github.com:saadallahchebaro/hello-ai.git
+ ! [remote rejected] main -> main (refusing to allow an OAuth App to create or update workflow `.github/workflows/deploy.yml` without `workflow` scope)
+error: failed to push some refs to 'github.com:saadallahchebaro/hello-ai.git'
+# exit 0
+
+$ cd ~/hello-ai && git push -u origin main 2>&1 | tail -3
+# at 15:48:54 in /home/ubuntu/chainguard-technical-challenge
+To github.com:saadallahchebaro/hello-ai.git
+ * [new branch]      main -> main
+branch 'main' set up to track 'origin/main'.
+# exit 0
+
+$ echo "== hello-ai, deployed by the pipeline:"; kubectl get pods -l app=hello-ai -o custom-columns=NAME:.metadata.name,READY:.status.containerStatuses[0].ready,IMAGE:.status.containerStatuses[0].imageID | sed "s/^/   /"; (kubectl port-forward svc/hello-ai 8086:8080 > /tmp/pf2.log 2>&1 &); sleep 2; echo "== GET /     -> $(curl -s localhost:8086/)"; echo "== POST /ask -> $(curl -s -X POST localhost:8086/ask -H "Content-Type: application/json" -d "{\"text\": \"is this image signed?\"}")"; pkill -f "port-forward svc/hello-ai"; echo "== bypass test: the same app plus one label, pushed straight to the registry, never through the gate:"; S=$(crane digest localhost:5000/hello-ai:33ba9d7); printf "FROM localhost:5000/hello-ai@$S\nLABEL note=\"pushed without the gate\"\n" | docker build -q -t localhost:5000/hello-ai:bypass - >/dev/null && docker push -q localhost:5000/hello-ai:bypass >/dev/null; B=$(crane digest localhost:5000/hello-ai:bypass); echo "   unsigned digest: $B"; kubectl create namespace bypass-test >/dev/null; kubectl run bypass -n bypass-test --image=192.168.252.2:5000/hello-ai@$B --restart=Never 2>&1 | fold -s -w 150 | sed "s/^/   /"; echo "   pods in bypass-test: $(kubectl get pods -n bypass-test --no-headers 2>/dev/null | wc -l)"; kubectl delete namespace bypass-test >/dev/null
+# at 15:50:30 in /home/ubuntu/chainguard-technical-challenge
+== hello-ai, deployed by the pipeline:
+   NAME                        READY   IMAGE
+   hello-ai-5f8d6c7758-n2mh4   true    192.168.252.2:5000/hello-ai@sha256:e8432af9c5464609e2e4a74fc025793e215f0a6ce7d8783909d7d8d520b388e3
+   hello-ai-5f8d6c7758-qqk9d   true    192.168.252.2:5000/hello-ai@sha256:e8432af9c5464609e2e4a74fc025793e215f0a6ce7d8783909d7d8d520b388e3
+== GET /     -> {"message":"Hello AI!"}
+== POST /ask -> {"answer":"You asked: is this image signed?"}
+== bypass test: the same app plus one label, pushed straight to the registry, never through the gate:
+   unsigned digest: sha256:5440f4eff6b76fec901cb753f208c9ed0f7dcaf120547eacd33a05fb0bbfe476
+   Error from server: admission webhook "ivpol.validate.kyverno.svc-fail" denied the request: Policy require-lab-signature failed: The image must be 
+   signed with the lab key (cosign.pub)
+   pods in bypass-test: 0
+# exit 0
+
+$ cd ~/hello-ai && git switch -q -c add-http-client && echo "requests>=2.32" >> requirements.txt && git commit -q -am "Add an HTTP client dependency" && git log --oneline -1 && git diff HEAD~1 --stat && git push -q -u origin add-http-client 2>&1 | tail -1
+# at 15:51:03 in /home/ubuntu/chainguard-technical-challenge
+83dddcb Add an HTTP client dependency
+ requirements.txt | 1 +
+ 1 file changed, 1 insertion(+)
+remote: 
+# exit 0
+
+$ PYDEV=cgr.dev/chainguard/python:latest-dev@sha256:e0df0ab3cb72380c82f8c5513538152e822a6d8994252663060adea9fdc450c2; docker run --rm -v ~/ci:/ci:ro $PYDEV /ci/resolve.py requests 2>&1 >/tmp/req-new.txt | grep "^# attempt"; cd ~/hello-ai && cp /tmp/req-new.txt requirements.txt && git diff --stat && git diff requirements.txt | grep -E "^[+-][a-z]" | sed "s/^/   /"
+# at 15:52:43 in /home/ubuntu/chainguard-technical-challenge
+# attempt 1: 18 packages, too new: {'annotated-doc': '0.0.6'}
+# attempt 2: 18 packages, too new: none
+ requirements.txt | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+   +certifi==2026.10.23
+   +charset-normalizer==3.5.2
+   +requests==2.34.2
+   +urllib3==2.8.0
+   -requests>=2.32
+# exit 0
+
+$ cd ~/hello-ai && git commit -q -am "Pin requests and its dependencies, each at least 7 days old" && git log --oneline -1 && git push -q 2>&1 | tail -1
+# at 15:53:22 in /home/ubuntu/chainguard-technical-challenge
+9c0c6d7 Pin requests and its dependencies, each at least 7 days old
+# exit 0
+
+$ echo "== after the merge, the deploy job rolled hello-ai to the new signed image:"; kubectl rollout history deployment/hello-ai | sed "s/^/   /"; kubectl get pods -l app=hello-ai -o custom-columns=NAME:.metadata.name,READY:.status.containerStatuses[0].ready,IMAGE:.status.containerStatuses[0].imageID | sed "s/^/   /"; echo "== signed? $(cosign verify --key ~/cosign-lab/cosign.pub --insecure-ignore-tlog=true localhost:5000/hello-ai@sha256:3eac2b17d49f65441ac33e6a8c95bf455cd18d4e6008653d0767dd9ec5fed049 2>/dev/null | jq -r ".[0].critical.image[\"docker-manifest-digest\"]" | sed "s/^/verified: /")"; echo "== the runner: $(tail -2 ~/ci/runner.log | tr "\n" " ")"
+# at 15:57:25 in /home/ubuntu/chainguard-technical-challenge
+== after the merge, the deploy job rolled hello-ai to the new signed image:
+   deployment.apps/hello-ai 
+   REVISION  CHANGE-CAUSE
+   1         <none>
+   2         <none>
+   
+   NAME                       READY   IMAGE
+   hello-ai-d55c484d5-r5m4d   true    192.168.252.2:5000/hello-ai@sha256:3eac2b17d49f65441ac33e6a8c95bf455cd18d4e6008653d0767dd9ec5fed049
+   hello-ai-d55c484d5-zcjgp   true    192.168.252.2:5000/hello-ai@sha256:3eac2b17d49f65441ac33e6a8c95bf455cd18d4e6008653d0767dd9ec5fed049
+== signed? verified: sha256:3eac2b17d49f65441ac33e6a8c95bf455cd18d4e6008653d0767dd9ec5fed049
+== the runner: 2026-11-16 15:56:00Z: Running job: deploy 2026-11-16 15:56:47Z: Job deploy completed with result: Succeeded 
+# exit 0
+
+$ echo "== key or token material among the files to commit: $(git add -A -n | awk "{print \$2}" | sed "s/^.//; s/.$//" | grep -v -x logs/20-ci.log | xargs grep -l -E "PRIVATE KEY-----$|ghp_|github_pat_|AAAA[A-Za-z0-9+/]{60,}$" 2>/dev/null | wc -l) files"; git add -A && git status --short | wc -l && git commit -q -m "step 20: pipeline with a seven-check gate on a self-hosted runner, signing on merge, and a Kyverno policy that admits only signed images" && git push -q origin main && git log --oneline -1 && git status -sb | head -1
+# at 15:59:40 in /home/ubuntu/chainguard-technical-challenge
+== key or token material among the files to commit: 0 files
+32
+33cddc8 step 20: pipeline with a seven-check gate on a self-hosted runner, signing on merge, and a Kyverno policy that admits only signed images
+## main...origin/main
+# exit 0

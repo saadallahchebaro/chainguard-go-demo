@@ -1,0 +1,306 @@
+
+===== STEP 02-docker · 2026-11-16T08:41:50Z · chainguard
+
+$ sudo apt-get update && sudo apt-get install -y ca-certificates curl
+# at 08:41:50 in /home/ubuntu/chainguard-technical-challenge
+Hit:1 http://ports.ubuntu.com/ubuntu-ports noble InRelease
+Hit:2 http://ports.ubuntu.com/ubuntu-ports noble-updates InRelease
+Hit:3 http://ports.ubuntu.com/ubuntu-ports noble-backports InRelease
+Hit:4 http://ports.ubuntu.com/ubuntu-ports noble-security InRelease
+Reading package lists...
+Reading package lists...
+Building dependency tree...
+Reading state information...
+curl is already the newest version (8.5.0-2ubuntu10.16).
+curl set to manually installed.
+The following packages will be upgraded:
+  ca-certificates
+1 upgraded, 0 newly installed, 0 to remove and 47 not upgraded.
+Need to get 140 kB of archives.
+After this operation, 3072 B disk space will be freed.
+Get:1 http://ports.ubuntu.com/ubuntu-ports noble-updates/main arm64 ca-certificates all 20260816ubuntu0.24.04.2 [140 kB]
+Preconfiguring packages ...
+Fetched 140 kB in 1s (117 kB/s)
+(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 77748 files and directories currently installed.)
+Preparing to unpack .../ca-certificates_20260816ubuntu0.24.04.2_all.deb ...
+Unpacking ca-certificates (20260816ubuntu0.24.04.2) over (20260601~24.04.1) ...
+Setting up ca-certificates (20260816ubuntu0.24.04.2) ...
+Updating certificates in /etc/ssl/certs...
+rehash: warning: skipping ca-certificates.crt,it does not contain exactly one certificate or CRL
+4 added, 5 removed; done.
+Running hooks in /etc/ca-certificates/update.d...
+done.
+Processing triggers for man-db (2.12.0-4build2) ...
+
+Running kernel seems to be up-to-date.
+
+No services need to be restarted.
+
+No containers need to be restarted.
+
+No user sessions are running outdated binaries.
+
+No VM guests are running outdated hypervisor (qemu) binaries on this host.
+# exit 0
+
+$ sudo install -m 0755 -d /etc/apt/keyrings && sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc && sudo chmod a+r /etc/apt/keyrings/docker.asc && gpg --show-keys --with-fingerprint /etc/apt/keyrings/docker.asc
+# at 08:41:58 in /home/ubuntu/chainguard-technical-challenge
+gpg: directory '/home/ubuntu/.gnupg' created
+gpg: keybox '/home/ubuntu/.gnupg/pubring.kbx' created
+pub   rsa4096 2017-02-22 [SCEA]
+      9DC8 5822 9FC7 DD38 854A  E2D8 8D81 803C 0EBF CD88
+uid                      Docker Release (CE deb) <docker@docker.com>
+sub   rsa4096 2017-02-22 [S]
+
+# exit 0
+
+$ printf "Types: deb\nURIs: https://download.docker.com/linux/ubuntu\nSuites: %s\nComponents: stable\nArchitectures: %s\nSigned-By: /etc/apt/keyrings/docker.asc\n" "$(. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}")" "$(dpkg --print-architecture)" | sudo tee /etc/apt/sources.list.d/docker.sources >/dev/null && cat /etc/apt/sources.list.d/docker.sources
+# at 08:42:08 in /home/ubuntu/chainguard-technical-challenge
+Types: deb
+URIs: https://download.docker.com/linux/ubuntu
+Suites: noble
+Components: stable
+Architectures: arm64
+Signed-By: /etc/apt/keyrings/docker.asc
+# exit 0
+
+$ sudo apt-get update && sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+# at 08:42:14 in /home/ubuntu/chainguard-technical-challenge
+Get:1 https://download.docker.com/linux/ubuntu noble InRelease [48.5 kB]
+Get:2 https://download.docker.com/linux/ubuntu noble/stable arm64 Packages [71.2 kB]
+Hit:3 http://ports.ubuntu.com/ubuntu-ports noble InRelease
+Hit:4 http://ports.ubuntu.com/ubuntu-ports noble-updates InRelease
+Hit:5 http://ports.ubuntu.com/ubuntu-ports noble-backports InRelease
+Hit:6 http://ports.ubuntu.com/ubuntu-ports noble-security InRelease
+Fetched 120 kB in 1s (127 kB/s)
+Reading package lists...
+Reading package lists...
+Building dependency tree...
+Reading state information...
+The following additional packages will be installed:
+  docker-ce-rootless-extras pigz
+Suggested packages:
+  cgroupfs-mount | cgroup-lite docker-model-plugin
+The following NEW packages will be installed:
+  containerd.io docker-buildx-plugin docker-ce docker-ce-cli
+  docker-ce-rootless-extras docker-compose-plugin pigz
+0 upgraded, 7 newly installed, 0 to remove and 47 not upgraded.
+Need to get 88.3 MB of archives.
+After this operation, 365 MB of additional disk space will be used.
+Get:1 https://download.docker.com/linux/ubuntu noble/stable arm64 containerd.io arm64 2.4.2-4~ubuntu.24.04~noble [19.6 MB]
+Get:2 https://download.docker.com/linux/ubuntu noble/stable arm64 docker-ce-cli arm64 5:29.9.3-1~ubuntu.24.04~noble [15.8 MB]
+Get:3 http://ports.ubuntu.com/ubuntu-ports noble/universe arm64 pigz arm64 2.8-1 [60.7 kB]
+Get:4 https://download.docker.com/linux/ubuntu noble/stable arm64 docker-ce arm64 5:29.9.3-1~ubuntu.24.04~noble [21.0 MB]
+Get:5 https://download.docker.com/linux/ubuntu noble/stable arm64 docker-buildx-plugin arm64 0.39.0-1~ubuntu.24.04~noble [15.4 MB]
+Get:6 https://download.docker.com/linux/ubuntu noble/stable arm64 docker-ce-rootless-extras arm64 5:29.9.3-1~ubuntu.24.04~noble [9130 kB]
+Get:7 https://download.docker.com/linux/ubuntu noble/stable arm64 docker-compose-plugin arm64 5.7.1-1~ubuntu.24.04~noble [7242 kB]
+Fetched 88.3 MB in 1s (90.3 MB/s)
+Selecting previously unselected package containerd.io.
+(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 77747 files and directories currently installed.)
+Preparing to unpack .../0-containerd.io_2.4.2-4~ubuntu.24.04~noble_arm64.deb ...
+Unpacking containerd.io (2.4.2-4~ubuntu.24.04~noble) ...
+Selecting previously unselected package docker-ce-cli.
+Preparing to unpack .../1-docker-ce-cli_5%3a29.9.3-1~ubuntu.24.04~noble_arm64.deb ...
+Unpacking docker-ce-cli (5:29.9.3-1~ubuntu.24.04~noble) ...
+Selecting previously unselected package docker-ce.
+Preparing to unpack .../2-docker-ce_5%3a29.9.3-1~ubuntu.24.04~noble_arm64.deb ...
+Unpacking docker-ce (5:29.9.3-1~ubuntu.24.04~noble) ...
+Selecting previously unselected package pigz.
+Preparing to unpack .../3-pigz_2.8-1_arm64.deb ...
+Unpacking pigz (2.8-1) ...
+Selecting previously unselected package docker-buildx-plugin.
+Preparing to unpack .../4-docker-buildx-plugin_0.39.0-1~ubuntu.24.04~noble_arm64.deb ...
+Unpacking docker-buildx-plugin (0.39.0-1~ubuntu.24.04~noble) ...
+Selecting previously unselected package docker-ce-rootless-extras.
+Preparing to unpack .../5-docker-ce-rootless-extras_5%3a29.9.3-1~ubuntu.24.04~noble_arm64.deb ...
+Unpacking docker-ce-rootless-extras (5:29.9.3-1~ubuntu.24.04~noble) ...
+Selecting previously unselected package docker-compose-plugin.
+Preparing to unpack .../6-docker-compose-plugin_5.7.1-1~ubuntu.24.04~noble_arm64.deb ...
+Unpacking docker-compose-plugin (5.7.1-1~ubuntu.24.04~noble) ...
+Setting up docker-buildx-plugin (0.39.0-1~ubuntu.24.04~noble) ...
+Setting up containerd.io (2.4.2-4~ubuntu.24.04~noble) ...
+Created symlink /etc/systemd/system/multi-user.target.wants/containerd.service → /usr/lib/systemd/system/containerd.service.
+Setting up docker-compose-plugin (5.7.1-1~ubuntu.24.04~noble) ...
+Setting up docker-ce-cli (5:29.9.3-1~ubuntu.24.04~noble) ...
+Setting up pigz (2.8-1) ...
+Setting up docker-ce-rootless-extras (5:29.9.3-1~ubuntu.24.04~noble) ...
+Setting up docker-ce (5:29.9.3-1~ubuntu.24.04~noble) ...
+Created symlink /etc/systemd/system/multi-user.target.wants/docker.service → /usr/lib/systemd/system/docker.service.
+Created symlink /etc/systemd/system/sockets.target.wants/docker.socket → /usr/lib/systemd/system/docker.socket.
+Processing triggers for man-db (2.12.0-4build2) ...
+
+Running kernel seems to be up-to-date.
+
+No services need to be restarted.
+
+No containers need to be restarted.
+
+No user sessions are running outdated binaries.
+
+No VM guests are running outdated hypervisor (qemu) binaries on this host.
+# exit 0
+
+$ sudo usermod -aG docker $USER && getent group docker && systemctl is-active docker containerd && ls -l /var/run/docker.sock
+# at 08:42:33 in /home/ubuntu/chainguard-technical-challenge
+docker:x:988:ubuntu
+active
+active
+srw-rw---- 1 root docker 0 Nov 16 12:42 /var/run/docker.sock
+# exit 0
+
+$ id; docker ps
+# at 08:42:33 in /home/ubuntu/chainguard-technical-challenge
+uid=1000(ubuntu) gid=1000(ubuntu) groups=1000(ubuntu),4(adm),24(cdrom),27(sudo),30(dip),104(lxd)
+permission denied while trying to connect to the docker API at unix:///var/run/docker.sock
+# exit 1
+
+===== STEP 02-docker · 2026-11-16T08:47:44Z · chainguard
+
+$ id && docker run --rm hello-world
+# at 08:47:44 in /home/ubuntu/chainguard-technical-challenge
+uid=1000(ubuntu) gid=1000(ubuntu) groups=1000(ubuntu),4(adm),24(cdrom),27(sudo),30(dip),104(lxd),988(docker)
+Unable to find image 'hello-world:latest' locally
+latest: Pulling from library/hello-world
+58dee6a49ef1: Pulling fs layer
+58dee6a49ef1: Download complete
+58dee6a49ef1: Pull complete
+c3bdf82c34d1: Download complete
+Digest: sha256:cf1b20a0c89a666b6950fecda7ccbc1b1a86520e7c53f908f3a21e79d0d60458
+Status: Downloaded newer image for hello-world:latest
+
+Hello from Docker!
+This message shows that your installation appears to be working correctly.
+
+To generate this message, Docker took the following steps:
+ 1. The Docker client contacted the Docker daemon.
+ 2. The Docker daemon pulled the "hello-world" image from the Docker Hub.
+    (arm64v8)
+ 3. The Docker daemon created a new container from that image which runs the
+    executable that produces the output you are currently reading.
+ 4. The Docker daemon streamed that output to the Docker client, which sent it
+    to your terminal.
+
+To try something more ambitious, you can run an Ubuntu container with:
+ $ docker run -it ubuntu bash
+
+Share images, automate workflows, and more with a free Docker ID:
+ https://hub.docker.com/
+
+For more examples and ideas, visit:
+ https://docs.docker.com/get-started/
+
+# exit 0
+
+$ docker version
+# at 08:48:06 in /home/ubuntu/chainguard-technical-challenge
+Client: Docker Engine - Community
+ Version:           29.9.3
+ API version:       1.56
+ Go version:        go1.26.10
+ Git commit:        5457199
+ Built:             Tue Nov  3 21:41:21 2026
+ OS/Arch:           linux/arm64
+ Context:           default
+
+Server: Docker Engine - Community
+ Engine:
+  Version:          29.9.3
+  API version:      1.56 (minimum version 1.40)
+  Go version:       go1.26.10
+  Git commit:       70efc0e
+  Built:            Tue Nov  3 21:41:21 2026
+  OS/Arch:          linux/arm64
+  Experimental:     false
+ containerd:
+  Version:          v2.4.2
+  GitCommit:        b7a25261e029d68978bbf290df0a62fc819b3c51
+ runc:
+  Version:          1.5.3
+  GitCommit:        v1.5.3-0-g46365c62
+ docker-init:
+  Version:          0.19.0
+  GitCommit:        de40ad0
+# exit 0
+
+$ docker info 2>/dev/null | grep -E 'Server Version|Storage Driver|driver-type|Docker Root Dir|Cgroup Driver|Cgroup Version|Default Runtime|Architecture|Kernel Version|Operating System|Security Options|apparmor|seccomp|cgroupns'
+# at 08:48:06 in /home/ubuntu/chainguard-technical-challenge
+ Server Version: 29.9.3
+ Storage Driver: overlayfs
+  driver-type: io.containerd.snapshotter.v1
+ Cgroup Driver: systemd
+ Cgroup Version: 2
+ Default Runtime: runc
+ Security Options:
+  apparmor
+  seccomp
+  cgroupns
+ Kernel Version: 6.8.0-147-generic
+ Operating System: Ubuntu 24.04.5 LTS
+ Architecture: aarch64
+ Docker Root Dir: /var/lib/docker
+# exit 0
+
+$ docker images && docker system df && sudo du -sh /var/lib/containerd /var/lib/docker
+# at 08:48:06 in /home/ubuntu/chainguard-technical-challenge
+IMAGE                ID             DISK USAGE   CONTENT SIZE   EXTRA
+hello-world:latest   cf1b20a0c89a       22.6kB         10.3kB        
+TYPE            TOTAL     ACTIVE    SIZE      RECLAIMABLE
+Images          1         0         33.64kB   22.57kB (67%)
+Containers      0         0         0B        0B
+Local Volumes   0         0         0B        0B
+Build Cache     0         0         0B        0B
+328K	/var/lib/containerd
+232K	/var/lib/docker
+# exit 0
+
+$ git add -A && git status --short && git commit -q -m "step 02: Docker Engine 29.9.3 from Docker's repository" -m "Signing key checked against Docker's published fingerprint; user added to the docker group; hello-world ran; containerd image store confirmed. Adds tools/labsend.sh, tools/sync-to-mac.sh and tools/shot.sh, fixes the recorder's prompt prefix in child shells, and adds the first two screenshots." -m "Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>" && git push -q origin main && git log --oneline -3 && git status -sb | head -1
+# at 08:49:25 in /home/ubuntu/chainguard-technical-challenge
+M  JOURNAL.md
+M  REPORT.md
+M  RUNBOOK.md
+A  demo/screenshots/02-docker-hello-world.png
+A  demo/screenshots/02-docker-version-storage.png
+M  logs/01-vm.log
+A  logs/02-docker-mac.log
+A  logs/02-docker.log
+M  tools/labrc.sh
+A  tools/labsend.sh
+A  tools/shot.sh
+A  tools/sync-to-mac.sh
+23c7e5c step 02: Docker Engine 29.9.3 from Docker's repository
+16252ca step 00-01: lab setup, recorder and documents
+42fd9eb updated disclaimer in  README.md
+## main...origin/main
+# exit 0
+
+$ git add -A && git status --short && git commit -q -m "tools: sync-to-mac copies an archive with multipass transfer and verifies checksums" -m "Streaming tar through multipass exec stalled on the first screenshot when run from a terminal tab. Journal surprise 7." -m "Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>" && git push -q origin main && git log --oneline -1 && git status -sb | head -1
+# at 08:52:11 in /home/ubuntu/chainguard-technical-challenge
+M  JOURNAL.md
+M  logs/02-docker-mac.log
+M  logs/02-docker.log
+5924dcf tools: sync-to-mac copies an archive with multipass transfer and verifies checksums
+## main...origin/main
+# exit 0
+
+$ git add -A && git status --short && git commit -q -m "tools: add the archive-based sync-to-mac that 5924dcf meant to add" -m "5924dcf missed the file: running the new script unpacked the old VM copy over the Mac edit before it was copied in. The script now keeps newer Mac files and reports them as checksum mismatches." -m "Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>" && git push -q origin main && git log --oneline -1 && git status -sb | head -1
+# at 08:52:46 in /home/ubuntu/chainguard-technical-challenge
+M  logs/02-docker-mac.log
+M  logs/02-docker.log
+M  tools/sync-to-mac.sh
+dda4848 tools: add the archive-based sync-to-mac that 5924dcf meant to add
+## main...origin/main
+# exit 0
+
+$ git rm -q tools/labsend.sh && cp tools/tmux.conf ~/.tmux.conf && git add -A && git status --short && git commit -q -m "docs and tools: neutral wording, remove tools/labsend.sh" && git push -q origin main && git log --oneline -1 && git status -sb | head -1
+# at 08:59:58 in /home/ubuntu/chainguard-technical-challenge
+M  JOURNAL.md
+M  RUNBOOK.md
+M  logs/02-docker-mac.log
+M  logs/02-docker.log
+M  tools/bootstrap-vm.sh
+M  tools/labrc.sh
+D  tools/labsend.sh
+M  tools/tmux.conf
+2c2ab79 docs and tools: neutral wording, remove tools/labsend.sh
+## main...origin/main
+# exit 0

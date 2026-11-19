@@ -1,0 +1,248 @@
+
+===== STEP 10-triage · 2026-11-16T10:13:18Z · chainguard
+
+$ for v in CVE-2022-32149 CVE-2023-29401 CVE-2026-78660; do echo "== $v in Grype database:"; grype db search --vuln $v 2>&1 | head -6; done
+# at 10:13:18 in /home/ubuntu/chainguard-technical-challenge
+== CVE-2022-32149 in Grype database:
+VULNERABILITY   PACKAGE                                 ECOSYSTEM  NAMESPACE                             VERSION CONSTRAINT                      
+CVE-2022-32149  bind                                    rpm        sles:distro:sles:15.1                 < 0:9.16.6-150000.12.65.1               
+CVE-2022-32149  bind                                    rpm        sles:distro:sles:15.1+ltss:ltss       < 0:9.16.6-150000.12.65.1               
+CVE-2022-32149  bind                                    rpm        sles:distro:sles:15.2                 < 0:9.16.6-150000.12.65.1               
+CVE-2022-32149  bind                                    rpm        sles:distro:sles:15.2+ltss:ltss       < 0:9.16.6-150000.12.65.1               
+CVE-2022-32149  bind-chrootenv                          rpm        sles:distro:sles:15.1                 < 0:9.16.6-150000.12.65.1               
+== CVE-2023-29401 in Grype database:
+VULNERABILITY   PACKAGE                                  ECOSYSTEM  NAMESPACE                       VERSION CONSTRAINT                               
+CVE-2023-29401  cpe:2.3:a:gin-gonic:gin:*:*:*:*:*:*:*:*             nvd:cpe                         >= 1.3.1-0.20190301021747-ccb9e902956d, < 1.9.1  
+CVE-2023-29401  golang-github-gin-gonic-gin              deb        debian:distro:debian:10                                                          
+CVE-2023-29401  golang-github-gin-gonic-gin              deb        debian:distro:debian:11                                                          
+CVE-2023-29401  golang-github-gin-gonic-gin              deb        debian:distro:debian:12                                                          
+CVE-2023-29401  golang-github-gin-gonic-gin              deb        debian:distro:debian:13         < 1.8.1-3                                        
+== CVE-2026-78660 in Grype database:
+No results found
+[0002] ERROR [31munable to fetch package records: query limit reached[0m
+# exit 0
+
+$ echo "== CVE-2022-32149, Go-related records only:"; grype db search --vuln CVE-2022-32149 2>/dev/null | grep -i -E "^VULN|golang|x/text|cpe:" | head -8; echo "== Grype Go CPE setting:"; grype config 2>/dev/null | grep -A2 "use CPE matching to find vulnerabilities (env: GRYPE_MATCH_GOLANG_USING_CPES)"
+# at 10:13:40 in /home/ubuntu/chainguard-technical-challenge
+== CVE-2022-32149, Go-related records only:
+VULNERABILITY   PACKAGE                                 ECOSYSTEM  NAMESPACE                             VERSION CONSTRAINT                      
+CVE-2022-32149  cpe:2.3:a:golang:text:*:*:*:*:*:*:*:*              nvd:cpe                               < 0.3.8                                 
+CVE-2022-32149  golang                                  rpm        fedora:distro:fedora:7                < 0:1.19.10-1.el7                       
+CVE-2022-32149  golang-github-prometheus-node_exporter  rpm        sles:distro:sles:12.5                 < 0:1.5.0-1.27.2                        
+CVE-2022-32149  golang-golang-x-text                    deb        debian:distro:debian:11                                                       
+CVE-2022-32149  golang-golang-x-text                    deb        debian:distro:debian:12               < 0.3.8-1                               
+CVE-2022-32149  golang-golang-x-text                    deb        debian:distro:debian:13               < 0.3.8-1                               
+CVE-2022-32149  golang-golang-x-text                    deb        debian:distro:debian:14               < 0.3.8-1                               
+== Grype Go CPE setting:
+    # use CPE matching to find vulnerabilities (env: GRYPE_MATCH_GOLANG_USING_CPES)
+    using-cpes: false
+
+# exit 0
+
+$ for v in GHSA-2c4m-59x9-fr2g GO-2023-1737 GHSA-69ch-w2m2-3vjp GO-2022-1059 GO-2026-6610; do echo "== $v:"; grype db search --vuln $v 2>&1 | grep -v "query limit" | head -3; done
+# at 10:14:00 in /home/ubuntu/chainguard-technical-challenge
+== GHSA-2c4m-59x9-fr2g:
+VULNERABILITY        PACKAGE                   ECOSYSTEM  NAMESPACE                       VERSION CONSTRAINT                            
+GHSA-2c4m-59x9-fr2g  github.com/gin-gonic/gin  go-module  github:language:go              >=1.3.1-0.20190301021747-ccb9e902956d,<1.9.1  
+GHSA-2c4m-59x9-fr2g  unoserver-rest-api        apk        minimos:distro:minimos:rolling  < 0.8.3-r2
+== GO-2023-1737:
+No results found
+== GHSA-69ch-w2m2-3vjp:
+VULNERABILITY        PACKAGE                            ECOSYSTEM  NAMESPACE                             VERSION CONSTRAINT  
+GHSA-69ch-w2m2-3vjp  dex-k8s-authenticator              apk        chainguard:distro:chainguard:rolling  < 0                 
+GHSA-69ch-w2m2-3vjp  dynamic-localpv-provisioner        apk        chainguard:distro:chainguard:rolling  < 3.4.1-r3          
+== GO-2022-1059:
+VULNERABILITY  PACKAGE                            ECOSYSTEM  NAMESPACE                             VERSION CONSTRAINT  
+GO-2022-1059   dex-k8s-authenticator              apk        chainguard:distro:chainguard:rolling  < 0                 
+GO-2022-1059   dynamic-localpv-provisioner        apk        chainguard:distro:chainguard:rolling  < 3.4.1-r3          
+== GO-2026-6610:
+VULNERABILITY  PACKAGE                                                    ECOSYSTEM  NAMESPACE                             VERSION CONSTRAINT          
+GO-2026-6610   aactl                                                      apk        chainguard:distro:chainguard:rolling  < 0.4.12-r80                
+GO-2026-6610   aactl                                                      apk        wolfi:distro:wolfi:rolling            < 0.4.12-r80                
+# exit 0
+
+$ R=reports/before; echo "== module CVE IDs:      Grype-on-binary  Trivy-on-binary  Grype-on-go.mod"; for m in github.com/gin-gonic/gin golang.org/x/crypto golang.org/x/net golang.org/x/sys golang.org/x/text google.golang.org/protobuf; do printf "   %-28s %8s %16s %16s\n" $m $(jq "[.matches[]|select(.artifact.name==\"$m\")|.vulnerability.id]|unique|length" $R/b-grype.json) $(jq "[.Results[]?.Vulnerabilities[]?|select(.PkgName==\"$m\")|.VulnerabilityID]|unique|length" $R/b-trivy.json) $(jq "[.matches[]|select(.artifact.name==\"$m\")|.vulnerability.id]|unique|length" $R/src-grype.json); done; echo "== vulnerable function in the binary? (Gin CVE-2023-29401 is in FileAttachment)"; for s in "gin.(*Context).FileAttachment" "gin.(*Engine).Run"; do printf "   %-32s %s\n" "$s" "$(go tool nm ./hello-server-b | grep -c -F "$s")"; done; echo "== symbols Grype recorded for CVE-2022-41717 (x/net):"; jq -r "[.matches[]|select(.vulnerability.id==\"CVE-2022-41717\")|.matchDetails[]?|..|objects|.matchedSymbols?//empty]|flatten|unique[]" $R/b-grype.json | sed "s/^/   /"; echo "== Grype v0.121.3 source, grype/pkg/qualifier/gosymbols/qualifier.go:"; curl -s https://raw.githubusercontent.com/anchore/grype/v0.121.3/grype/pkg/qualifier/gosymbols/qualifier.go | grep -A3 "Satisfied reports whether"
+# at 10:15:24 in /home/ubuntu/chainguard-technical-challenge
+== module CVE IDs:      Grype-on-binary  Trivy-on-binary  Grype-on-go.mod
+   github.com/gin-gonic/gin            1                2                2
+   golang.org/x/crypto                 0               26               26
+   golang.org/x/net                   14               29               30
+   golang.org/x/sys                    0                2                2
+   golang.org/x/text                   2                4                4
+   google.golang.org/protobuf          0                1                1
+== vulnerable function in the binary? (Gin CVE-2023-29401 is in FileAttachment)
+   gin.(*Context).FileAttachment    0
+   gin.(*Engine).Run                2
+== symbols Grype recorded for CVE-2022-41717 (x/net):
+jq: error: syntax error, unexpected ?// (Unix shell quoting issues?) at <top-level>, line 1:
+[.matches[]|select(.vulnerability.id=="CVE-2022-41717")|.matchDetails[]?|..|objects|.matchedSymbols?//empty]|flatten|unique[]                                                                                                   
+jq: 1 compile error
+== Grype v0.121.3 source, grype/pkg/qualifier/gosymbols/qualifier.go:
+// Satisfied reports whether the package plausibly uses any of the vulnerable symbols. The check
+// only applies when the scanned package carries binary symbol evidence (go binaries cataloged with
+// symbol capture enabled); packages without symbol evidence always satisfy the qualifier so that
+// module-granularity matching behavior is preserved.
+# exit 0
+
+$ R=reports/before; echo "== module CVE IDs:      Grype-on-binary  Trivy-on-binary  Grype-on-go.mod"; for m in github.com/gin-gonic/gin golang.org/x/crypto golang.org/x/net golang.org/x/sys golang.org/x/text google.golang.org/protobuf; do printf "   %-28s %8s %16s %16s\n" $m $(jq "[.matches[]|select(.artifact.name==\"$m\")|.vulnerability.id]|unique|length" $R/b-grype.json) $(jq "[.Results[]?.Vulnerabilities[]?|select(.PkgName==\"$m\")|.VulnerabilityID]|unique|length" $R/b-trivy.json) $(jq "[.matches[]|select(.artifact.name==\"$m\")|.vulnerability.id]|unique|length" $R/src-grype.json); done; echo "== vulnerable function in the binary? (Gin CVE-2023-29401 is in FileAttachment)"; for s in "gin.(*Context).FileAttachment" "gin.(*Engine).Run"; do printf "   %-32s %s\n" "$s" "$(go tool nm ./hello-server-b | grep -c -F "$s")"; done; echo "== symbols Grype recorded for CVE-2022-41717 (x/net):"; jq -r "[.matches[]|select(.vulnerability.id==\"CVE-2022-41717\")|.matchDetails[]?|..|objects|(.matchedSymbols? // empty)]|flatten|unique[]" $R/b-grype.json | sed "s/^/   /"; echo "== Grype v0.121.3 source, grype/pkg/qualifier/gosymbols/qualifier.go:"; curl -s https://raw.githubusercontent.com/anchore/grype/v0.121.3/grype/pkg/qualifier/gosymbols/qualifier.go | grep -A3 "Satisfied reports whether"
+# at 10:15:37 in /home/ubuntu/chainguard-technical-challenge
+== module CVE IDs:      Grype-on-binary  Trivy-on-binary  Grype-on-go.mod
+   github.com/gin-gonic/gin            1                2                2
+   golang.org/x/crypto                 0               26               26
+   golang.org/x/net                   14               29               30
+   golang.org/x/sys                    0                2                2
+   golang.org/x/text                   2                4                4
+   google.golang.org/protobuf          0                1                1
+== vulnerable function in the binary? (Gin CVE-2023-29401 is in FileAttachment)
+   gin.(*Context).FileAttachment    0
+   gin.(*Engine).Run                2
+== symbols Grype recorded for CVE-2022-41717 (x/net):
+   golang.org/x/net/http2.Server.ServeConn
+   golang.org/x/net/http2.serverConn.canonicalHeader
+== Grype v0.121.3 source, grype/pkg/qualifier/gosymbols/qualifier.go:
+// Satisfied reports whether the package plausibly uses any of the vulnerable symbols. The check
+// only applies when the scanned package carries binary symbol evidence (go binaries cataloged with
+// symbol capture enabled); packages without symbol evidence always satisfy the qualifier so that
+// module-granularity matching behavior is preserved.
+# exit 0
+
+$ bash tools/gap-analysis.sh ./hello-server-b reports/before/b-grype.json reports/before/b-trivy.json
+# at 10:16:22 in /home/ubuntu/chainguard-technical-challenge
+modules  Grype  17  Trivy  64  Trivy-only  48 -> pkg-absent 42, fn-absent 6, fn-present 0, no-data 0
+stdlib   Grype  60  Trivy 104  Trivy-only  44 -> pkg-absent 15, fn-absent 28, fn-present 1 (CVE-2026-39821), no-data 0
+# exit 0
+
+$ curl -sSfL https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json -o reports/before/cisa-kev.json && jq -r "\"CISA KEV catalog \" + .catalogVersion + \", released \" + .dateReleased + \", \" + (.count|tostring) + \" entries\"" reports/before/cisa-kev.json && govulncheck -mode binary -format json ./hello-server-b > reports/before/govulncheck-binary-b.json; echo "govulncheck JSON saved"
+# at 10:17:27 in /home/ubuntu/chainguard-technical-challenge
+CISA KEV catalog 2026.11.13, released 2026-11-13T20:24:18.3008Z, 1781 entries
+govulncheck JSON saved
+# exit 0
+
+$ echo "== Image B: triage order = on KEV, then reachable, then EPSS, then severity"; bash tools/triage.sh reports/before/b-grype.json reports/before/cisa-kev.json reports/before/govulncheck-binary-b.json 12
+# at 10:17:36 in /home/ubuntu/chainguard-technical-challenge
+== Image B: triage order = on KEV, then reachable, then EPSS, then severity
+ID               SEVERITY  CVSS  EPSS           KEV  REACHABLE   PACKAGE                                        FIXED IN
+CVE-2023-44487   Medium    6.9   100% (99th)    KEV  not called  golang.org/x/net v0.0.0-20210226172049-e18ecbb 0.17.0
+CVE-2023-45288   High      7.5   89.5% (99th)   -    called      golang.org/x/net v0.0.0-20210226172049-e18ecbb 0.23.0 | 1.21.9,1.22.2
+CVE-2022-41717   Medium    5.3   6.2% (93th)    -    called      golang.org/x/net v0.0.0-20210226172049-e18ecbb 0.4.0
+CVE-2022-41723   High      7.5   4.6% (91th)    -    called      golang.org/x/net v0.0.0-20210226172049-e18ecbb 0.7.0 | 1.19.6,1.20.1
+CVE-2021-44716   High      7.5   4.3% (91th)    -    called      golang.org/x/net v0.0.0-20210226172049-e18ecbb 0.0.0-20211209124913-491a49abca63
+CVE-2023-39325   High      7.5   3.8% (90th)    -    called      golang.org/x/net v0.0.0-20210226172049-e18ecbb 0.17.0 | 1.20.10,1.21.3
+CVE-2021-31525   Medium    5.9   3.7% (89th)    -    called      golang.org/x/net v0.0.0-20210226172049-e18ecbb 0.0.0-20210428140749-89ef3d95e781
+CVE-2022-27664   High      7.5   3.5% (89th)    -    called      golang.org/x/net v0.0.0-20210226172049-e18ecbb 0.0.0-20220906165146-f3363e06e74c
+CVE-2023-24538   Critical  9.8   2.3% (83th)    -    called      stdlib go1.18.10                               1.19.8,1.20.3
+CVE-2023-24534   High      7.5   1.9% (79th)    -    called      stdlib go1.18.10                               1.19.8,1.20.3
+CVE-2023-29409   Medium    5.3   1.6% (76th)    -    called      stdlib go1.18.10                               1.19.12,1.20.7,1.21.0-rc.4
+CVE-2023-24540   Critical  9.8   1.6% (75th)    -    called      stdlib go1.18.10                               1.19.9,1.20.4
+# exit 0
+
+$ (cd go && govulncheck -format json ./...) > reports/before/govulncheck-source.json; echo "== Image B, ranked: on KEV, then vulnerable function in binary, then EPSS, then severity"; bash tools/triage.sh reports/before/b-grype.json reports/before/cisa-kev.json reports/before/govulncheck-binary-b.json reports/before/govulncheck-source.json 12
+# at 10:18:32 in /home/ubuntu/chainguard-technical-challenge
+== Image B, ranked: on KEV, then vulnerable function in binary, then EPSS, then severity
+ID              SEVERITY CVSS EPSS           KEV IN BINARY CALLED PACKAGE                                  FIXED IN
+CVE-2023-44487  Medium   6.9  100% p99       KEV no        no     golang.org/x/net v0.0.0-20210226172049-e 0.17.0
+CVE-2023-45288  High     7.5  89.46% p99     -   yes       yes    golang.org/x/net v0.0.0-20210226172049-e 0.23.0 | 1.21.9,1.22.2
+CVE-2022-41717  Medium   5.3  6.2% p93       -   yes       yes    golang.org/x/net v0.0.0-20210226172049-e 0.4.0
+CVE-2022-41723  High     7.5  4.56% p91      -   yes       yes    golang.org/x/net v0.0.0-20210226172049-e 0.7.0 | 1.19.6,1.20.1
+CVE-2021-44716  High     7.5  4.25% p91      -   yes       yes    golang.org/x/net v0.0.0-20210226172049-e 0.0.0-20211209124913-491a49abca63
+CVE-2023-39325  High     7.5  3.8% p90       -   yes       yes    golang.org/x/net v0.0.0-20210226172049-e 0.17.0 | 1.20.10,1.21.3
+CVE-2021-31525  Medium   5.9  3.69% p89      -   yes       yes    golang.org/x/net v0.0.0-20210226172049-e 0.0.0-20210428140749-89ef3d95e781
+CVE-2022-27664  High     7.5  3.49% p89      -   yes       yes    golang.org/x/net v0.0.0-20210226172049-e 0.0.0-20220906165146-f3363e06e74c
+CVE-2023-24538  Critical 9.8  2.28% p83      -   yes       -      stdlib go1.18.10                         1.19.8,1.20.3
+CVE-2023-24534  High     7.5  1.89% p79      -   yes       -      stdlib go1.18.10                         1.19.8,1.20.3
+CVE-2023-29409  Medium   5.3  1.6% p76       -   yes       -      stdlib go1.18.10                         1.19.12,1.20.7,1.21.0-rc.4
+CVE-2023-24540  Critical 9.8  1.56% p75      -   yes       -      stdlib go1.18.10                         1.19.9,1.20.4
+IN BINARY: govulncheck binary mode found the vulnerable function in the shipped binary. CALLED: source mode found a call path from our code (modules only; '-' = not a module).
+# exit 0
+
+$ echo "== Gin v1.8.1 gin.go: Engine.Handler()"; curl -s https://raw.githubusercontent.com/gin-gonic/gin/v1.8.1/gin.go | grep -n -A7 "^func (engine \*Engine) Handler()"; docker run -d -p 8081:8080 --name hello-b hello:b >/dev/null && sleep 2; echo "== HTTP/2 over cleartext (prior knowledge):"; curl -s -o /dev/null -w "http_version=%{http_version} code=%{http_code}\n" --http2-prior-knowledge localhost:8081 || echo "-> HTTP/2 refused (exit $?)"; echo "== HTTP/1.1 upgrade to h2c offered:"; curl -s -o /dev/null -w "http_version=%{http_version} code=%{http_code}\n" --http2 localhost:8081; docker rm -f hello-b >/dev/null
+# at 10:19:06 in /home/ubuntu/chainguard-technical-challenge
+== Gin v1.8.1 gin.go: Engine.Handler()
+219:func (engine *Engine) Handler() http.Handler {
+220-	if !engine.UseH2C {
+221-		return engine
+222-	}
+223-
+224-	h2s := &http2.Server{}
+225-	return h2c.NewHandler(engine, h2s)
+226-}
+== HTTP/2 over cleartext (prior knowledge):
+http_version=0 code=000
+-> HTTP/2 refused (exit 56)
+== HTTP/1.1 upgrade to h2c offered:
+http_version=1.1 code=200
+# exit 0
+
+$ echo "== Image A, ranked the same way (KEV first):"; bash tools/triage.sh reports/before/a-grype.json reports/before/cisa-kev.json reports/before/govulncheck-binary-b.json reports/before/govulncheck-source.json 12
+# at 10:19:23 in /home/ubuntu/chainguard-technical-challenge
+== Image A, ranked the same way (KEV first):
+ID              SEVERITY CVSS EPSS           KEV IN BINARY CALLED PACKAGE                                  FIXED IN
+CVE-2023-44487  High     7.5  100% p99       KEV no        no     go 1.18.10; golang.org/x/net v0.0.0-2021 0.17.0 | 1.20.10,1.21.3 | 1.43.0-1+deb11u1
+CVE-2023-4911   High     7.8  63.77% p99     KEV n/a (OS)  -      libc-bin 2.31-13+deb11u5; libc-dev-bin 2 2.31-13+deb11u7
+CVE-2025-48384  High     8    4.48% p91      KEV n/a (OS)  -      git 1:2.30.2-1; git-man 1:2.30.2-1       1:2.30.2-1+deb11u5
+CVE-2023-45288  High     7.5  89.46% p99     -   yes       yes    go 1.18.10; golang.org/x/net v0.0.0-2021 0.23.0 | 1.21.9,1.22.2
+CVE-2022-41717  Medium   5.3  6.2% p93       -   yes       yes    golang.org/x/net v0.0.0-20210226172049-e 0.4.0
+CVE-2022-41723  High     7.5  4.56% p91      -   yes       yes    go 1.18.10; golang.org/x/net v0.0.0-2021 0.7.0 | 1.19.6 | 1.19.6,1.20.1
+CVE-2021-44716  High     7.5  4.25% p91      -   yes       yes    golang.org/x/net v0.0.0-20210226172049-e 0.0.0-20211209124913-491a49abca63
+CVE-2023-39325  High     7.5  3.8% p90       -   yes       yes    golang.org/x/net v0.0.0-20210226172049-e 0.17.0 | 1.20.10,1.21.3
+CVE-2021-31525  Medium   5.9  3.69% p89      -   yes       yes    golang.org/x/net v0.0.0-20210226172049-e 0.0.0-20210428140749-89ef3d95e781
+CVE-2022-27664  High     7.5  3.49% p89      -   yes       yes    golang.org/x/net v0.0.0-20210226172049-e 0.0.0-20220906165146-f3363e06e74c
+CVE-2023-24538  Critical 9.8  2.28% p83      -   yes       -      go 1.18.10; stdlib go1.18.10             1.19.8,1.20.3
+CVE-2023-24534  High     7.5  1.89% p79      -   yes       -      go 1.18.10; stdlib go1.18.10             1.19.8,1.20.3
+IN BINARY: govulncheck binary mode found the vulnerable function in the shipped binary. CALLED: source mode found a call path from our code (modules only; '-' = not a module).
+# exit 0
+
+$ echo "KEV CVEs, unique: A $(jq -r "[.matches[]|select(.vulnerability.knownExploited!=null)|.vulnerability.id]|unique|join(\", \")" reports/before/a-grype.json)  |  B $(jq -r "[.matches[]|select(.vulnerability.knownExploited!=null)|.vulnerability.id]|unique|join(\", \")" reports/before/b-grype.json)"
+# at 10:19:55 in /home/ubuntu/chainguard-technical-challenge
+KEV CVEs, unique: A CVE-2023-44487, CVE-2023-4911, CVE-2025-48384  |  B CVE-2023-44487
+# exit 0
+
+$ echo "== Image B, ranked: on KEV, then vulnerable function in binary, then EPSS, then severity"; bash tools/triage.sh reports/before/b-grype.json reports/before/cisa-kev.json reports/before/govulncheck-binary-b.json reports/before/govulncheck-source.json 12
+# at 10:21:05 in /home/ubuntu/chainguard-technical-challenge
+== Image B, ranked: on KEV, then vulnerable function in binary, then EPSS, then severity
+ID              SEVERITY CVSS EPSS           KEV IN BINARY CALLED PACKAGE                                  FIXED IN
+CVE-2023-44487  Medium   6.9  100% p99       KEV no        no     golang.org/x/net v0.0.0-20210226172049-e 0.17.0
+CVE-2023-45288  High     7.5  89.46% p99     -   yes       yes    golang.org/x/net v0.0.0-20210226172049-e 0.23.0 | 1.21.9,1.22.2
+CVE-2022-41717  Medium   5.3  6.2% p93       -   yes       yes    golang.org/x/net v0.0.0-20210226172049-e 0.4.0
+CVE-2022-41723  High     7.5  4.56% p91      -   yes       yes    golang.org/x/net v0.0.0-20210226172049-e 0.7.0 | 1.19.6,1.20.1
+CVE-2021-44716  High     7.5  4.25% p91      -   yes       yes    golang.org/x/net v0.0.0-20210226172049-e 0.0.0-20211209124913-491a49abca63
+CVE-2023-39325  High     7.5  3.8% p90       -   yes       yes    golang.org/x/net v0.0.0-20210226172049-e 0.17.0 | 1.20.10,1.21.3
+CVE-2021-31525  Medium   5.9  3.69% p89      -   yes       yes    golang.org/x/net v0.0.0-20210226172049-e 0.0.0-20210428140749-89ef3d95e781
+CVE-2022-27664  High     7.5  3.49% p89      -   yes       yes    golang.org/x/net v0.0.0-20210226172049-e 0.0.0-20220906165146-f3363e06e74c
+CVE-2023-24538  Critical 9.8  2.28% p83      -   yes       -      stdlib go1.18.10                         1.19.8,1.20.3
+CVE-2023-24534  High     7.5  1.89% p79      -   yes       -      stdlib go1.18.10                         1.19.8,1.20.3
+CVE-2023-29409  Medium   5.3  1.6% p76       -   yes       -      stdlib go1.18.10                         1.19.12,1.20.7,1.21.0-rc.4
+CVE-2023-24540  Critical 9.8  1.56% p75      -   yes       -      stdlib go1.18.10                         1.19.9,1.20.4
+IN BINARY: govulncheck binary mode found the vulnerable function in the shipped binary. CALLED: source mode found a call path from our code (modules only; '-' = not a module).
+# exit 0
+
+$ git add -A && git status --short && git commit -q -m "step 10: scanner differences explained (symbol-level matching), KEV and EPSS triage, HTTP/2 exposure test" && git push -q origin main && git log --oneline -1 && git status -sb | head -1
+# at 10:21:13 in /home/ubuntu/chainguard-technical-challenge
+M  JOURNAL.md
+M  REPORT.md
+M  RUNBOOK.md
+A  demo/screenshots/10-triage-a-kev.png
+A  demo/screenshots/10-triage-b.png
+A  demo/screenshots/10-triage-gap-analysis.png
+A  demo/screenshots/10-triage-http2-exposure.png
+A  demo/screenshots/10-triage-module-gap.png
+M  logs/09-scan-ab.log
+A  logs/10-triage-mac.log
+A  logs/10-triage.log
+A  reports/before/cisa-kev.json
+A  reports/before/govulncheck-binary-b.json
+A  reports/before/govulncheck-source.json
+A  tools/gap-analysis.sh
+A  tools/triage.sh
+ead36c7 step 10: scanner differences explained (symbol-level matching), KEV and EPSS triage, HTTP/2 exposure test
+## main...origin/main
+# exit 0
+
+$ git add -A && git status --short && git commit -q -m "checkpoint 2: images A and B complete" && git push -q origin main && git log --oneline -1 && git status -sb | head -1
+# at 10:28:08 in /home/ubuntu/chainguard-technical-challenge
+M  JOURNAL.md
+M  logs/10-triage-mac.log
+M  logs/10-triage.log
+9b11102 checkpoint 2: images A and B complete
+## main...origin/main
+# exit 0

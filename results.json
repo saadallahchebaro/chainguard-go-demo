@@ -1,0 +1,291 @@
+{
+  "generated_by": "tools/results.sh",
+  "source": "reports/final",
+  "scanners": {
+    "scanned_on": "2026-11-16T13:45:55Z",
+    "grype": {
+      "version": "0.121.3",
+      "db_schema": "v6.1.10",
+      "db_built": "2026-11-16T06:30:54Z"
+    },
+    "trivy": {
+      "version": "0.76.2",
+      "db_updated": "2026-11-16T07:10:39.763774809Z"
+    },
+    "govulncheck": "govulncheck@v1.9.0",
+    "kev_catalog": {
+      "catalogVersion": "2026.11.13",
+      "dateReleased": "2026-11-13T20:24:18.3008Z",
+      "count": 1781
+    }
+  },
+  "counting": "Unique vulnerability IDs (Grype with --by-cve), each counted once at its highest severity; by_layer counts unique (ID, layer) pairs. Fixed and unfixed both counted.",
+  "images": {
+    "a": {
+      "tag": "hello:a",
+      "image_id": "sha256:9457bcf63aa4d900571ba93c20f788a899f4104d43514d0f3f74ad3d284360c7",
+      "build_stage": "golang:1.18",
+      "runtime_base": "(same image: single stage)",
+      "code": "original",
+      "size": {
+        "disk": "1.49GB",
+        "compressed": "374MB"
+      },
+      "packages": {
+        "os": 201,
+        "os_type": "debian",
+        "app_go_version": "v1.18.10",
+        "app_go_modules": 15
+      },
+      "user": {
+        "config": "(not set: root)",
+        "runs_as": "0:0"
+      },
+      "shell": true,
+      "hello_world": true,
+      "grype": {
+        "unique": 734,
+        "critical": 46,
+        "high": 225,
+        "medium": 230,
+        "low": 38,
+        "negligible": 194,
+        "unknown": 1,
+        "by_layer": {
+          "go_module": 17,
+          "go_stdlib": 87,
+          "go_toolchain": 118,
+          "os_packages": 603
+        },
+        "fixable": 374,
+        "kev_ids": [
+          "CVE-2023-44487",
+          "CVE-2023-4911",
+          "CVE-2025-48384"
+        ],
+        "kev": 3
+      },
+      "trivy": {
+        "unique": 10856,
+        "critical": 36,
+        "high": 1787,
+        "medium": 7365,
+        "low": 1646,
+        "unknown": 22,
+        "by_layer": {
+          "go_module": 64,
+          "go_stdlib": 104,
+          "os_packages": 10700
+        },
+        "fixable": 4891
+      },
+      "govulncheck_binary": 62
+    },
+    "b": {
+      "tag": "hello:b",
+      "image_id": "sha256:711ca3631aa12db8fd95e7097d43997d815d5a1467e18e8f62cd489d53cc7f4b",
+      "build_stage": "golang:1.18",
+      "runtime_base": "debian:trixie-slim",
+      "code": "original",
+      "size": {
+        "disk": "155MB",
+        "compressed": "35.4MB"
+      },
+      "packages": {
+        "os": 78,
+        "os_type": "debian",
+        "app_go_version": "v1.18.10",
+        "app_go_modules": 15
+      },
+      "user": {
+        "config": "65532",
+        "runs_as": "65532:0"
+      },
+      "shell": true,
+      "hello_world": true,
+      "grype": {
+        "unique": 161,
+        "critical": 5,
+        "high": 55,
+        "medium": 59,
+        "low": 9,
+        "negligible": 26,
+        "unknown": 7,
+        "by_layer": {
+          "go_module": 17,
+          "go_stdlib": 60,
+          "os_packages": 92
+        },
+        "fixable": 72,
+        "kev_ids": [
+          "CVE-2023-44487"
+        ],
+        "kev": 1
+      },
+      "trivy": {
+        "unique": 253,
+        "critical": 4,
+        "high": 80,
+        "medium": 123,
+        "low": 39,
+        "unknown": 7,
+        "by_layer": {
+          "go_module": 64,
+          "go_stdlib": 104,
+          "os_packages": 96
+        },
+        "fixable": 160
+      },
+      "govulncheck_binary": 62
+    },
+    "c": {
+      "tag": "hello:c",
+      "image_id": "sha256:4f75bad2bb90574ba25582652a5336cf4b67d9a56353fc2b9f3cc7dc51a23141",
+      "build_stage": "golang:1.18",
+      "runtime_base": "cgr.dev/chainguard/static",
+      "code": "original",
+      "size": {
+        "disk": "19MB",
+        "compressed": "5.62MB"
+      },
+      "packages": {
+        "os": 3,
+        "os_type": "wolfi",
+        "app_go_version": "v1.18.10",
+        "app_go_modules": 15
+      },
+      "user": {
+        "config": "65532",
+        "runs_as": "65532:65532"
+      },
+      "shell": false,
+      "hello_world": true,
+      "grype": {
+        "unique": 69,
+        "critical": 5,
+        "high": 36,
+        "medium": 26,
+        "low": 1,
+        "negligible": 0,
+        "unknown": 1,
+        "by_layer": {
+          "go_module": 17,
+          "go_stdlib": 60
+        },
+        "fixable": 69,
+        "kev_ids": [
+          "CVE-2023-44487"
+        ],
+        "kev": 1
+      },
+      "trivy": {
+        "unique": 157,
+        "critical": 4,
+        "high": 67,
+        "medium": 78,
+        "low": 4,
+        "unknown": 4,
+        "by_layer": {
+          "go_module": 64,
+          "go_stdlib": 104
+        },
+        "fixable": 157
+      },
+      "govulncheck_binary": 62
+    },
+    "d": {
+      "tag": "hello:d",
+      "image_id": "sha256:76eb535bcdcdcaf829c7e5b035201fe1389b8fbfde6d328e3332a7fb16b341dd",
+      "build_stage": "cgr.dev/chainguard/go",
+      "runtime_base": "cgr.dev/chainguard/static",
+      "code": "original app, updated modules",
+      "size": {
+        "disk": "34.9MB",
+        "compressed": "11MB"
+      },
+      "packages": {
+        "os": 3,
+        "os_type": "wolfi",
+        "app_go_version": "v1.27.4",
+        "app_go_modules": 19
+      },
+      "user": {
+        "config": "65532",
+        "runs_as": "65532:65532"
+      },
+      "shell": false,
+      "hello_world": true,
+      "grype": {
+        "unique": 0,
+        "critical": 0,
+        "high": 0,
+        "medium": 0,
+        "low": 0,
+        "negligible": 0,
+        "unknown": 0,
+        "by_layer": {},
+        "fixable": 0,
+        "kev_ids": [],
+        "kev": 0
+      },
+      "trivy": {
+        "unique": 0,
+        "critical": 0,
+        "high": 0,
+        "medium": 0,
+        "low": 0,
+        "unknown": 0,
+        "by_layer": {},
+        "fixable": 0
+      },
+      "govulncheck_binary": 0
+    },
+    "e": {
+      "tag": "hello:e",
+      "image_id": "sha256:c5ce9ddb3a8db38d7ef61bdd6c84905bd1d3e7ef61a3c51bbd0d6d7aa7270a08",
+      "build_stage": "cgr.dev/chainguard/go",
+      "runtime_base": "cgr.dev/chainguard/static",
+      "code": "patched app, updated modules",
+      "size": {
+        "disk": "34.9MB",
+        "compressed": "11MB"
+      },
+      "packages": {
+        "os": 3,
+        "os_type": "wolfi",
+        "app_go_version": "v1.27.4",
+        "app_go_modules": 19
+      },
+      "user": {
+        "config": "65532",
+        "runs_as": "65532:65532"
+      },
+      "shell": false,
+      "hello_world": true,
+      "grype": {
+        "unique": 0,
+        "critical": 0,
+        "high": 0,
+        "medium": 0,
+        "low": 0,
+        "negligible": 0,
+        "unknown": 0,
+        "by_layer": {},
+        "fixable": 0,
+        "kev_ids": [],
+        "kev": 0
+      },
+      "trivy": {
+        "unique": 0,
+        "critical": 0,
+        "high": 0,
+        "medium": 0,
+        "low": 0,
+        "unknown": 0,
+        "by_layer": {},
+        "fixable": 0
+      },
+      "govulncheck_binary": 0
+    }
+  }
+}

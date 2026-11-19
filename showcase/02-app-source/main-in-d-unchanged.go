@@ -1,0 +1,1 @@
+../../go-updated/main.go

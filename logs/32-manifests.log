@@ -1,0 +1,160 @@
+
+===== STEP 32-manifests · 2026-11-17T14:08:05Z · chainguard
+
+$ wc -l k8s/*.yaml; echo; grep -H "^kind:" k8s/*.yaml ci/hello-ai/k8s/*.yaml ci/hello-ai/policy/*.yaml
+# at 14:08:06 in /home/ubuntu/chainguard-technical-challenge
+  45 k8s/deployment.yaml
+  13 k8s/service.yaml
+  58 total
+
+k8s/deployment.yaml:kind: Deployment
+k8s/service.yaml:kind: Service
+ci/hello-ai/k8s/deployment.yaml:kind: Deployment
+ci/hello-ai/k8s/service.yaml:kind: Service
+ci/hello-ai/policy/require-signature.yaml:kind: ImageValidatingPolicy
+# exit 0
+
+$ echo "== 1. the files, checked by the API server without changing anything:"; kubectl apply --dry-run=server -f k8s/; echo "== 2. kubectl diff: the files against what the cluster runs"; kubectl diff -f k8s/ > /tmp/k8s.diff; echo "   exit $?, $(wc -l < /tmp/k8s.diff) lines of difference"; echo "== 3. the digest in the file, in the cluster, and on hello:d in the registry"; F=$(grep -o "sha256:[0-9a-f]*" k8s/deployment.yaml); echo "   file:     $F"; echo "   cluster:  $(kubectl get deploy hello -o jsonpath={.spec.template.spec.containers[0].image} | grep -o "sha256:.*")"; echo "   registry: $(crane digest localhost:5000/hello:d)"; echo "== 4. that digest, signed with the lab key:"; cosign verify --key cosign.pub --insecure-ignore-tlog=true localhost:5000/hello@$F >/dev/null 2>&1; echo "   cosign verify exit $?"
+# at 14:08:14 in /home/ubuntu/chainguard-technical-challenge
+== 1. the files, checked by the API server without changing anything:
+deployment.apps/hello unchanged (server dry run)
+service/hello unchanged (server dry run)
+== 2. kubectl diff: the files against what the cluster runs
+   exit 0, 0 lines of difference
+== 3. the digest in the file, in the cluster, and on hello:d in the registry
+   file:     sha256:c5ce9ddb3a8db38d7ef61bdd6c84905bd1d3e7ef61a3c51bbd0d6d7aa7270a08
+   cluster:  sha256:c5ce9ddb3a8db38d7ef61bdd6c84905bd1d3e7ef61a3c51bbd0d6d7aa7270a08
+   registry: sha256:c5ce9ddb3a8db38d7ef61bdd6c84905bd1d3e7ef61a3c51bbd0d6d7aa7270a08
+== 4. that digest, signed with the lab key:
+   cosign verify exit 0
+# exit 0
+
+$ echo "== not in the files: the namespace label that enforces the restricted level"; kubectl get ns default -o jsonpath="{.metadata.labels}" | jq -r "to_entries[] | select(.key | startswith(\"pod-security\")) | \"   \" + .key + \"=\" + .value"; echo "== what the Service sends traffic to"; kubectl get endpointslices -l kubernetes.io/service-name=hello -o jsonpath="{range .items[*].endpoints[*]}   {.addresses[0]} {.targetRef.name} ready={.conditions.ready}{\"\\n\"}{end}"
+# at 14:08:22 in /home/ubuntu/chainguard-technical-challenge
+== not in the files: the namespace label that enforces the restricted level
+   pod-security.kubernetes.io/enforce=restricted
+   pod-security.kubernetes.io/warn=restricted
+== what the Service sends traffic to
+   10.42.0.34 hello-57b4b797b-s86gd ready=true
+   10.42.0.36 hello-57b4b797b-mjvbg ready=true
+# exit 0
+
+$ echo "== 1. the files, checked by the API server without changing anything:"; kubectl apply --dry-run=server -f k8s/; echo "== 2. kubectl diff: the files against what the cluster runs"; kubectl diff -f k8s/ > /tmp/k8s.diff; echo "   exit $?, $(wc -l < /tmp/k8s.diff) lines of difference"; echo "== 3. the digest in the file, in the cluster, and on hello:d in the registry"; F=$(grep -o "sha256:[0-9a-f]*" k8s/deployment.yaml); echo "   file:     $F"; echo "   cluster:  $(kubectl get deploy hello -o jsonpath={.spec.template.spec.containers[0].image} | grep -o "sha256:.*")"; echo "   registry: $(crane digest localhost:5000/hello:d)"; echo "== 4. that digest, signed with the lab key:"; cosign verify --key cosign.pub --insecure-ignore-tlog=true localhost:5000/hello@$F >/dev/null 2>&1; echo "   cosign verify exit $?"
+# at 14:08:58 in /home/ubuntu/chainguard-technical-challenge
+== 1. the files, checked by the API server without changing anything:
+deployment.apps/hello unchanged (server dry run)
+service/hello unchanged (server dry run)
+== 2. kubectl diff: the files against what the cluster runs
+   exit 0, 0 lines of difference
+== 3. the digest in the file, in the cluster, and on hello:d in the registry
+   file:     sha256:c5ce9ddb3a8db38d7ef61bdd6c84905bd1d3e7ef61a3c51bbd0d6d7aa7270a08
+   cluster:  sha256:c5ce9ddb3a8db38d7ef61bdd6c84905bd1d3e7ef61a3c51bbd0d6d7aa7270a08
+   registry: sha256:c5ce9ddb3a8db38d7ef61bdd6c84905bd1d3e7ef61a3c51bbd0d6d7aa7270a08
+== 4. that digest, signed with the lab key:
+   cosign verify exit 0
+# exit 0
+
+$ echo "== not in the files: the namespace label that enforces the restricted level"; kubectl get ns default -o jsonpath="{.metadata.labels}" | jq -r "to_entries[] | select(.key | startswith(\"pod-security\")) | \"   \" + .key + \"=\" + .value"; echo "== what the Service sends traffic to"; kubectl get endpointslices -l kubernetes.io/service-name=hello -o jsonpath="{range .items[*].endpoints[*]}   {.addresses[0]} {.targetRef.name} ready={.conditions.ready}{\"\\n\"}{end}"
+# at 14:09:10 in /home/ubuntu/chainguard-technical-challenge
+== not in the files: the namespace label that enforces the restricted level
+   pod-security.kubernetes.io/enforce=restricted
+   pod-security.kubernetes.io/warn=restricted
+== what the Service sends traffic to
+   10.42.0.34 hello-57b4b797b-s86gd ready=true
+   10.42.0.36 hello-57b4b797b-mjvbg ready=true
+# exit 0
+
+$ bash tools/check-manifests.sh show
+# at 14:10:56 in /home/ubuntu/chainguard-technical-challenge
+===== k8s/deployment.yaml
+     1	# Image D on the k3s cluster: two copies, pulled from the lab registry by the digest that was scanned and signed
+     2	# (a tag can move; a digest can't). The settings below meet Kubernetes' "restricted" Pod Security Standard,
+     3	# which the default namespace enforces (kubectl label namespace default pod-security.kubernetes.io/enforce=restricted).
+     4	apiVersion: apps/v1
+     5	kind: Deployment
+     6	metadata:
+     7	  name: hello
+     8	  labels:
+     9	    app: hello
+    10	spec:
+    11	  replicas: 2
+    12	  selector:
+    13	    matchLabels:
+    14	      app: hello
+    15	  template:
+    16	    metadata:
+    17	      labels:
+    18	        app: hello
+    19	    spec:
+    20	      # The app never calls the Kubernetes API, so its pods get no API token
+    21	      automountServiceAccountToken: false
+    22	      securityContext:
+    23	        runAsNonRoot: true          # works because the image's user is numeric (USER 65532)
+    24	        runAsUser: 65532
+    25	        runAsGroup: 65532
+    26	        seccompProfile:
+    27	          type: RuntimeDefault      # the container runtime's default system-call filter
+    28	      containers:
+    29	        - name: hello
+    30	          image: 192.168.252.2:5000/hello@sha256:c5ce9ddb3a8db38d7ef61bdd6c84905bd1d3e7ef61a3c51bbd0d6d7aa7270a08
+    31	          imagePullPolicy: IfNotPresent
+    32	          ports:
+    33	            - containerPort: 8080
+    34	          securityContext:
+    35	            allowPrivilegeEscalation: false
+    36	            readOnlyRootFilesystem: true
+    37	            capabilities:
+    38	              drop: ["ALL"]
+    39	          resources:
+    40	            requests: { cpu: 50m, memory: 32Mi }
+    41	            limits: { cpu: 200m, memory: 64Mi }
+    42	          readinessProbe:
+    43	            httpGet: { path: /, port: 8080 }
+    44	          livenessProbe:
+    45	            httpGet: { path: /, port: 8080 }
+
+===== k8s/service.yaml
+     1	# One stable in-cluster address for the hello pods (ClusterIP). Reached from the build VM with kubectl port-forward.
+     2	apiVersion: v1
+     3	kind: Service
+     4	metadata:
+     5	  name: hello
+     6	  labels:
+     7	    app: hello
+     8	spec:
+     9	  selector:
+    10	    app: hello
+    11	  ports:
+    12	    - port: 8080
+    13	      targetPort: 8080
+
+== 1. the files, checked by the API server without changing anything:
+deployment.apps/hello unchanged (server dry run)
+service/hello unchanged (server dry run)
+== 2. kubectl diff: the files against what the cluster runs
+   exit 0, 0 lines of difference
+== 3. the digest in the file, in the cluster, and on hello:d in the registry
+   file:     sha256:c5ce9ddb3a8db38d7ef61bdd6c84905bd1d3e7ef61a3c51bbd0d6d7aa7270a08
+   cluster:  sha256:c5ce9ddb3a8db38d7ef61bdd6c84905bd1d3e7ef61a3c51bbd0d6d7aa7270a08
+   registry: sha256:c5ce9ddb3a8db38d7ef61bdd6c84905bd1d3e7ef61a3c51bbd0d6d7aa7270a08
+== 4. that digest, signed with the lab key:
+   cosign verify exit 0
+== not in the files: the namespace label that enforces the restricted level
+   pod-security.kubernetes.io/enforce=restricted
+   pod-security.kubernetes.io/warn=restricted
+== what the Service sends traffic to
+   10.42.0.34 hello-57b4b797b-s86gd ready=true
+   10.42.0.36 hello-57b4b797b-mjvbg ready=true
+# exit 0
+
+$ git add -A && git commit -q -m "Step 32: the Kubernetes manifests on appendix slide 52, line by line, checked against the cluster with tools/check-manifests.sh (dry run, kubectl diff, the digest in file, cluster and registry, its signature), console proof and quick answer" && git log --oneline -1 && git show --stat --oneline HEAD | tail -1
+# at 14:31:48 in /home/ubuntu/chainguard-technical-challenge
+109ccd5 Step 32: the Kubernetes manifests on appendix slide 52, line by line, checked against the cluster with tools/check-manifests.sh (dry run, kubectl diff, the digest in file, cluster and registry, its signature), console proof and quick answer
+ 12 files changed, 279 insertions(+), 7 deletions(-)
+# exit 0
+
+$ git push -q origin main && git log --oneline -1 && git status -sb | head -1
+# at 14:31:52 in /home/ubuntu/chainguard-technical-challenge
+109ccd5 Step 32: the Kubernetes manifests on appendix slide 52, line by line, checked against the cluster with tools/check-manifests.sh (dry run, kubectl diff, the digest in file, cluster and registry, its signature), console proof and quick answer
+## main...origin/main
+# exit 0

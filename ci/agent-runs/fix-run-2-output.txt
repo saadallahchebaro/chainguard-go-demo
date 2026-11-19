@@ -1,0 +1,21 @@
+I've changed `Dockerfile`, and nothing else. It passes the gate's base-image rule when checked by eye, but I couldn't run the gate itself, so the other two failures are still unconfirmed.
+
+**What the gate reported on PR #2 (run 43906208662):**
+- **base image:** failed because both stages used `python:3.13-slim`.
+- **base signed:** failed because cosign found no Chainguard signature on that image.
+- **scan:** failed because Grype found high or critical issues that have fixes.
+
+The checks for dependency pins, the 7-day cooldown, the build and the non-root user all passed, so I left `requirements.txt` alone.
+
+**What I changed:** I ran `dfc --org chainguard` and applied its output, with one edit. dfc picked `python:3.13-dev`, which the free registry doesn't serve, so I used `latest-dev` instead and pinned it to the digest from `crane digest`:
+- Both `FROM` lines are now `cgr.dev/chainguard/python:latest-dev@sha256:e0df0ab3cb72380c82f8c5513538152e822a6d8994252663060adea9fdc450c2`.
+- Creating the `app` user now uses `addgroup --system app && adduser --system --ingroup app --no-create-home app`, because the Chainguard image doesn't have `groupadd` or `useradd`.
+
+The runtime stage also uses the `-dev` image, as dfc chose, because it needs a shell to create the `app` user. The plain `:latest` image has no shell.
+
+**What I couldn't check:**
+- **Signature, build and scan:** I asked to run the rest of the gate on the VM and the requests were denied, so these three aren't confirmed. I expect the signature check to pass, because it's an official Chainguard image pinned by digest. The scan should clear any findings that came from the Debian base image. If a finding came from a Python package, it would still fail, and the log doesn't say which.
+- **Container start-up:** Chainguard's Python images may set `ENTRYPOINT` to `/usr/bin/python`. If so, the container would run `python uvicorn …` and fail at start-up. I couldn't read the image config to check, and the gate doesn't start the container, so it wouldn't catch this. If the entrypoint is set, adding `ENTRYPOINT []` to the runtime stage would fix it. I didn't add it because it's outside what the gate reported.
+- **Python version:** `latest-dev` may not be Python 3.13 any more. That's fine for building, because both stages use the same image.
+
+Nothing is committed or pushed. To confirm the fix, run `./gate.sh` on the VM or push to the PR.

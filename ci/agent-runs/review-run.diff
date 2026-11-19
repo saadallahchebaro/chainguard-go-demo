@@ -1,0 +1,48 @@
+diff --git a/Dockerfile b/Dockerfile
+index 88b05d0..efe8676 100644
+--- a/Dockerfile
++++ b/Dockerfile
+@@ -6,30 +6,26 @@ FROM cgr.dev/chainguard/python:latest-dev@sha256:e0df0ab3cb72380c82f8c5513538152
+ ENV PIP_NO_CACHE_DIR=1 \
+     PIP_DISABLE_PIP_VERSION_CHECK=1
+ 
+-RUN python -m venv /opt/venv
+-ENV PATH="/opt/venv/bin:$PATH"
++# RUN steps execute as the image's nonroot user (65532), so build in a directory it owns
++WORKDIR /app
++RUN python -m venv /app/venv
++ENV PATH="/app/venv/bin:$PATH"
+ 
+-WORKDIR /build
+ COPY requirements.txt .
+ RUN pip install -r requirements.txt
+ 
+-# ---- Runtime stage: minimal image, non-root user ----
+-FROM cgr.dev/chainguard/python:latest-dev@sha256:e0df0ab3cb72380c82f8c5513538152e822a6d8994252663060adea9fdc450c2 AS runtime
++# ---- Runtime stage: minimal image (no shell, no package manager), already runs as nonroot 65532 ----
++FROM cgr.dev/chainguard/python:latest@sha256:b969ffa5d847b5acd28bd18b12d5b6631cb69c8289f03b309e19b68608724dc6 AS runtime
+ 
+ ENV PYTHONDONTWRITEBYTECODE=1 \
+     PYTHONUNBUFFERED=1 \
+-    PATH="/opt/venv/bin:$PATH"
++    PATH="/app/venv/bin:$PATH"
+ 
+-RUN addgroup --system app && \
+-    adduser --system --ingroup app --no-create-home app
++WORKDIR /app
++COPY --from=builder /app/venv /app/venv
++COPY app ./app
+ 
+-COPY --from=builder /opt/venv /opt/venv
++EXPOSE 8080
+ 
+-WORKDIR /srv
+-COPY --chown=app:app app ./app
+-
+-USER app
+-
+-EXPOSE 8000
+-
+-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
++# The base image's entrypoint is /usr/bin/python, so replace it to run the venv's uvicorn
++ENTRYPOINT ["/app/venv/bin/uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8080"]

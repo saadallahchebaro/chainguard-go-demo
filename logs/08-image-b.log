@@ -1,0 +1,213 @@
+
+===== STEP 08-image-b · 2026-11-16T09:53:08Z · chainguard
+
+$ cat -n dockerfiles/Dockerfile.b-multi
+# at 09:53:08 in /home/ubuntu/chainguard-technical-challenge
+     1	# Image B: multi-stage. Builds in golang:1.18, ships only the binary on debian:trixie-slim (Debian 13).
+     2	# One change from A: the runtime image. The build stage is identical, so it comes from the cache.
+     3	# Build from the repo folder:  docker build -t hello:b -f dockerfiles/Dockerfile.b-multi ./go
+     4	
+     5	# Stage 1: build (thrown away after the build)
+     6	FROM golang:1.18 AS build
+     7	WORKDIR /app
+     8	COPY go.mod go.sum ./
+     9	RUN go mod download
+    10	COPY . .
+    11	RUN CGO_ENABLED=0 go build -o hello-server .
+    12	
+    13	# Stage 2: runtime (the only stage that ships)
+    14	FROM debian:trixie-slim
+    15	# Only the static binary crosses over: no compiler, no git, no source, no module cache
+    16	COPY --from=build /app/hello-server /usr/local/bin/hello-server
+    17	# Non-root by number. 65532 has no /etc/passwd entry here, so its group is 0 (root): USER 65532:65532 would fix that
+    18	USER 65532
+    19	EXPOSE 8080
+    20	ENTRYPOINT ["/usr/local/bin/hello-server"]
+# exit 0
+
+$ docker build --progress=plain -t hello:b -f dockerfiles/Dockerfile.b-multi ./go
+# at 09:53:14 in /home/ubuntu/chainguard-technical-challenge
+#0 building with "default" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile.b-multi
+#1 transferring dockerfile: 932B done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/golang:1.18
+#2 DONE 0.0s
+
+#3 [internal] load metadata for docker.io/library/debian:trixie-slim
+#3 DONE 2.0s
+
+#4 [internal] load .dockerignore
+#4 transferring context: 2B done
+#4 DONE 0.0s
+
+#5 [build 1/6] FROM docker.io/library/golang:1.18@sha256:50c889275d26f816b5314fc99f55425fa76b18fcaf16af255f5d57f09e1f48da
+#5 resolve docker.io/library/golang:1.18@sha256:50c889275d26f816b5314fc99f55425fa76b18fcaf16af255f5d57f09e1f48da 0.0s done
+#5 DONE 0.0s
+
+#6 [internal] load build context
+#6 transferring context: 139B done
+#6 DONE 0.0s
+
+#7 [build 5/6] COPY . .
+#7 CACHED
+
+#8 [build 2/6] WORKDIR /app
+#8 CACHED
+
+#9 [build 4/6] RUN go mod download
+#9 CACHED
+
+#10 [build 3/6] COPY go.mod go.sum ./
+#10 CACHED
+
+#11 [build 6/6] RUN CGO_ENABLED=0 go build -o hello-server .
+#11 CACHED
+
+#12 [stage-1 1/2] FROM docker.io/library/debian:trixie-slim@sha256:a72b4433de1cf7d6bae0c4cee74d0547f58601a643b3375f070c51600d63b6b2
+#12 resolve docker.io/library/debian:trixie-slim@sha256:a72b4433de1cf7d6bae0c4cee74d0547f58601a643b3375f070c51600d63b6b2 0.0s done
+#12 sha256:acd43e9bebc37bc4ba7a5f47bd7598913337803e53d468f37d940f11f5d5f1ef 0B / 30.21MB 0.2s
+#12 sha256:acd43e9bebc37bc4ba7a5f47bd7598913337803e53d468f37d940f11f5d5f1ef 4.19MB / 30.21MB 0.5s
+#12 sha256:acd43e9bebc37bc4ba7a5f47bd7598913337803e53d468f37d940f11f5d5f1ef 17.83MB / 30.21MB 0.6s
+#12 sha256:acd43e9bebc37bc4ba7a5f47bd7598913337803e53d468f37d940f11f5d5f1ef 30.21MB / 30.21MB 0.7s done
+#12 extracting sha256:acd43e9bebc37bc4ba7a5f47bd7598913337803e53d468f37d940f11f5d5f1ef
+#12 extracting sha256:acd43e9bebc37bc4ba7a5f47bd7598913337803e53d468f37d940f11f5d5f1ef 0.4s done
+#12 DONE 1.2s
+
+#13 [stage-1 2/2] COPY --from=build /app/hello-server /usr/local/bin/hello-server
+#13 DONE 0.1s
+
+#14 exporting to image
+#14 exporting layers
+#14 exporting layers 0.2s done
+#14 exporting manifest sha256:38ed92a28ef153cf7c2d0167893d5170dced57ca9efd700def5ae80bc58bfa40 done
+#14 exporting config sha256:a5fa9952670215fddb3d8831e085353034c84565d48a2f1b7155ea68c0aefaa4 done
+#14 exporting attestation manifest sha256:abd2c68ebf78160b0354bf907822a7b64076d9479d1fed1af6392afed9d1d769 done
+#14 exporting manifest list sha256:711ca3631aa12db8fd95e7097d43997d815d5a1467e18e8f62cd489d53cc7f4b done
+#14 naming to docker.io/library/hello:b done
+#14 unpacking to docker.io/library/hello:b
+#14 unpacking to docker.io/library/hello:b 0.4s done
+#14 DONE 0.7s
+# exit 0
+
+$ docker images | grep -E "^(IMAGE|golang|debian|hello)"; echo; echo "== the runtime base, debian:trixie-slim:"; docker image inspect debian:trixie-slim --format "image built: {{.Created}}"; docker run --rm debian:trixie-slim grep PRETTY_NAME /etc/os-release; curl -s https://endoflife.date/api/debian.json | jq -r ".[] | select(.cycle==\"13\") | \"Debian 13 (endoflife.date): released \" + .releaseDate + \", security support until \" + (.support|tostring) + \", LTS until \" + (.eol|tostring)"
+# at 09:53:29 in /home/ubuntu/chainguard-technical-challenge
+IMAGE                ID             DISK USAGE   CONTENT SIZE   EXTRA
+golang:1.18          50c889275d26       1.22GB          315MB        
+hello-world:latest   cf1b20a0c89a       22.6kB         10.3kB        
+hello:a              9457bcf63aa4       1.49GB          374MB        
+hello:b              711ca3631aa1        155MB         35.4MB        
+
+== the runtime base, debian:trixie-slim:
+
+Error response from daemon: No such image: debian:trixie-slim
+Unable to find image 'debian:trixie-slim' locally
+trixie-slim: Pulling from library/debian
+Digest: sha256:a72b4433de1cf7d6bae0c4cee74d0547f58601a643b3375f070c51600d63b6b2
+Status: Downloaded newer image for debian:trixie-slim
+PRETTY_NAME="Debian GNU/Linux 13 (trixie)"
+Debian 13 (endoflife.date): released 2025-08-09, security support until 2028-08-09, LTS until 2030-06-30
+# exit 0
+
+$ docker images | grep -E "^(IMAGE|golang|debian|hello:)"; echo; echo "== the runtime bases:"; for i in golang:1.18 debian:trixie-slim; do printf "%-20s built %s  " $i "$(docker image inspect $i --format "{{.Created}}" | cut -c1-10)"; docker run --rm $i grep PRETTY_NAME /etc/os-release; done; curl -s https://endoflife.date/api/debian.json | jq -r ".[] | select(.cycle==\"13\" or .cycle==\"11\") | \"Debian \" + .cycle + \" (endoflife.date): security support until \" + (.support|tostring) + \", LTS until \" + (.eol|tostring)"
+# at 09:53:45 in /home/ubuntu/chainguard-technical-challenge
+IMAGE                ID             DISK USAGE   CONTENT SIZE   EXTRA
+debian:trixie-slim   a72b4433de1c        142MB         32.2MB        
+golang:1.18          50c889275d26       1.22GB          315MB        
+hello:a              9457bcf63aa4       1.49GB          374MB        
+hello:b              711ca3631aa1        155MB         35.4MB        
+
+== the runtime bases:
+golang:1.18          built 2023-01-11  PRETTY_NAME="Debian GNU/Linux 11 (bullseye)"
+debian:trixie-slim   built 2026-11-04  PRETTY_NAME="Debian GNU/Linux 13 (trixie)"
+Debian 13 (endoflife.date): security support until 2028-08-09, LTS until 2030-06-30
+Debian 11 (endoflife.date): security support until 2024-08-14, LTS until 2026-08-31
+# exit 0
+
+$ docker run -d -p 8081:8080 --name hello-b hello:b && sleep 2 && echo "== curl:" && curl -s localhost:8081 && echo && echo "== which user (image config, then inside the container):" && echo "Config.User=[$(docker image inspect hello:b --format "{{.Config.User}}")]" && docker exec hello-b id && docker exec hello-b sh -c "grep -c 65532 /etc/passwd || echo \"65532 is not in /etc/passwd\"" && echo "== is there a shell?" && docker exec hello-b sh -c "echo yes: \$0 runs; ls -l /bin/sh /bin/bash" && echo "== Gin log:" && docker logs hello-b 2>&1 | tail -2
+# at 09:53:56 in /home/ubuntu/chainguard-technical-challenge
+d51aa962276d3d24b329bf5792db985515de5b3aee73f3cdea644c65df9f8402
+== curl:
+Hello World!
+== which user (image config, then inside the container):
+Config.User=[65532]
+uid=65532 gid=0(root) groups=0(root)
+0
+65532 is not in /etc/passwd
+== is there a shell?
+yes: sh runs
+-rwxr-xr-x 1 root root 1412096 Jul 12 16:58 /bin/bash
+lrwxrwxrwx 1 root root       4 Feb  4  2025 /bin/sh -> dash
+== Gin log:
+[GIN-debug] Listening and serving HTTP on :8080
+[GIN] 2026/11/16 - 09:53:58 | 200 |          15µs |      172.17.0.1 | GET      "/"
+# exit 0
+
+$ echo "== OS:"; docker exec hello-b grep PRETTY_NAME /etc/os-release; echo "== Debian packages installed: $(docker exec hello-b dpkg-query -W | wc -l)  (A: 201)"; echo "== the same tools as in A:"; docker exec hello-b sh -c "for t in go gcc git make curl wget apt-get perl python3 ssh; do printf \"  %-8s %s\n\" \$t \$(command -v \$t || echo -); done"; echo "== our files: only the binary, no source, no module cache:"; docker exec hello-b sh -c "ls -l /usr/local/bin/; ls -d /app /go 2>&1"
+# at 09:54:09 in /home/ubuntu/chainguard-technical-challenge
+== OS:
+PRETTY_NAME="Debian GNU/Linux 13 (trixie)"
+== Debian packages installed: 78  (A: 201)
+== the same tools as in A:
+  go       -
+  gcc      -
+  git      -
+  make     -
+  curl     -
+  wget     -
+  apt-get  /usr/bin/apt-get
+  perl     /usr/bin/perl
+  python3  -
+  ssh      -
+== our files: only the binary, no source, no module cache:
+total 9536
+-rwxr-xr-x 1 root root 9761868 Nov 16 09:47 hello-server
+ls: cannot access '/app': No such file or directory
+ls: cannot access '/go': No such file or directory
+# exit 2
+
+$ docker history --format "{{.Size}}\t{{.CreatedSince}}\t{{.CreatedBy}}" hello:b | cut -c1-150; echo; echo "layers: $(docker history -q hello:b | wc -l)  (A: 20)"
+# at 09:54:36 in /home/ubuntu/chainguard-technical-challenge
+0B	About a minute ago	ENTRYPOINT ["/usr/local/bin/hello-server"]
+0B	About a minute ago	EXPOSE [8080/tcp]
+0B	About a minute ago	USER 65532
+9.78MB	About a minute ago	COPY /app/hello-server /usr/local/bin/hello-…
+110MB	11 days ago	# debian.sh --arch 'arm64' out/ 'trixie' '@1…
+
+layers: 5  (A: 20)
+# exit 0
+
+$ bash tools/compare.sh hello:a hello:b
+# at 09:54:52 in /home/ubuntu/chainguard-technical-challenge
+image     disk      compressed  packages  user uid:gid   shell  tools found (of: go gcc git make curl wget apt-get perl python3 ssh)
+hello:a   1.49GB    374MB       201       0:0            yes    go gcc git make curl wget apt-get perl python3 ssh 
+hello:b   155MB     35.4MB      78        65532:0        yes    apt-get perl 
+# exit 0
+
+$ docker rm -f hello-b
+# at 09:54:59 in /home/ubuntu/chainguard-technical-challenge
+hello-b
+# exit 0
+
+$ git add -A && git status --short && git commit -q -m "step 08: image B built and checked (155 MB, uid 65532 gid 0, 78 packages, shell remains)" && git push -q origin main && git log --oneline -1 && git status -sb | head -1
+# at 09:55:52 in /home/ubuntu/chainguard-technical-challenge
+M  JOURNAL.md
+M  REPORT.md
+M  RUNBOOK.md
+A  demo/screenshots/08-image-b-build.png
+A  demo/screenshots/08-image-b-compare-a-b.png
+A  demo/screenshots/08-image-b-dockerfile.png
+A  demo/screenshots/08-image-b-history.png
+A  demo/screenshots/08-image-b-inside.png
+A  demo/screenshots/08-image-b-run-checks.png
+A  demo/screenshots/08-image-b-sizes-bases.png
+A  dockerfiles/Dockerfile.b-multi
+M  logs/07-image-a.log
+A  logs/08-image-b-mac.log
+A  logs/08-image-b.log
+A  tools/compare.sh
+00b8048 step 08: image B built and checked (155 MB, uid 65532 gid 0, 78 packages, shell remains)
+## main...origin/main
+# exit 0

@@ -1,0 +1,10 @@
+The "gate" check on this change failed. These are the failed job's lines:
+FAIL  base image   FROM python:3.13-slim AS builder
+FAIL  base signed  Chainguard's signature on each base image
+PASS  pinned deps  every line is name==version
+PASS  cooldown     nothing newer than 7 days
+PASS  build        docker build
+PASS  user         runs as app
+FAIL  scan         no fixable high or critical finding
+GATE FAIL for ae66f6f
+Fix only what the gate reports, following the chainguard-dockerfile skill. The container must start and listen on port 8080, which k8s/deployment.yaml expects. Don't edit gate.sh or anything under .github/. Don't commit or push: leave your changes in the working tree, and say what you changed.

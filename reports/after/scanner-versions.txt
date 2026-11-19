@@ -1,0 +1,18 @@
+Scan of image C, 2026-11-16T10:35:08Z
+
+grype        0.121.3
+syft         1.57.1
+trivy        0.76.2
+Schema:    v6.1.10
+Built:     2026-11-16T06:30:54Z
+  UpdatedAt: 2026-11-16 07:10:39.763774809 +0000 UTC
+
+Scan of image D, 2026-11-16T13:29:56Z (database updates off: the same databases as image C)
+
+grype        0.121.3
+syft         1.57.1
+trivy        0.76.2
+Schema:    v6.1.10
+Built:     2026-11-16T06:30:54Z
+  UpdatedAt: 2026-11-16 07:10:39.763774809 +0000 UTC
+Scans of hello:d-golang, builder:golang (golang@sha256:fe517acaa580cc7915457080f850c37e618b3c1e750f98b58fc6429b605147a1) and builder:cg-go (cgr.dev/chainguard/go@sha256:64c93a14feeb5320f251691bab838fd580721f45cb090697a5c1b0a482e503cb), 2026-11-16T13:33:55Z: same tools and databases as image D

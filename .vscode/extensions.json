@@ -1,0 +1,10 @@
+{
+  // Opened over Remote-SSH on the build VM (Host chainguard-lab), VS Code offers these on the VM side:
+  // Container Tools for the images, containers and the registry on :5000, Kubernetes for the k3s cluster
+  // (it reads ~/.kube/config on the build VM), YAML for the manifests and the admission policy.
+  "recommendations": [
+    "ms-azuretools.vscode-containers",
+    "ms-kubernetes-tools.vscode-kubernetes-tools",
+    "redhat.vscode-yaml"
+  ]
+}

@@ -1,0 +1,25 @@
+diff --git a/Dockerfile b/Dockerfile
+index 50ea24e..690abb5 100644
+--- a/Dockerfile
++++ b/Dockerfile
+@@ -7,6 +7,7 @@ ENV PATH="/app/venv/bin:$PATH"
+ COPY requirements.txt .
+ RUN pip install --no-cache-dir -r requirements.txt
+ 
++# Runtime: distroless Chainguard Python, which runs as the nonroot user (65532) by default
+ FROM cgr.dev/chainguard/python:latest@sha256:b969ffa5d847b5acd28bd18b12d5b6631cb69c8289f03b309e19b68608724dc6
+ WORKDIR /app
+ COPY --from=build /app/venv /app/venv
+diff --git a/requirements.txt b/requirements.txt
+index e4ab4df..f90f85a 100644
+--- a/requirements.txt
++++ b/requirements.txt
+@@ -6,6 +6,8 @@ charset-normalizer==3.5.2
+ click==8.5.1
+ fastapi==0.162.2
+ h11==0.16.0
++httpcore==1.0.9
++httpx==0.28.1
+ idna==3.20
+ opentelemetry-api==1.45.2
+ pydantic==2.14.3

@@ -1,0 +1,13 @@
+# One stable in-cluster address for the hello pods (ClusterIP). Reached from the build VM with kubectl port-forward.
+apiVersion: v1
+kind: Service
+metadata:
+  name: hello
+  labels:
+    app: hello
+spec:
+  selector:
+    app: hello
+  ports:
+    - port: 8080
+      targetPort: 8080

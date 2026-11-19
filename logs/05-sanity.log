@@ -1,0 +1,199 @@
+
+===== STEP 05-sanity · 2026-11-16T09:15:58Z · chainguard
+
+$ docker run --rm -e CGO_ENABLED=0 -v "$PWD":/src -w /src golang:1.18 go build -o hello-server . && ls -l hello-server
+# at 09:15:58 in /home/ubuntu/chainguard-technical-challenge/go
+Unable to find image 'golang:1.18' locally
+1.18: Pulling from library/golang
+7b716680367d: Pulling fs layer
+c345c9e441f5: Pulling fs layer
+4bfb8dc93d41: Pulling fs layer
+0855378f8903: Pulling fs layer
+530999854f46: Pulling fs layer
+6ad9f0b1b9e2: Pulling fs layer
+fc998f6bcdc2: Pulling fs layer
+7b716680367d: Download complete
+fc998f6bcdc2: Download complete
+0855378f8903: Download complete
+4bfb8dc93d41: Download complete
+530999854f46: Download complete
+c345c9e441f5: Download complete
+c345c9e441f5: Pull complete
+7b716680367d: Pull complete
+0855378f8903: Pull complete
+4bfb8dc93d41: Pull complete
+530999854f46: Pull complete
+6ad9f0b1b9e2: Download complete
+6ad9f0b1b9e2: Pull complete
+fc998f6bcdc2: Pull complete
+Digest: sha256:50c889275d26f816b5314fc99f55425fa76b18fcaf16af255f5d57f09e1f48da
+Status: Downloaded newer image for golang:1.18
+go: downloading github.com/gin-gonic/gin v1.8.1
+main.go:6:2: github.com/gin-gonic/gin@v1.8.1: Get "https://proxy.golang.org/github.com/gin-gonic/gin/@v/v1.8.1.zip": dial tcp: lookup proxy.golang.org on 192.168.252.1:53: read udp 172.17.0.2:35452->192.168.252.1:53: i/o timeout
+# exit 1
+
+$ echo "== VM /etc/resolv.conf:"; grep -v "^#" /etc/resolv.conf; echo "== VM upstream DNS (systemd-resolved):"; resolvectl dns; echo "== container /etc/resolv.conf:"; docker run --rm golang:1.18 cat /etc/resolv.conf | grep -v "^#"; echo "== which DNS tools exist:"; command -v dig nslookup
+# at 09:18:33 in /home/ubuntu/chainguard-technical-challenge/go
+== VM /etc/resolv.conf:
+
+nameserver 127.0.0.53
+options edns0 trust-ad
+search lan
+== VM upstream DNS (systemd-resolved):
+Global:
+Link 2 (eth0): 192.168.252.1 fe80::5c9b:a6ff:fe87:bc64
+Link 3 (docker0):
+== container /etc/resolv.conf:
+
+nameserver 192.168.252.1
+search lan
+
+== which DNS tools exist:
+/usr/bin/dig
+/usr/bin/nslookup
+# exit 0
+
+$ echo "== IPv4 server 192.168.252.1:"; dig +time=2 +tries=1 +short @192.168.252.1 proxy.golang.org; echo "exit $?"; echo "== IPv6 server fe80::5c9b:a6ff:fe87:bc64 (on eth0):"; dig +time=2 +tries=1 +short @fe80::5c9b:a6ff:fe87:bc64%eth0 proxy.golang.org; echo "exit $?"; echo "== which server systemd-resolved used:"; resolvectl query proxy.golang.org | tail -3
+# at 09:18:44 in /home/ubuntu/chainguard-technical-challenge/go
+== IPv4 server 192.168.252.1:
+;; communications error to 192.168.252.1#53: timed out
+;; no servers could be reached
+exit 9
+== IPv6 server fe80::5c9b:a6ff:fe87:bc64 (on eth0):
+142.250.203.177
+exit 0
+== which server systemd-resolved used:
+-- Information acquired via protocol DNS in 267.8ms.
+-- Data is authenticated: no; Data was acquired via local or encrypted transport: no
+-- Data from: network
+# exit 0
+
+$ for d in 1.1.1.1 8.8.8.8; do printf "%-9s from the VM: " $d; dig +time=2 +tries=1 +short @$d proxy.golang.org | head -1 || true; done; echo "== container with --dns 1.1.1.1:"; docker run --rm --dns 1.1.1.1 golang:1.18 getent hosts proxy.golang.org
+# at 09:19:16 in /home/ubuntu/chainguard-technical-challenge/go
+1.1.1.1   from the VM: 142.250.207.177
+8.8.8.8   from the VM: 142.250.203.177
+== container with --dns 1.1.1.1:
+2a00:1450:4019:819::2011 proxy.golang.org
+# exit 0
+
+$ ls -l /etc/docker/daemon.json 2>&1; echo "{ \"dns\": [\"1.1.1.1\", \"8.8.8.8\"] }" | sudo tee /etc/docker/daemon.json && sudo systemctl restart docker && systemctl is-active docker && echo "== a container now gets:" && docker run --rm golang:1.18 sh -c "grep nameserver /etc/resolv.conf; getent hosts proxy.golang.org"
+# at 09:19:33 in /home/ubuntu/chainguard-technical-challenge/go
+ls: cannot access '/etc/docker/daemon.json': No such file or directory
+{ "dns": ["1.1.1.1", "8.8.8.8"] }
+active
+== a container now gets:
+nameserver 1.1.1.1
+nameserver 8.8.8.8
+# Overrides: [nameservers]
+2a00:1450:4019:819::2011 proxy.golang.org
+# exit 0
+
+$ docker run --rm -e CGO_ENABLED=0 -v "$PWD":/src -w /src golang:1.18 go build -o hello-server . && ls -l hello-server
+# at 09:19:41 in /home/ubuntu/chainguard-technical-challenge/go
+go: downloading github.com/gin-gonic/gin v1.8.1
+go: downloading github.com/gin-contrib/sse v0.1.0
+go: downloading github.com/mattn/go-isatty v0.0.14
+go: downloading golang.org/x/net v0.0.0-20210226172049-e18ecbb05110
+go: downloading github.com/go-playground/validator/v10 v10.10.0
+go: downloading github.com/pelletier/go-toml/v2 v2.0.1
+go: downloading github.com/ugorji/go/codec v1.2.7
+go: downloading google.golang.org/protobuf v1.28.0
+go: downloading gopkg.in/yaml.v2 v2.4.0
+go: downloading golang.org/x/sys v0.0.0-20210806184541-e5e7981a1069
+go: downloading github.com/go-playground/universal-translator v0.18.0
+go: downloading github.com/leodido/go-urn v1.2.1
+go: downloading golang.org/x/crypto v0.0.0-20210711020723-a769d52b0f97
+go: downloading golang.org/x/text v0.3.6
+go: downloading github.com/go-playground/locales v0.14.0
+-rwxr-xr-x 1 root root 9761868 Nov 16 13:20 hello-server
+# exit 0
+
+$ ./hello-server
+# at 09:20:15 in /home/ubuntu/chainguard-technical-challenge/go
+[GIN-debug] [WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.
+
+[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+ - using env:	export GIN_MODE=release
+ - using code:	gin.SetMode(gin.ReleaseMode)
+
+[GIN-debug] GET    /                         --> main.main.func1 (3 handlers)
+[GIN-debug] [WARNING] You trusted all proxies, this is NOT safe. We recommend you to set a value.
+Please check https://pkg.go.dev/github.com/gin-gonic/gin#readme-don-t-trust-all-proxies for details.
+[GIN-debug] Environment variable PORT is undefined. Using port :8080 by default
+[GIN-debug] Listening and serving HTTP on :8080
+
+===== STEP 05-sanity · 2026-11-16T09:20:27Z · chainguard
+
+$ curl -s -i localhost:8080; echo
+# at 09:20:27 in /home/ubuntu/chainguard-technical-challenge/go
+[GIN] 2026/11/16 - 13:20:27 | 200 |      10.084µs |             ::1 | GET      "/"
+HTTP/1.1 200 OK
+Content-Type: text/plain; charset=utf-8
+Date: Mon, 16 Nov 2026 09:20:27 GMT
+Content-Length: 12
+
+Hello World!
+# exit 0
+
+$ ls -l hello-server && id -un
+# at 09:20:44 in /home/ubuntu/chainguard-technical-challenge/go
+-rwxr-xr-x 1 root root 9761868 Nov 16 13:20 hello-server
+ubuntu
+# exit 0
+
+$ git add -A && git status --short && git commit -q -m "step 05: versions recorded; app built with Go 1.18 and answering; container DNS fixed" && git push -q origin main && git log --oneline -1 && git status -sb | head -1
+# at 09:21:30 in /home/ubuntu/chainguard-technical-challenge
+M  JOURNAL.md
+M  REPORT.md
+M  RUNBOOK.md
+A  demo/screenshots/05-sanity-app-runs.png
+A  demo/screenshots/05-sanity-built.png
+A  demo/screenshots/05-sanity-dns-fix.png
+A  demo/screenshots/05-versions.png
+M  logs/04-trivy.log
+A  logs/05-sanity-mac.log
+A  logs/05-sanity.log
+A  logs/05-versions.log
+A  tools/versions.sh
+6dbc730 step 05: versions recorded; app built with Go 1.18 and answering; container DNS fixed
+## main...origin/main
+# exit 0
+
+$ echo "== golang:1.18, the builder used for images A to C:"; docker image inspect golang:1.18 --format "image built: {{.Created}}"; docker run --rm golang:1.18 sh -c "go version; grep PRETTY_NAME /etc/os-release"
+# at 09:30:27 in /home/ubuntu/chainguard-technical-challenge
+== golang:1.18, the builder used for images A to C:
+image built: 2023-01-11T17:35:39.919700679Z
+go version go1.18.10 linux/arm64
+PRETTY_NAME="Debian GNU/Linux 11 (bullseye)"
+# exit 0
+
+$ echo "== Go versions go.dev still supports:"; curl -s "https://go.dev/dl/?mode=json" | jq -r "[.[].version] | join(\", \")"
+# at 09:30:28 in /home/ubuntu/chainguard-technical-challenge
+== Go versions go.dev still supports:
+go1.27.4, go1.26.11
+# exit 0
+
+$ echo "== Gin, the web framework in go.mod:"; cd /tmp && go list -m -json github.com/gin-gonic/gin@v1.8.1 github.com/gin-gonic/gin@latest | jq -r "\"gin \" + .Version + \"  released \" + .Time"
+# at 09:30:28 in /home/ubuntu/chainguard-technical-challenge
+== Gin, the web framework in go.mod:
+gin v1.8.1  released 2022-06-06T13:01:40Z
+gin v1.12.0  released 2026-02-28T10:10:09Z
+# exit 0
+
+$ echo "== End of life, from endoflife.date:"; curl -s https://endoflife.date/api/go.json | jq -r ".[] | select(.cycle==\"1.18\") | \"Go 1.18:   released \" + .releaseDate + \", end of life \" + .eol + \", last patch \" + .latest"; curl -s https://endoflife.date/api/debian.json | jq -r ".[] | select(.cycle==\"11\") | \"Debian 11: security support ended \" + .support + \", LTS ended \" + .eol + \", then paid extended support only\""
+# at 09:30:52 in /home/ubuntu/chainguard-technical-challenge
+== End of life, from endoflife.date:
+Go 1.18:   released 2022-03-15, end of life 2023-02-01, last patch 1.18.10
+Debian 11: security support ended 2024-08-14, LTS ended 2026-08-31, then paid extended support only
+# exit 0
+
+$ git add -A && git status --short && git commit -q -m "step 05: findings register F1-F7 and evidence of the old toolchain" && git push -q origin main && git log --oneline -1 && git status -sb | head -1
+# at 09:31:38 in /home/ubuntu/chainguard-technical-challenge
+M  JOURNAL.md
+M  RUNBOOK.md
+A  demo/screenshots/05-sanity-old-toolchain.png
+M  logs/05-sanity-mac.log
+M  logs/05-sanity.log
+b118bc7 step 05: findings register F1-F7 and evidence of the old toolchain
+## main...origin/main
+# exit 0

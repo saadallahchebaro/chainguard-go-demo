@@ -1,0 +1,334 @@
+# Live run of the CI demo through the console's Play all, agent live, 17 November 2026 (lab step 24).
+# Transcript from the console's event stream; times are the Mac's (UTC+4). Pull request #4 of saadallahchebaro/hello-ai.
+
+── Checks  [live]  10:31:22
+$ multipass list
+chainguard: Running, k3s: Running
+$ gh api user --jq .login
+gh account: saadallahchebaro
+$ gh api repos/saadallahchebaro/hello-ai/actions/runners --jq .runners[] | .name + " " + .status + " " + (if .busy then "busy" else "idle" end)
+runner: chainguard-build-vm online idle
+$ kubectl get imagevalidatingpolicies; kubectl get deploy hello-ai; grype db status
+policy: require-lab-signature 15h true
+hello-ai ready: 2/2
+Grype database: Built: 2026-11-16T06:30:54Z
+$ git status (hello-ai clone)
+hello-ai clone: main...origin/main, clean
+$ is the coding agent's command-line tool installed?
+coding agent: installed (log-in checked separately)
+done in 7.8 s
+── Start a clean branch  [live]  10:31:33
+$ remove any skill installed by an earlier run (hello-ai/.claude/skills/chainguard-dockerfile)
+$ git status --porcelain
+$ git fetch -q origin
+$ git switch -q -C demo-20261117-0631 origin/main
+$ git log --oneline -1
+4e49991 Merge pull request #3 from saadallahchebaro/demo-20261116-1805
+done in 2.3 s
+── The agent writes a change, with no rules in view  [live]  10:31:37
+$ prepare the agent's folder: only app/ and requirements.txt, as before the agent's pull request (bb04be2)
+app
+requirements.txt
+$ coding agent (headless): Write a Dockerfile for this FastAPI service, and add httpx as a dependency for outbound HTTP calls.
+# allowed tools: Read,Write,Edit,Glob,Grep
+# coding agent session started in /Users/saadallah.chebaro/agent-sandbox/hello-ai-bare
+tool  > $ ls -la && cat pyproject.toml requirements*.txt 2>/dev/null; ls */ 2>/dev/null | head -50
+  total 8
+  drwxr-xr-x  4 saadallah.chebaro  staff  128 Nov 17 10:31 .
+  drwxr-xr-x  3 saadallah.chebaro  staff   96 Nov 17 10:31 ..
+  drwxr-xr-x  4 saadallah.chebaro  staff  128 Nov 16 19:55 app
+  -rw-r--r--  1 saadallah.chebaro  staff  339 Nov 16 19:55 requirements.txt
+  annotated-doc==0.0.5
+  annotated-types==0.8.0
+  anyio==4.16.0
+  … 17 more lines
+tool  > $ ls -la app && cat app/main.py; python3 --version; which docker
+  total 8
+  -rw-r--r--  1 saadallah.chebaro  staff    0 Nov 16 19:55 __init__.py
+  drwxr-xr-x  4 saadallah.chebaro  staff  128 Nov 16 19:55 .
+  drwxr-xr-x  4 saadallah.chebaro  staff  128 Nov 17 10:31 ..
+  -rw-r--r--  1 saadallah.chebaro  staff  336 Nov 16 19:55 main.py
+  from fastapi import FastAPI
+  from pydantic import BaseModel
+  app = FastAPI()
+  … 11 more lines
+agent > I'll resolve the real latest httpx version rather than guess a pin.
+tool  > $ cd /tmp && rm -rf httpx-resolve && mkdir httpx-resolve && cd httpx-resolve && python3 -m venv v && v/bin/pip install -q -r /Users/saadallah.chebaro/agent-sandbox/hello-ai-bare/requirements.txt httpx 2>&1 | tail -3; v/bin/pip freeze | grep -iE 'httpx|httpcore|h11|anyio|certifi|idna'; v/bin/pip check
+! This Bash command contains multiple operations. The following parts require approval: cd /tmp && rm -rf httpx-resolve && mkdir httpx-resolve && cd httpx-resolve && python3 -m venv v && v/bin/pip install -q -r /Users/saadallah.chebaro/agent-sandbox/hello-ai-bare/requirements.txt httpx 2>&1, tail -3; v/bin/pip freeze, grep -iE 'httpx|httpcore|h11|anyio|certifi|idna'; v/bin/pip check
+tool  > $ python3 -m pip index versions httpx
+! This command requires approval
+tool  > edit requirements.txt
+  The file /Users/saadallah.chebaro/agent-sandbox/hello-ai-bare/requirements.txt has been updated successfully.
+tool  > write Dockerfile
+  File created successfully at: /Users/saadallah.chebaro/agent-sandbox/hello-ai-bare/Dockerfile (file state is current in your context — no need to Read it back)
+tool  > write .dockerignore
+  File created successfully at: /Users/saadallah.chebaro/agent-sandbox/hello-ai-bare/.dockerignore (file state is current in your context — no need to Read it back)
+agent > Now let me try to verify with a build.
+tool  > $ docker build -t hello-ai-bare /Users/saadallah.chebaro/agent-sandbox/hello-ai-bare
+! This command requires approval
+agent > I added the Dockerfile and httpx, but none of it has been tested. The permission settings blocked `docker build`, and they also blocked checking PyPI for the newest httpx release.
+agent > 
+agent > **Changes:**
+agent > - **`Dockerfile`**: builds on `python:3.13-slim`, which matches your local Python 3.13. Dependencies install before the app code is copied, so rebuilds after code changes are faster. It runs as a non-root user and starts `uvicorn app.main:app` on port 8000.
+agent > - **`.dockerignore`**: keeps `.env`, virtual environments, caches and `.git` out of the image.
+agent > - **`requirements.txt`**: added `httpx==0.28.1` and `httpcore==1.0.9`, the library httpx is built on. I pinned both because every other line in the file is pinned. Its other dependencies (anyio, certifi, h11, idna) were already listed.
+agent > 
+agent > **About the httpx version:** 0.28.1 is the latest release I know of and it works with your existing `h11==0.16.0`. Since I couldn't check PyPI, a newer release may exist.
+agent > 
+agent > **To check it yourself:**
+agent > ```sh
+agent > docker build -t hello-ai-bare .
+agent > docker run --rm -p 8000:8000 hello-ai-bare
+agent > curl localhost:8000/
+agent > ```
+agent > 
+agent > If you approve `docker build`, I can run the build and a test request against the container.
+coding agent finished in 30 s
+# 3 tool request(s) outside the allowlist were refused
+$ copy the agent's Dockerfile, .dockerignore and requirements.txt into the branch
+copied Dockerfile
+copied .dockerignore
+copied requirements.txt
+$ git diff --stat
+ .dockerignore |  1 -
+ Dockerfile    | 29 +++++++++++------------------
+ 2 files changed, 11 insertions(+), 19 deletions(-)
+$ grep -nE "^(FROM|USER|EXPOSE|CMD|ENTRYPOINT)" Dockerfile
+1:FROM python:3.13-slim
+18:USER appuser
+20:EXPOSE 8000
+22:CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+done in 32.1 s
+── A person commits it and opens the pull request  [live]  10:32:13
+$ git add -A
+$ git commit -q -m Add a Dockerfile and httpx (written by a coding agent with no rules in view)
+$ git push -q -u origin demo-20261117-0631
+  remote: 
+  remote: Create a pull request for 'demo-20261117-0631' on GitHub by visiting:        
+  remote:      https://github.com/saadallahchebaro/hello-ai/pull/new/demo-20261117-0631        
+  remote: 
+$ gh pr create --repo saadallahchebaro/hello-ai --head demo-20261117-0631 --base main --title Add a Dockerfile and httpx --body A coding agent's change, made with no rules in view. Opened from the demo console.
+https://github.com/saadallahchebaro/hello-ai/pull/4
+done in 7.1 s
+── CI: the gate runs on the self-hosted runner  [live]  10:32:23
+# waiting for GitHub to start the "gate" workflow for 11717a6 …
+$ gh run watch 44031955389 --repo saadallahchebaro/hello-ai
+  gate › Set up job: success
+  gate › Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1: success
+  gate › Run ./gate.sh: in_progress
+  gate › Run cat verdict.json >> "$GITHUB_STEP_SUMMARY": pending
+  gate › Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1: pending
+! gate › Run ./gate.sh: failure
+  gate › Run cat verdict.json >> "$GITHUB_STEP_SUMMARY": success
+  gate › Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1: in_progress
+  gate › Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1: success
+  gate › Complete job: success
+run 44031955389: failure
+$ gh run view 44031955389 --repo saadallahchebaro/hello-ai --log   (the gate's lines)
+FAIL  base image   FROM python:3.13-slim
+FAIL  base signed  Chainguard's signature on each base image
+PASS  pinned deps  every line is name==version
+PASS  cooldown     nothing newer than 7 days
+PASS  build        docker build
+PASS  user         runs as appuser
+FAIL  scan         no fixable high or critical finding
+GATE FAIL for 11717a6
+done in 41.6 s
+── The agent needs a skill: the skill gate scans it first  [live]  10:33:08
+# The agent needs a skill to fix the Dockerfile. Each candidate is scanned on the build VM before the agent may load it.
+# candidate: dockerfile-fixer, from an unvetted public registry
+$ bash ci/skills/skill-gate.sh ci/skills/unvetted/dockerfile-fixer
+BLOCKED  dockerfile-fixer  risk 100/100 CRITICAL, DO_NOT_INSTALL, 10 findings, scan complete: true
+  HIGH  TM1  Tool Parameter Abuse  SKILL.md:20
+  HIGH  TM1  Tool Parameter Abuse  SKILL.md:21
+  HIGH  P1  Instruction Override  SKILL.md:23
+  HIGH  P2  Hidden Instructions  SKILL.md:23
+  HIGH  YR4  YARA rule 'agent_skill_prompt_injection_hidden_instructions': Prompt injection or hidden instructions embedded in AI agent skill text [agent_skills]  SKILL.md:23
+  HIGH  SC2  External Script Fetching  scripts/setup.sh:5
+  HIGH  TM2  Chaining Abuse  scripts/setup.sh:5
+  HIGH  TM2  Chaining Abuse  scripts/setup.sh:6
+  HIGH  SC3  Obfuscated Code  scripts/setup.sh:6
+  MEDIUM  LP3  MCP Least Privilege  SKILL.md:1
+  content sha256 513125812154238c, SkillSpector v2.13.4, exit 1
+# candidate: chainguard-dockerfile, from the vetted catalog
+$ bash ci/skills/skill-gate.sh ci/skills/vetted/chainguard-dockerfile
+ALLOWED  chainguard-dockerfile  risk 0/100 LOW, SAFE, 0 findings, scan complete: true
+  content sha256 89744efd3e044c81, SkillSpector v2.13.4, exit 0
+$ copy the scanned chainguard-dockerfile from the build VM into hello-ai/.claude/skills/ (Git ignores .claude/)
+SKILL.md
+$ content sha256 of the installed copy
+installed: content sha256 89744efd3e044c81, the same bytes the gate scanned
+done in 5.2 s
+── The agent reads the failure and fixes it  [live]  10:33:16
+$ coding agent (headless): The "gate" check on pull request #4 of saadallahchebaro/hello-ai failed. Find the run with `gh pr checks 4 --repo saadallahchebaro/hello-ai` and read the fai…
+# allowed tools: Read,Edit,Write,Glob,Grep,Bash(gh pr checks:*),Bash(gh run view:*),Bash(gh run list:*),Bash(multipass exec chainguard -- dfc:*),Bash(multipass exec chainguard -- crane digest:*),Bash(multipass exec chainguard -- crane config:*),Skill
+# coding agent session started in /Users/saadallah.chebaro/Documents/Claude/ChainGuard Project/hello-ai
+tool  > $ gh pr checks 4 --repo saadallahchebaro/hello-ai
+tool  > skill chainguard-dockerfile
+! Exit code 1
+! gate	fail	31s	https://github.com/saadallahchebaro/hello-ai/actions/runs/44031955389/job/133865752180
+  Launching skill: chainguard-dockerfile
+tool  > $ gh run view 44031955389 --repo saadallahchebaro/hello-ai --log-failed | cut -c1-400 | tail -80; echo ---; cat Dockerfile; echo ---; cat .dockerignore; ls; cat requirements.txt; grep -n -i port -A2 k8s/deployment.yaml
+  gate	Run ./gate.sh	﻿2026-11-17T06:32:30.8441299Z ##[group]Run ./gate.sh
+  gate	Run ./gate.sh	2026-11-17T06:32:30.8441675Z ^[[36;1m./gate.sh^[[0m
+  gate	Run ./gate.sh	2026-11-17T06:32:30.8468730Z shell: /usr/bin/bash -e {0}
+  gate	Run ./gate.sh	2026-11-17T06:32:30.8468930Z ##[endgroup]
+  gate	Run ./gate.sh	2026-11-17T06:32:30.8528154Z FAIL  base image   FROM python:3.13-slim
+  gate	Run ./gate.sh	2026-11-17T06:32:34.8564056Z FAIL  base signed  Chainguard's signature on each base image
+  gate	Run ./gate.sh	2026-11-17T06:32:34.8624585Z PASS  pinned deps  every line is name==version
+  gate	Run ./gate.sh	2026-11-17T06:32:37.0505352Z PASS  cooldown     nothing newer than 7 days
+  … 66 more lines
+tool  > $ git show a6f5b12:Dockerfile; echo ---; multipass exec chainguard -- dfc --org chainguard - < Dockerfile; echo ---; multipass exec chainguard -- crane digest cgr.dev/chainguard/python:latest; multipass exec chainguard -- crane digest cgr.dev/chainguard/python:latest-dev; multipass exec chainguard -- crane config cgr.dev/chainguard/python:latest
+  FROM cgr.dev/chainguard/python:latest-dev@sha256:e0df0ab3cb72380c82f8c5513538152e822a6d8994252663060adea9fdc450c2 AS builder
+  ENV PIP_NO_CACHE_DIR=1 \
+      PIP_DISABLE_PIP_VERSION_CHECK=1
+  # RUN steps execute as nonroot (65532), so build the venv in a directory that user owns
+  WORKDIR /app
+  RUN python -m venv /app/venv
+  ENV PATH="/app/venv/bin:$PATH"
+  # Install dependencies first so this layer is cached across code changes
+  … 33 more lines
+tool  > write Dockerfile
+  The file /Users/saadallah.chebaro/Documents/Claude/ChainGuard Project/hello-ai/Dockerfile has been updated successfully. (file state is current in your context — no need to Read it back)
+agent > Now a smoke test: build and run it and hit port 8080.
+tool  > $ (command -v docker && docker info >/dev/null 2>&1 && echo local-docker) || multipass exec chainguard -- which docker
+! This command uses shell operators that require approval for safety
+tool  > $ multipass exec chainguard -- docker version --format '{{.Server.Version}}'
+! This command requires approval
+tool  > $ cat gate.sh; git diff --stat
+  #!/usr/bin/env bash
+  # gate.sh: every check a change must pass before it can merge. Run from the repo root, on the build VM
+  # (Docker, Grype, cosign, jq and curl). The same script runs by hand, from a Git hook, or from GitHub Actions.
+  set -uo pipefail
+  COMMIT=${GATE_COMMIT:-$(git rev-parse HEAD)}
+  SHA=${COMMIT:0:7}
+  IMG=hello-ai:$SHA
+  fail=0
+  … 44 more lines
+agent > I rewrote the Dockerfile so the three failing gate checks should pass, but I couldn't build or run it. Running Docker on the build VM needed approval I didn't have, so the gate hasn't been re-run and nothing confirms the container starts.
+agent > 
+agent > **What the gate reported** (run 44031955389, commit 11717a6):
+agent > - FAIL `base image`: `FROM python:3.13-slim` is not a Chainguard image and isn't pinned by digest.
+agent > - FAIL `base signed`: there is no Chainguard signature on that image.
+agent > - FAIL `scan`: the image has fixable high or critical vulnerabilities.
+agent > - The other checks passed: pinned deps, cooldown, build and user.
+agent > 
+agent > **What I changed:** only `Dockerfile`. It follows the chainguard-dockerfile skill and the same pattern as the earlier fix in a6f5b12.
+agent > - **Build stage:** `cgr.dev/chainguard/python:latest-dev@sha256:50bef4bf…a7ee`. It creates a virtual environment in `/app/venv` and installs `requirements.txt` there, as the nonroot user 65532.
+agent > - **Final stage:** `cgr.dev/chainguard/python:latest@sha256:6a467605…f5c`. It copies in the virtual environment and `app/`, and has no `RUN` steps.
+agent > - **Digests:** I read both fresh with `crane digest` today. The ones in a6f5b12 are out of date.
+agent > - **User:** I removed the `useradd appuser` step, since Chainguard images already run as user 65532.
+agent > - **Port:** it now listens on 8080 (it was 8000), to match `containerPort` and both probes in `k8s/deployment.yaml`. The entrypoint is `/app/venv/bin/uvicorn app.main:app --host 0.0.0.0 --port 8080`, which replaces the base image's default entrypoint (`/usr/bin/python`).
+agent > - **Not used:** dfc's output, because it kept a single stage on the `-dev` image and added a user, which the skill rules out.
+agent > 
+agent > **What I checked:**
+agent > - Both `FROM` lines match the gate's base-image pattern.
+agent > - Nothing outside `Dockerfile` changed: not `requirements.txt`, `gate.sh` or `.github/`.
+agent > 
+agent > Signature and scan results depend on the new images, and I haven't run either check. The working directory is also `/app` now instead of `/srv`.
+agent > 
+agent > **To confirm it works,** run on the build VM:
+agent > ```
+agent > docker build -t hello-ai:test . && docker run --rm -p 8080:8080 hello-ai:test
+agent > curl localhost:8080/
+agent > GATE_COMMIT=$(git rev-parse HEAD) ./gate.sh
+agent > ```
+agent > Nothing is committed or pushed.
+coding agent finished in 42 s
+# 2 tool request(s) outside the allowlist were refused
+$ git diff --stat
+ Dockerfile | 29 ++++++++++++++++++-----------
+ 1 file changed, 18 insertions(+), 11 deletions(-)
+$ git diff -U0 -- Dockerfile
+-FROM python:3.13-slim
++FROM cgr.dev/chainguard/python:latest-dev@sha256:50bef4bfe98ea2f3c8c146a04847c8857e0afb1c8803e2047f140f10c028a7ee AS builder
++RUN python -m venv /app/venv
++FROM cgr.dev/chainguard/python:latest@sha256:6a467605cd347cb7af8404af3648d01c2b39a967c342b70bbd5ef39dd0b74f5c
+-RUN useradd --create-home --uid 10001 appuser
+-USER appuser
+-EXPOSE 8000
++EXPOSE 8080
+-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
++ENTRYPOINT ["/app/venv/bin/uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8080"]
+done in 43.6 s
+── A person reviews the diff and pushes  [live]  10:34:03
+$ git diff --stat
+ Dockerfile | 29 ++++++++++++++++++-----------
+ 1 file changed, 18 insertions(+), 11 deletions(-)
+$ git add -A
+$ git commit -q -m Use Chainguard images pinned by digest (the agent's fix from the gate's log)
+$ git push -q
+done in 3.1 s
+── CI again: the gate on the fixed commit  [live]  10:34:09
+# waiting for GitHub to start the "gate" workflow for 6f4becc …
+$ gh run watch 44032177873 --repo saadallahchebaro/hello-ai
+  gate › Set up job: success
+  gate › Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1: success
+  gate › Run ./gate.sh: in_progress
+  gate › Run cat verdict.json >> "$GITHUB_STEP_SUMMARY": pending
+  gate › Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1: pending
+  gate › Run ./gate.sh: success
+  gate › Run cat verdict.json >> "$GITHUB_STEP_SUMMARY": success
+  gate › Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1: in_progress
+  gate › Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1: success
+  gate › Complete job: success
+run 44032177873: success
+$ gh run view 44032177873 --repo saadallahchebaro/hello-ai --log   (the gate's lines)
+PASS  base image   all from cgr.dev/chainguard, pinned by digest
+PASS  base signed  Chainguard's signature on each base image
+PASS  pinned deps  every line is name==version
+PASS  cooldown     nothing newer than 7 days
+PASS  build        docker build
+PASS  user         runs as 65532
+PASS  scan         no fixable high or critical finding
+GATE PASS for 6f4becc
+done in 47.5 s
+── Merge, then the pipeline signs and deploys  [live]  10:35:00
+$ gh pr merge 4 --repo saadallahchebaro/hello-ai --merge
+merge commit 68ecee7
+# waiting for GitHub to start the "deploy" workflow for 68ecee7 …
+$ gh run watch 44032296222 --repo saadallahchebaro/hello-ai
+  deploy › Set up job: success
+  deploy › Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1: success
+  deploy › Run ./gate.sh: in_progress
+  deploy › Run ./deploy.sh: pending
+  deploy › Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1: pending
+  deploy › Run ./gate.sh: success
+  deploy › Run ./deploy.sh: in_progress
+  deploy › Run ./deploy.sh: success
+  deploy › Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1: success
+  deploy › Complete job: success
+run 44032296222: success
+$ gh run view 44032296222 --repo saadallahchebaro/hello-ai --log   (the gate's lines)
+PASS  base image   all from cgr.dev/chainguard, pinned by digest
+PASS  base signed  Chainguard's signature on each base image
+PASS  pinned deps  every line is name==version
+PASS  cooldown     nothing newer than 7 days
+PASS  build        docker build
+PASS  user         runs as 65532
+PASS  scan         no fixable high or critical finding
+GATE PASS for 68ecee7
+SIGNED localhost:5000/hello-ai@sha256:e6b4438a232df56631f7922842a6da48f65814b974bdd504751dcb043d8bd076
+deployment "hello-ai" successfully rolled out
+DEPLOYED 192.168.252.2:5000/hello-ai@sha256:e6b4438a232df56631f7922842a6da48f65814b974bdd504751dcb043d8bd076
+done in 64.1 s
+── The cluster runs the signed digest  [live]  10:36:07
+$ kubectl get pods -l app=hello-ai; cosign verify --key cosign.pub <deployed digest>; kubectl get imagevalidatingpolicies
+POD                         READY   IMAGE
+hello-ai-7849794858-frzfs   true    192.168.252.2:5000/hello-ai@sha256:e6b4438a232df56631f7922842a6da48f65814b974bdd504751dcb043d8bd076
+hello-ai-7849794858-xw9sm   true    192.168.252.2:5000/hello-ai@sha256:e6b4438a232df56631f7922842a6da48f65814b974bdd504751dcb043d8bd076
+deployed digest: sha256:e6b4438a232df56631f7922842a6da48f65814b974bdd504751dcb043d8bd076
+cosign verify: Verified OK with the lab key
+NAME                    AGE   READY
+require-lab-signature   15h   true
+done in 0.6 s
+── An unsigned image is refused  [live]  10:36:11
+$ kubectl run bypass -n bypass-test --image=192.168.252.2:5000/hello-ai@sha256:5440f4eff6b7…
+Error from server: admission webhook "ivpol.validate.kyverno.svc-fail" denied the request: Policy require-lab-signature failed: The image must be signed with the lab key (cosign.pub)
+pods in bypass-test: 0
+done in 0.2 s
+── Call the app  [live]  10:36:14
+$ kubectl port-forward svc/hello-ai 8086:8080; curl localhost:8086/; curl -X POST localhost:8086/ask
+GET  /    -> {"message":"Hello AI!"}
+POST /ask -> {"answer":"You asked: is this image signed?"}
+done in 3.1 s

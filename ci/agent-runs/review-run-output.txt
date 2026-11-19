@@ -1,0 +1,17 @@
+I've fixed the Dockerfile and left the change uncommitted in the working tree. I haven't built or run it: the commands to run Docker in the `chainguard` VM and on your Mac both needed approval this session didn't have. So I don't know yet whether the build passes or the container listens on 8080.
+
+**What I changed in `Dockerfile`:**
+
+1. **Runtime stage uses the minimal image.** It now uses `cgr.dev/chainguard/python:latest@sha256:b969ffa5d847b5acd28bd18b12d5b6631cb69c8289f03b309e19b68608724dc6` instead of `:latest-dev`. I got the digest from `crane digest`. Its config (from `crane config`) shows `User: 65532` and was built at the same time as the pinned `-dev` image (2026-11-15T22:10:17Z), so the build and runtime stages should have the same Python version.
+2. **Removed the `addgroup`/`adduser` step, `USER app` and `--chown=app:app`.** The minimal image already runs as user 65532, which is what `k8s/deployment.yaml` sets. The app files stay owned by root and readable by everyone, which works with `readOnlyRootFilesystem: true`.
+3. **Moved the virtualenv from `/opt/venv` to `/app/venv`.** `RUN` steps in the build stage also run as user 65532, which can't write to `/opt`, so `python -m venv /opt/venv` would likely have been the next failure. I set `WORKDIR /app` first so the user owns that directory. The runtime stage copies the venv to the same path, so the scripts' `#!/app/venv/bin/python` line still points to the right place.
+4. **Port 8080 and the start command.** Both images use `/usr/bin/python` as their entrypoint, so the old `CMD ["uvicorn", ...]` would have run as `python uvicorn ...` and failed. It is now `ENTRYPOINT ["/app/venv/bin/uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8080"]`, and `EXPOSE` is 8080, which matches the deployment's port and probes.
+
+I didn't touch `gate.sh` or `.github/`. Both `FROM` lines still meet the gate's base-image rule (from `cgr.dev/chainguard`, pinned by digest).
+
+To check it, run this on the VM from a copy of the working tree:
+```
+docker build -t hello-ai:test . && docker run --rm -p 8080:8080 hello-ai:test
+curl localhost:8080/    # expect {"message":"Hello AI!"}
+```
+Or run `./gate.sh`. If you approve Docker commands in the VM, I can run this check myself.

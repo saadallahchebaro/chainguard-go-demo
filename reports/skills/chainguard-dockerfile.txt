@@ -1,0 +1,2 @@
+ALLOWED  chainguard-dockerfile  risk 0/100 LOW, SAFE, 0 findings, scan complete: true
+  content sha256 89744efd3e044c81, SkillSpector v2.13.4, exit 0

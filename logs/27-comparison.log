@@ -1,0 +1,22 @@
+
+===== STEP 27-comparison · 2026-11-17T09:16:59Z · chainguard
+
+$ python3 tools/comparison.py && sed -n "/^## 3/,/^## 4/p" reports/final/comparison.md
+# at 09:16:59 in /home/ubuntu/chainguard-technical-challenge
+wrote reports/final/comparison.md: A 709 both, 25 only Grype, 10147 only Trivy, B 160 both, 1 only Grype, 93 only Trivy, C 68 both, 1 only Grype, 89 only Trivy, D 0 both, 0 only Grype, 0 only Trivy
+## 3. Grype against Trivy, ID by ID
+
+|  | A | B | C | D |
+|---|---|---|---|---|
+| **Grype, unique IDs** | **734** | **161** | **69** | **0** |
+| **Trivy, unique IDs** | **10,856** | **253** | **157** | **0** |
+| Found by both | 709 | 160 | 68 | 0 |
+| Only Grype (section 5) | 25 | 1 | 1 | 0 |
+| Only Trivy (section 4) | 10,147 | 93 | 89 | 0 |
+| Found by both, rated differently | 303 | 56 | 12 | 0 |
+| ... of which Grype "Negligible", Trivy "Low" | 176 | 25 | 0 | 0 |
+
+The two agree on D: nothing. Where both report an ID they often rate it differently: Grype keeps Debian's "Negligible", which Trivy, with no such level, reports as "Low"; the rest are ratings taken from different sources.
+
+## 4. Why Trivy reports more
+# exit 0

@@ -1,0 +1,30 @@
+Scan of images A and B, 2026-11-16T10:00:45Z
+
+ubuntu       24.04.5 LTS (Noble Numbat)
+kernel       6.8.0-147-generic (aarch64)
+docker       29.9.3
+containerd   v2.4.2
+buildx       v0.39.0
+go           go1.27.4
+grype        0.121.3
+syft         1.57.1
+trivy        0.76.2
+govulncheck  v1.9.0
+cosign       v3.1.4
+crane        v0.22.1
+kubectl      v1.37.2
+
+== Grype database:
+Path:      /home/ubuntu/.cache/grype/db/6/vulnerability.db
+Schema:    v6.1.10
+Built:     2026-11-16T06:30:54Z
+From:      https://grype.anchore.io/databases/v6/vulnerability-db_v6.1.10_2026-11-15T16:11:12Z_1794810654.tar.zst?checksum=sha256%3Add51add686f29657dd7d71af8dc61d33cbb3e99772e263d2949b7adec4ce4102
+Status:    valid
+
+== Trivy:
+Version: 0.76.2
+Vulnerability DB:
+  Version: 2
+  UpdatedAt: 2026-11-16 07:10:39.763774809 +0000 UTC
+  NextUpdate: 2026-11-17 07:10:39.763774549 +0000 UTC
+  DownloadedAt: 2026-11-16 10:00:33.664215685 +0000 UTC

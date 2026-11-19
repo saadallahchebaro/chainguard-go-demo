@@ -1,0 +1,27 @@
+
+===== STEP 42-govulncheck · 2026-11-18T06:34:22Z · chainguard
+
+$ sha256sum hello-server-a hello-server-b hello-server-c
+# at 06:34:23 in /home/ubuntu/chainguard-technical-challenge
+ec6fa6de2be34bc33430a8a922239c94a7c4a324a11371b5f347b6514bd7ca7f  hello-server-a
+ec6fa6de2be34bc33430a8a922239c94a7c4a324a11371b5f347b6514bd7ca7f  hello-server-b
+ec6fa6de2be34bc33430a8a922239c94a7c4a324a11371b5f347b6514bd7ca7f  hello-server-c
+# exit 0
+
+$ govulncheck -version | grep -E "Scanner|DB updated"
+# at 06:34:23 in /home/ubuntu/chainguard-technical-challenge
+Scanner: govulncheck@v1.9.0
+DB updated: 2026-11-11 02:51:11 +0000 UTC
+# exit 0
+
+$ for b in b newgo d e; do echo "== hello-server-$b, $(go version ./hello-server-$b | cut -d" " -f2):"; govulncheck -mode binary ./hello-server-$b | grep -E "^(Your code is affected|No vulnerabilities)"; done
+# at 06:34:24 in /home/ubuntu/chainguard-technical-challenge
+== hello-server-b, go1.18.10:
+Your code is affected by 62 vulnerabilities from 2 modules and the Go standard library.
+== hello-server-newgo, go1.27.4:
+Your code is affected by 11 vulnerabilities from 1 module.
+== hello-server-d, go1.27.4:
+No vulnerabilities found.
+== hello-server-e, go1.27.4:
+No vulnerabilities found.
+# exit 0

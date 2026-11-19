@@ -1,0 +1,240 @@
+
+===== STEP 07-image-a · 2026-11-16T09:46:53Z · chainguard
+
+$ rm -f go/hello-server && ls -la go && echo && cat -n dockerfiles/Dockerfile.a-single
+# at 09:46:53 in /home/ubuntu/chainguard-technical-challenge
+total 32
+drwxrwxr-x  2 ubuntu ubuntu 4096 Nov 16 13:46 .
+drwxrwxr-x 12 ubuntu ubuntu 4096 Nov 16 13:38 ..
+-rw-rw-r--  1 ubuntu ubuntu   56 Nov 16 12:22 .gitignore
+-rw-rw-r--  1 ubuntu ubuntu  372 Nov 16 12:22 README.md
+-rw-rw-r--  1 ubuntu ubuntu 1050 Nov 16 12:22 go.mod
+-rw-rw-r--  1 ubuntu ubuntu 7924 Nov 16 12:22 go.sum
+-rw-rw-r--  1 ubuntu ubuntu  219 Nov 16 12:22 main.go
+
+     1	# Image A: single-stage. Builds and runs in the same image, golang:1.18 (Debian 11 + Go 1.18).
+     2	# The baseline: what you get with the defaults. It ships everything used to build the app.
+     3	# Build from the repo folder:  docker build -t hello:a -f dockerfiles/Dockerfile.a-single ./go
+     4	FROM golang:1.18
+     5	WORKDIR /app
+     6	
+     7	# Dependencies first, so this slow step stays cached when only the code changes
+     8	COPY go.mod go.sum ./
+     9	RUN go mod download
+    10	
+    11	# The code, then a static binary (no C library needed)
+    12	COPY . .
+    13	RUN CGO_ENABLED=0 go build -o hello-server .
+    14	
+    15	EXPOSE 8080
+    16	# No USER line, so it runs as root
+    17	CMD ["./hello-server"]
+# exit 0
+
+$ docker build --progress=plain -t hello:a -f dockerfiles/Dockerfile.a-single ./go
+# at 09:47:05 in /home/ubuntu/chainguard-technical-challenge
+#0 building with "default" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile.a-single
+#1 transferring dockerfile: 663B done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/golang:1.18
+#2 DONE 0.0s
+
+#3 [internal] load .dockerignore
+#3 transferring context: 2B done
+#3 DONE 0.0s
+
+#4 [internal] load build context
+#4 transferring context: 9.81kB done
+#4 DONE 0.0s
+
+#5 [1/6] FROM docker.io/library/golang:1.18@sha256:50c889275d26f816b5314fc99f55425fa76b18fcaf16af255f5d57f09e1f48da
+#5 resolve docker.io/library/golang:1.18@sha256:50c889275d26f816b5314fc99f55425fa76b18fcaf16af255f5d57f09e1f48da done
+#5 DONE 0.1s
+
+#5 [1/6] FROM docker.io/library/golang:1.18@sha256:50c889275d26f816b5314fc99f55425fa76b18fcaf16af255f5d57f09e1f48da
+#5 extracting sha256:c345c9e441f5f49235768af74b8ab37743652d38958afaa000edd56d7b2f0540
+#5 extracting sha256:c345c9e441f5f49235768af74b8ab37743652d38958afaa000edd56d7b2f0540 0.5s done
+#5 DONE 0.6s
+
+#5 [1/6] FROM docker.io/library/golang:1.18@sha256:50c889275d26f816b5314fc99f55425fa76b18fcaf16af255f5d57f09e1f48da
+#5 extracting sha256:7b716680367d1dac0e54c48f75506323e0bb03628542a0fd6db39efeeee9adf5 0.1s done
+#5 extracting sha256:0855378f8903bde22cfbcee08cd239678716cf01f24a3fca9478ef4121a84d91 0.1s done
+#5 DONE 0.7s
+
+#5 [1/6] FROM docker.io/library/golang:1.18@sha256:50c889275d26f816b5314fc99f55425fa76b18fcaf16af255f5d57f09e1f48da
+#5 extracting sha256:4bfb8dc93d4197860c2bff47f2c2f280c2dd8ed699e7b3241aa325ecee53c7d7
+#5 extracting sha256:4bfb8dc93d4197860c2bff47f2c2f280c2dd8ed699e7b3241aa325ecee53c7d7 0.5s done
+#5 DONE 1.3s
+
+#5 [1/6] FROM docker.io/library/golang:1.18@sha256:50c889275d26f816b5314fc99f55425fa76b18fcaf16af255f5d57f09e1f48da
+#5 extracting sha256:530999854f4629231859226fd635c5088244ca7736053631fe412d6325352e6e
+#5 extracting sha256:530999854f4629231859226fd635c5088244ca7736053631fe412d6325352e6e 0.9s done
+#5 DONE 2.2s
+
+#5 [1/6] FROM docker.io/library/golang:1.18@sha256:50c889275d26f816b5314fc99f55425fa76b18fcaf16af255f5d57f09e1f48da
+#5 extracting sha256:6ad9f0b1b9e29fd8991fed0ab142c35910ee460112cda284f4cf9f20ad2ffef8
+#5 extracting sha256:6ad9f0b1b9e29fd8991fed0ab142c35910ee460112cda284f4cf9f20ad2ffef8 1.4s done
+#5 DONE 3.5s
+
+#5 [1/6] FROM docker.io/library/golang:1.18@sha256:50c889275d26f816b5314fc99f55425fa76b18fcaf16af255f5d57f09e1f48da
+#5 extracting sha256:fc998f6bcdc21e0e8394f3504f109dd36c587a7a86f22e0d1654e42ae5b7bb13 done
+#5 DONE 3.6s
+
+#6 [2/6] WORKDIR /app
+#6 DONE 0.2s
+
+#7 [3/6] COPY go.mod go.sum ./
+#7 DONE 0.0s
+
+#8 [4/6] RUN go mod download
+#8 DONE 26.6s
+
+#9 [5/6] COPY . .
+#9 DONE 0.0s
+
+#10 [6/6] RUN CGO_ENABLED=0 go build -o hello-server .
+#10 DONE 2.4s
+
+#11 exporting to image
+#11 exporting layers
+#11 exporting layers 2.8s done
+#11 exporting manifest sha256:c5d6df5819add3731d038dfcf88c55f9db462078f7076595376d8451d6a9a991
+#11 exporting manifest sha256:c5d6df5819add3731d038dfcf88c55f9db462078f7076595376d8451d6a9a991 done
+#11 exporting config sha256:26f7294ac54c38dc253c30ffd011024c8ac16bbd1d51d13c0fdd442bd012147b done
+#11 exporting attestation manifest sha256:034c4f7b4f58eb4a74ea097c2bb25372ed774313ea8fd9a22198056c64b3d9ac 0.0s done
+#11 exporting manifest list sha256:9457bcf63aa4d900571ba93c20f788a899f4104d43514d0f3f74ad3d284360c7 done
+#11 naming to docker.io/library/hello:a done
+#11 unpacking to docker.io/library/hello:a
+#11 unpacking to docker.io/library/hello:a 0.6s done
+#11 DONE 3.4s
+# exit 0
+
+$ docker image ls --tree hello:a; echo; docker images golang:1.18 hello:a
+# at 09:47:56 in /home/ubuntu/chainguard-technical-challenge
+IMAGE                ID             DISK USAGE   CONTENT SIZE   EXTRA
+hello:a              9457bcf63aa4       1.49GB          374MB        
+└─ linux/arm64       c5d6df5819ad       1.49GB          374MB        
+
+
+docker: 'docker images' requires at most 1 argument
+
+Usage:  docker images [OPTIONS] [REPOSITORY[:TAG]]
+
+Run 'docker images --help' for more information
+# exit 1
+
+$ echo "== hello:a is an index; its entries (read from containerd, namespace moby):"; sudo ctr -n moby content get sha256:9457bcf63aa4d900571ba93c20f788a899f4104d43514d0f3f74ad3d284360c7 | jq -c ".manifests[] | {digest: .digest[0:19], platform: (.platform.os + \"/\" + .platform.architecture), type: .annotations[\"vnd.docker.reference.type\"]}"; echo; echo "== sizes:"; docker images | grep -E "^(IMAGE|golang|hello)"
+# at 09:48:11 in /home/ubuntu/chainguard-technical-challenge
+== hello:a is an index; its entries (read from containerd, namespace moby):
+{"digest":"sha256:c5d6df5819ad","platform":"linux/arm64","type":null}
+{"digest":"sha256:034c4f7b4f58","platform":"unknown/unknown","type":"attestation-manifest"}
+
+== sizes:
+IMAGE                ID             DISK USAGE   CONTENT SIZE   EXTRA
+golang:1.18          50c889275d26       1.22GB          315MB        
+hello-world:latest   cf1b20a0c89a       22.6kB         10.3kB        
+hello:a              9457bcf63aa4       1.49GB          374MB        
+# exit 0
+
+$ docker run -d -p 8080:8080 --name hello-a hello:a && sleep 2 && echo "== curl:" && curl -s localhost:8080 && echo && echo "== which user (image config, then inside the container):" && echo "Config.User=[$(docker image inspect hello:a --format "{{.Config.User}}")]  (empty means root)" && docker exec hello-a id && echo "== is there a shell?" && docker exec hello-a sh -c "echo yes: \$0 runs; ls -l /bin/sh /bin/bash" && echo "== Gin log inside the container:" && docker logs hello-a 2>&1 | tail -4
+# at 09:48:27 in /home/ubuntu/chainguard-technical-challenge
+30367550efadc810d56170bef348fa561d4c768cf2cfa8c508eef9ae8841b168
+== curl:
+Hello World!
+== which user (image config, then inside the container):
+Config.User=[]  (empty means root)
+uid=0(root) gid=0(root) groups=0(root)
+== is there a shell?
+yes: sh runs
+-rwxr-xr-x 1 root root 1282512 Mar 27  2022 /bin/bash
+lrwxrwxrwx 1 root root       4 Jan  9  2023 /bin/sh -> dash
+== Gin log inside the container:
+Please check https://pkg.go.dev/github.com/gin-gonic/gin#readme-don-t-trust-all-proxies for details.
+[GIN-debug] Environment variable PORT is undefined. Using port :8080 by default
+[GIN-debug] Listening and serving HTTP on :8080
+[GIN] 2026/11/16 - 09:48:30 | 200 |      14.208µs |      172.17.0.1 | GET      "/"
+# exit 0
+
+$ echo "== OS:"; docker exec hello-a grep PRETTY_NAME /etc/os-release; echo "== Debian packages installed: $(docker exec hello-a dpkg-query -W | wc -l)"; echo "== build and attacker-useful tools inside:"; docker exec hello-a sh -c "for t in go gcc git make curl wget apt-get perl python3 ssh; do printf \"  %-8s %s\n\" \$t \$(command -v \$t || echo -); done"; echo "== our source and the module sources, shipped in the image:"; docker exec hello-a ls -la /app; docker exec hello-a du -sh /go/pkg/mod /usr/local/go
+# at 09:48:43 in /home/ubuntu/chainguard-technical-challenge
+== OS:
+PRETTY_NAME="Debian GNU/Linux 11 (bullseye)"
+== Debian packages installed: 201
+== build and attacker-useful tools inside:
+  go       /usr/local/go/bin/go
+  gcc      /usr/bin/gcc
+  git      /usr/bin/git
+  make     /usr/bin/make
+  curl     /usr/bin/curl
+  wget     /usr/bin/wget
+  apt-get  /usr/bin/apt-get
+  perl     /usr/bin/perl
+  python3  /usr/bin/python3
+  ssh      /usr/bin/ssh
+== our source and the module sources, shipped in the image:
+total 9568
+drwxr-xr-x 1 root root    4096 Nov 16 09:47 .
+drwxr-xr-x 1 root root    4096 Nov 16 09:48 ..
+-rw-rw-r-- 1 root root      56 Nov 16 08:22 .gitignore
+-rw-rw-r-- 1 root root     372 Nov 16 08:22 README.md
+-rw-rw-r-- 1 root root    1050 Nov 16 08:22 go.mod
+-rw-rw-r-- 1 root root    7924 Nov 16 08:22 go.sum
+-rwxr-xr-x 1 root root 9761868 Nov 16 09:47 hello-server
+-rw-rw-r-- 1 root root     219 Nov 16 08:22 main.go
+139M	/go/pkg/mod
+338M	/usr/local/go
+# exit 0
+
+$ docker history --format "{{.Size}}\t{{.CreatedSince}}\t{{.CreatedBy}}" hello:a | cut -c1-150; echo; echo "layers: $(docker history -q hello:a | wc -l)"
+# at 09:48:59 in /home/ubuntu/chainguard-technical-challenge
+0B	About a minute ago	CMD ["./hello-server"]
+0B	About a minute ago	EXPOSE [8080/tcp]
+62.2MB	About a minute ago	RUN /bin/sh -c CGO_ENABLED=0 go build -o hel…
+20.5kB	About a minute ago	COPY . . # buildkit
+145MB	About a minute ago	RUN /bin/sh -c go mod download # buildkit
+20.5kB	About a minute ago	COPY go.mod go.sum ./ # buildkit
+8.19kB	About a minute ago	WORKDIR /app
+0B	3 years ago	/bin/sh -c #(nop) WORKDIR /go
+16.4kB	3 years ago	/bin/sh -c mkdir -p "$GOPATH/src" "$GOPATH/b…
+0B	3 years ago	/bin/sh -c #(nop)  ENV PATH=/go/bin:/usr/loc…
+0B	3 years ago	/bin/sh -c #(nop)  ENV GOPATH=/go
+354MB	3 years ago	/bin/sh -c set -eux;  arch="$(dpkg --print-a…
+0B	3 years ago	/bin/sh -c #(nop)  ENV GOLANG_VERSION=1.18.10
+0B	3 years ago	/bin/sh -c #(nop)  ENV PATH=/usr/local/go/bi…
+218MB	3 years ago	/bin/sh -c set -eux;  apt-get update;  apt-g…
+166MB	3 years ago	/bin/sh -c apt-get update && apt-get install…
+20.2MB	3 years ago	/bin/sh -c set -ex;  if ! command -v gpg > /…
+12.7MB	3 years ago	/bin/sh -c set -eux;  apt-get update;  apt-g…
+0B	3 years ago	/bin/sh -c #(nop)  CMD ["bash"]
+135MB	3 years ago	/bin/sh -c #(nop) ADD file:9e185c2d9ca8a231a…
+
+layers: 20
+# exit 0
+
+$ docker rm -f hello-a && docker ps -a --format "{{.Names}}" | grep -c hello-a || true
+# at 09:49:09 in /home/ubuntu/chainguard-technical-challenge
+hello-a
+0
+# exit 0
+
+$ git add -A && git status --short && git commit -q -m "step 07: image A built and checked (1.49 GB, root, shell, full build environment)" && git push -q origin main && git log --oneline -1 && git status -sb | head -1
+# at 09:49:58 in /home/ubuntu/chainguard-technical-challenge
+M  JOURNAL.md
+M  REPORT.md
+M  RUNBOOK.md
+A  demo/screenshots/07-image-a-build.png
+A  demo/screenshots/07-image-a-dockerfile.png
+A  demo/screenshots/07-image-a-history.png
+A  demo/screenshots/07-image-a-index-sizes.png
+A  demo/screenshots/07-image-a-inside.png
+A  demo/screenshots/07-image-a-run-checks.png
+A  dockerfiles/Dockerfile.a-single
+M  logs/06-app.log
+A  logs/07-image-a-mac.log
+A  logs/07-image-a.log
+3f48b59 step 07: image A built and checked (1.49 GB, root, shell, full build environment)
+## main...origin/main
+# exit 0

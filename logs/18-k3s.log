@@ -1,0 +1,63 @@
+
+===== STEP 18-k3s · 2026-11-16T14:56:23Z · chainguard
+
+$ echo "== the k3s VM, set up from the Mac (logs/18-k3s-mac.log):"; grep -E "^IPv4|^CPU|^Memory usage|^Launched|Using v1|Verifying binary|Ready +control-plane|server:|192.168.252.2:5000\"|http://192.168.252.2" logs/18-k3s-mac.log | sed "s/^/   /"; echo "== from the build VM, kubectl manages the cluster remotely:"; kubectl version 2>&1 | sed "s/^/   /"; kubectl get nodes -o wide | cut -c1-150 | sed "s/^/   /"
+# at 14:56:23 in /home/ubuntu/chainguard-technical-challenge
+== the k3s VM, set up from the Mac (logs/18-k3s-mac.log):
+   Launched: k3s in zone1 (took 79 s)
+   IPv4:           192.168.252.3
+   CPU(s):         2
+   Memory usage:   407.3MiB out of 2.9GiB
+   $ multipass exec k3s -- curl -s http://192.168.252.2:5000/v2/_catalog   (can the k3s VM reach the registry?)
+     "192.168.252.2:5000":
+         - "http://192.168.252.2:5000"
+       info "Verifying binary download"
+   [INFO]  Using v1.37.2+k3s1 as release
+   [INFO]  Verifying binary download
+   k3s    Ready    control-plane   10s   v1.37.2+k3s1
+       server: https://192.168.252.3:6443
+== from the build VM, kubectl manages the cluster remotely:
+   Client Version: v1.37.2
+   Kustomize Version: v5.8.1
+   Server Version: v1.37.2+k3s1
+   NAME   STATUS   ROLES           AGE   VERSION        INTERNAL-IP     EXTERNAL-IP   OS-IMAGE             KERNEL-VERSION              CONTAINER-RUNTIME
+   k3s    Ready    control-plane   31s   v1.37.2+k3s1   192.168.252.3   <none>        Ubuntu 24.04.5 LTS   6.8.0-147-generic (arm64)   containerd://2.3.7
+# exit 0
+
+$ echo "== what k3s runs out of the box:"; kubectl get pods -A -o wide | awk "{print \$1, \$2, \$3, \$4, \$5}" | column -t | sed "s/^/   /"; echo "== the namespaces, and their Pod Security labels (none yet):"; kubectl get ns -L pod-security.kubernetes.io/enforce | sed "s/^/   /"; echo "== the cluster already pulled image D from the build VM registry over plain HTTP (crictl, logs/18-k3s-mac.log):"; grep -E "Image is up to date|192.168.252.2:5000/hello +<none>" logs/18-k3s-mac.log | sed "s/^/   /"
+# at 14:56:34 in /home/ubuntu/chainguard-technical-challenge
+== what k3s runs out of the box:
+   NAMESPACE    NAME                                     READY  STATUS     RESTARTS
+   kube-system  coredns-577d995dff-qb6g5                 1/1    Running    0
+   kube-system  helm-install-gateway-api-crd-h7gmn       0/1    Completed  0
+   kube-system  helm-install-traefik-crd-7spc9           0/1    Completed  0
+   kube-system  helm-install-traefik-mm7cl               0/1    Completed  1
+   kube-system  local-path-provisioner-56c6584955-s28fh  1/1    Running    0
+   kube-system  metrics-server-778c4649b4-5247b          1/1    Running    0
+   kube-system  svclb-traefik-1bd7a4f2-d2nds             2/2    Running    0
+   kube-system  traefik-68df944ff7-k24h7                 1/1    Running    0
+== the namespaces, and their Pod Security labels (none yet):
+   NAME              STATUS   AGE   ENFORCE
+   default           Active   44s   
+   kube-node-lease   Active   44s   
+   kube-public       Active   44s   
+   kube-system       Active   44s   
+== the cluster already pulled image D from the build VM registry over plain HTTP (crictl, logs/18-k3s-mac.log):
+   Image is up to date for sha256:67d91c78701af6490115f4e5f178428c0bb711ef4ee486983f9e855f0cc5812f
+   192.168.252.2:5000/hello                     <none>                  67d91c78701af       11MB
+# exit 0
+
+$ git add -A && git status --short && git commit -q -m "step 18: k3s v1.37.2 on its own VM, registry declared as plain HTTP, kubeconfig on the build VM, D pulled by digest" && git push -q origin main && git log --oneline -1 && git status -sb | head -1
+# at 14:57:26 in /home/ubuntu/chainguard-technical-challenge
+M  JOURNAL.md
+M  README.md
+M  REPORT.md
+M  RUNBOOK.md
+A  demo/screenshots/18-k3s-cluster.png
+A  demo/screenshots/18-k3s-pods-and-pull.png
+M  logs/17-sign.log
+A  logs/18-k3s-mac.log
+A  logs/18-k3s.log
+e6de544 step 18: k3s v1.37.2 on its own VM, registry declared as plain HTTP, kubeconfig on the build VM, D pulled by digest
+## main...origin/main
+# exit 0

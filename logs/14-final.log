@@ -1,0 +1,195 @@
+
+===== STEP 14-final · 2026-11-16T13:45:32Z · chainguard
+
+$ echo "== before: Grype DB built $(grype db status -o json | jq -r .built), Trivy DB updated $(trivy version -f json | jq -r .VulnerabilityDB.UpdatedAt)"; grype db update; trivy image --download-db-only -q; echo "== after:  Grype DB built $(grype db status -o json | jq -r .built), Trivy DB updated $(trivy version -f json | jq -r .VulnerabilityDB.UpdatedAt)"
+# at 13:45:32 in /home/ubuntu/chainguard-technical-challenge
+== before: Grype DB built 2026-11-16T06:30:54Z, Trivy DB updated 2026-11-16T07:10:39.763774809Z
+No vulnerability database update available
+== after:  Grype DB built 2026-11-16T06:30:54Z, Trivy DB updated 2026-11-16T07:10:39.763774809Z
+# exit 0
+
+$ mkdir -p reports/final && curl -sSfL https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json -o reports/final/cisa-kev.json && jq -r "\"CISA KEV catalog \" + .catalogVersion + \" (released \" + .dateReleased + \"): \" + (.count | tostring) + \" entries\"" reports/final/cisa-kev.json; { echo "Same-day rescan of images A to D, $(date -u +%FT%TZ)"; echo; bash tools/versions.sh | grep -E "grype|trivy|syft|govulncheck"; grype db status; trivy version; govulncheck -version; jq -r "\"CISA KEV catalog \" + .catalogVersion" reports/final/cisa-kev.json; } > reports/final/scanner-versions.txt; jq -n --arg on "$(date -u +%FT%TZ)" --argjson gv "$(grype version -o json)" --argjson gd "$(grype db status -o json)" --argjson tv "$(trivy version -f json)" --arg gov "$(govulncheck -version | grep -oP "(?<=Scanner: ).*")" --argjson kev "$(jq "{catalogVersion, dateReleased, count}" reports/final/cisa-kev.json)" "{scanned_on: \$on, grype: {version: \$gv.version, db_schema: \$gd.schemaVersion, db_built: \$gd.built}, trivy: {version: \$tv.Version, db_updated: \$tv.VulnerabilityDB.UpdatedAt}, govulncheck: \$gov, kev_catalog: \$kev}" > reports/final/scanners.json; cat reports/final/scanners.json
+# at 13:45:50 in /home/ubuntu/chainguard-technical-challenge
+CISA KEV catalog 2026.11.13 (released 2026-11-13T20:24:18.3008Z): 1781 entries
+{
+  "scanned_on": "2026-11-16T13:45:55Z",
+  "grype": {
+    "version": "0.121.3",
+    "db_schema": "v6.1.10",
+    "db_built": "2026-11-16T06:30:54Z"
+  },
+  "trivy": {
+    "version": "0.76.2",
+    "db_updated": "2026-11-16T07:10:39.763774809Z"
+  },
+  "govulncheck": "govulncheck@v1.9.0",
+  "kev_catalog": {
+    "catalogVersion": "2026.11.13",
+    "dateReleased": "2026-11-13T20:24:18.3008Z",
+    "count": 1781
+  }
+}
+# exit 0
+
+$ export GRYPE_DB_AUTO_UPDATE=false; for t in a b c d; do echo "== hello:$t  $(date -u +%T)"; grype hello:$t --by-cve -q -o json=reports/final/$t-grype.json -o table=reports/final/$t-grype.txt -o sarif=reports/final/$t-grype.sarif; trivy image -q --skip-db-update --format json --output reports/final/$t-trivy.json hello:$t; trivy convert -q --scanners vuln --format table --output reports/final/$t-trivy.txt reports/final/$t-trivy.json; trivy convert -q --format sarif --output reports/final/$t-trivy.sarif reports/final/$t-trivy.json; done; echo "== govulncheck  $(date -u +%T)"; sha256sum hello-server-b hello-server-d; govulncheck -mode binary ./hello-server-b > reports/final/govulncheck-binary-abc.txt 2>&1; govulncheck -mode binary ./hello-server-d > reports/final/govulncheck-binary-d.txt 2>&1; echo "== done $(date -u +%T)"; ls -l reports/final
+# at 13:46:05 in /home/ubuntu/chainguard-technical-challenge
+== hello:a  13:46:05
+== hello:b  13:46:25
+== hello:c  13:46:30
+== hello:d  13:46:33
+== govulncheck  13:46:37
+ec6fa6de2be34bc33430a8a922239c94a7c4a324a11371b5f347b6514bd7ca7f  hello-server-b
+00aee67926e69ea5dbf24a7edeca63950b0cbd52956d9a37f44d59048f7ea001  hello-server-d
+== done 13:46:42
+total 225300
+-rw-r--r-- 1 ubuntu ubuntu 53955871 Nov 16 17:46 a-grype.json
+-rw-r--r-- 1 ubuntu ubuntu  8024521 Nov 16 17:46 a-grype.sarif
+-rw-r--r-- 1 ubuntu ubuntu   347820 Nov 16 17:46 a-grype.txt
+-rw-rw-r-- 1 ubuntu ubuntu 80210350 Nov 16 17:46 a-trivy.json
+-rw-rw-r-- 1 ubuntu ubuntu 63711431 Nov 16 17:46 a-trivy.sarif
+-rw-rw-r-- 1 ubuntu ubuntu 14457882 Nov 16 17:46 a-trivy.txt
+-rw-r--r-- 1 ubuntu ubuntu  1290432 Nov 16 17:46 b-grype.json
+-rw-r--r-- 1 ubuntu ubuntu  1017783 Nov 16 17:46 b-grype.sarif
+-rw-r--r-- 1 ubuntu ubuntu    46704 Nov 16 17:46 b-grype.txt
+-rw-rw-r-- 1 ubuntu ubuntu  1909439 Nov 16 17:46 b-trivy.json
+-rw-rw-r-- 1 ubuntu ubuntu   995178 Nov 16 17:46 b-trivy.sarif
+-rw-rw-r-- 1 ubuntu ubuntu   423437 Nov 16 17:46 b-trivy.txt
+-rw-r--r-- 1 ubuntu ubuntu   352743 Nov 16 17:46 c-grype.json
+-rw-r--r-- 1 ubuntu ubuntu   218839 Nov 16 17:46 c-grype.sarif
+-rw-r--r-- 1 ubuntu ubuntu    12870 Nov 16 17:46 c-grype.txt
+-rw-rw-r-- 1 ubuntu ubuntu   948281 Nov 16 17:46 c-trivy.json
+-rw-rw-r-- 1 ubuntu ubuntu   543339 Nov 16 17:46 c-trivy.sarif
+-rw-rw-r-- 1 ubuntu ubuntu   190507 Nov 16 17:46 c-trivy.txt
+-rw-rw-r-- 1 ubuntu ubuntu  1854379 Nov 16 17:45 cisa-kev.json
+-rw-r--r-- 1 ubuntu ubuntu    10438 Nov 16 17:46 d-grype.json
+-rw-r--r-- 1 ubuntu ubuntu      357 Nov 16 17:46 d-grype.sarif
+-rw-r--r-- 1 ubuntu ubuntu       25 Nov 16 17:46 d-grype.txt
+-rw-rw-r-- 1 ubuntu ubuntu    83597 Nov 16 17:46 d-trivy.json
+-rw-rw-r-- 1 ubuntu ubuntu      820 Nov 16 17:46 d-trivy.sarif
+-rw-rw-r-- 1 ubuntu ubuntu     1006 Nov 16 17:46 d-trivy.txt
+-rw-rw-r-- 1 ubuntu ubuntu    25674 Nov 16 17:46 govulncheck-binary-abc.txt
+-rw-rw-r-- 1 ubuntu ubuntu       26 Nov 16 17:46 govulncheck-binary-d.txt
+-rw-rw-r-- 1 ubuntu ubuntu      807 Nov 16 17:45 scanner-versions.txt
+-rw-rw-r-- 1 ubuntu ubuntu      414 Nov 16 17:45 scanners.json
+# exit 0
+
+$ for f in a-grype.json a-trivy.json a-trivy.sarif; do gzip -9 -k -f reports/final/$f; done; ls -l reports/final/*.gz; git check-ignore reports/final/a-grype.json reports/final/a-trivy.json reports/final/a-trivy.sarif; echo; bash tools/results.sh
+# at 13:46:50 in /home/ubuntu/chainguard-technical-challenge
+-rw-r--r-- 1 ubuntu ubuntu  6368868 Nov 16 17:46 reports/final/a-grype.json.gz
+-rw-rw-r-- 1 ubuntu ubuntu 10940365 Nov 16 17:46 reports/final/a-trivy.json.gz
+-rw-rw-r-- 1 ubuntu ubuntu  5785224 Nov 16 17:46 reports/final/a-trivy.sarif.gz
+reports/final/a-grype.json
+reports/final/a-trivy.json
+reports/final/a-trivy.sarif
+
+Scanned 2026-11-16T13:45:55Z: Grype 0.121.3 (database built 2026-11-16T06:30:54Z), Trivy 0.76.2 (database updated 2026-11-16T07:10:39.763774809Z), CISA KEV catalog 2026.11.13. Unique CVE IDs, each at its highest severity (Grype).
+
+| Image | Build stage | Runtime base | Code | Size on disk (compressed) | OS packages | Go modules in the binary | Critical | High | Medium | Low | Negligible | Unknown | Unique CVEs: Grype (Trivy) | On KEV | govulncheck | Runs as | Shell | Hello World! |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| A | `golang:1.18` | (same image: single stage) | original | 1.49GB (374MB) | 201 debian | 15 (Go v1.18.10) | 46 | 225 | 230 | 38 | 194 | 1 | **734** (10856) | 3 | 62 | root (0:0) | yes | yes |
+| B | `golang:1.18` | `debian:trixie-slim` | original | 155MB (35.4MB) | 78 debian | 15 (Go v1.18.10) | 5 | 55 | 59 | 9 | 26 | 7 | **161** (253) | 1 | 62 | 65532:0 | yes | yes |
+| C | `golang:1.18` | `cgr.dev/chainguard/static` | original | 19MB (5.62MB) | 3 wolfi | 15 (Go v1.18.10) | 5 | 36 | 26 | 1 | 0 | 1 | **69** (157) | 1 | 62 | 65532:65532 | no | yes |
+| D | `cgr.dev/chainguard/go` | `cgr.dev/chainguard/static` | patched | 34.9MB (11MB) | 3 wolfi | 19 (Go v1.27.4) | 0 | 0 | 0 | 0 | 0 | 0 | **0** (0) | 0 | 0 | 65532:65532 | no | yes |
+
+| Grype, unique IDs by layer | A | B | C | D |
+|---|---|---|---|---|
+| 1. OS packages | 603 | 92 | 0 | 0 |
+| 2. Build tools (the Go toolchain, image A) | 118 | 0 | 0 | 0 |
+| 3. Go standard library | 87 | 60 | 60 | 0 |
+| 4. Go modules | 17 | 17 | 17 | 0 |
+| **Total (unique IDs)** | **734** | **161** | **69** | **0** |
+# exit 0
+
+$ bash tools/results.sh
+# at 13:47:17 in /home/ubuntu/chainguard-technical-challenge
+Scanned 2026-11-16T13:45:55Z: Grype 0.121.3 (database built 2026-11-16T06:30:54Z), Trivy 0.76.2 (database updated 2026-11-16T07:10:39.763774809Z), CISA KEV catalog 2026.11.13. Unique CVE IDs, each at its highest severity (Grype).
+
+| Image | Build stage | Runtime base | Code | Size on disk (compressed) | OS packages | Go modules in the binary | Critical | High | Medium | Low | Negligible | Unknown | Unique CVEs: Grype (Trivy) | On KEV | govulncheck | Runs as | Shell | Hello World! |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| A | `golang:1.18` | (same image: single stage) | original | 1.49GB (374MB) | 201 debian | 15 (Go v1.18.10) | 46 | 225 | 230 | 38 | 194 | 1 | **734** (10856) | 3 | 62 | root (0:0) | yes | yes |
+| B | `golang:1.18` | `debian:trixie-slim` | original | 155MB (35.4MB) | 78 debian | 15 (Go v1.18.10) | 5 | 55 | 59 | 9 | 26 | 7 | **161** (253) | 1 | 62 | 65532:0 | yes | yes |
+| C | `golang:1.18` | `cgr.dev/chainguard/static` | original | 19MB (5.62MB) | 3 wolfi | 15 (Go v1.18.10) | 5 | 36 | 26 | 1 | 0 | 1 | **69** (157) | 1 | 62 | 65532:65532 | no | yes |
+| D | `cgr.dev/chainguard/go` | `cgr.dev/chainguard/static` | patched | 34.9MB (11MB) | 3 wolfi | 19 (Go v1.27.4) | 0 | 0 | 0 | 0 | 0 | 0 | **0** (0) | 0 | 0 | 65532:65532 | no | yes |
+
+| Grype, unique IDs by layer | A | B | C | D |
+|---|---|---|---|---|
+| 1. OS packages | 603 | 92 | 0 | 0 |
+| 2. Build tools (the Go toolchain, image A) | 118 | 0 | 0 | 0 |
+| 3. Go standard library (every Go program in the image) | 87 | 60 | 60 | 0 |
+| 4. Go modules | 17 | 17 | 17 | 0 |
+| **Total (unique IDs)** | **734** | **161** | **69** | **0** |
+# exit 0
+
+$ jq -r ".scanners | \"Same-day rescan \" + .scanned_on + \"  |  Grype \" + .grype.version + \", DB \" + .grype.db_built + \"  |  Trivy \" + .trivy.version + \", DB \" + .trivy.db_updated[0:19] + \"Z  |  KEV \" + .kev_catalog.catalogVersion" results.json; echo; jq -r "[\"IMAGE\",\"BUILD STAGE\",\"RUNTIME BASE\",\"CODE\",\"DISK\",\"COMPRESSED\",\"OS PKGS\",\"GO MODS\",\"CRIT\",\"HIGH\",\"MED\",\"LOW\",\"GRYPE\",\"TRIVY\",\"KEV\",\"GOVULNCHECK\",\"RUNS AS\",\"SHELL\",\"HELLO\"], (.images | to_entries[] | .value as \$v | [(.key | ascii_upcase), \$v.build_stage, (\$v.runtime_base | sub(\"\\\\(same image: single stage\\\\)\"; \"(same)\")), \$v.code, \$v.size.disk, \$v.size.compressed, \"\(\$v.packages.os) \(\$v.packages.os_type)\", \"\(\$v.packages.app_go_modules)\", \$v.grype.critical, \$v.grype.high, \$v.grype.medium, \$v.grype.low, \$v.grype.unique, \$v.trivy.unique, \$v.grype.kev, \$v.govulncheck_binary, \$v.user.runs_as, (if \$v.shell then \"yes\" else \"no\" end), (if \$v.hello_world then \"yes\" else \"no\" end)] | map(tostring)) | @tsv" results.json | column -t -s "$(printf "\t")"; echo; echo "GRYPE/TRIVY: unique CVE IDs. KEV: on CISA KEV. GOVULNCHECK: known vulnerabilities in the shipped binary. GO MODS: modules compiled into the app binary."
+# at 13:47:48 in /home/ubuntu/chainguard-technical-challenge
+Same-day rescan 2026-11-16T13:45:55Z  |  Grype 0.121.3, DB 2026-11-16T06:30:54Z  |  Trivy 0.76.2, DB 2026-11-16T07:10:39Z  |  KEV 2026.11.13
+
+IMAGE  BUILD STAGE            RUNTIME BASE               CODE      DISK    COMPRESSED  OS PKGS     GO MODS  CRIT  HIGH  MED  LOW  GRYPE  TRIVY  KEV  GOVULNCHECK  RUNS AS      SHELL  HELLO
+A      golang:1.18            (same)                     original  1.49GB  374MB       201 debian  15       46    225   230  38   734    10856  3    62           0:0          yes    yes
+B      golang:1.18            debian:trixie-slim         original  155MB   35.4MB      78 debian   15       5     55    59   9    161    253    1    62           65532:0      yes    yes
+C      golang:1.18            cgr.dev/chainguard/static  original  19MB    5.62MB      3 wolfi     15       5     36    26   1    69     157    1    62           65532:65532  no     yes
+D      cgr.dev/chainguard/go  cgr.dev/chainguard/static  patched   34.9MB  11MB        3 wolfi     19       0     0     0    0    0      0      0    0            65532:65532  no     yes
+
+GRYPE/TRIVY: unique CVE IDs. KEV: on CISA KEV. GOVULNCHECK: known vulnerabilities in the shipped binary. GO MODS: modules compiled into the app binary.
+# exit 0
+
+$ echo "== image D config user: $(docker image inspect hello:d --format "{{.Config.User}}")"; echo "== a shell as the entrypoint:"; docker run --rm --entrypoint sh hello:d -c "echo yes"; echo "exit code: $?"; cid=$(docker create hello:d); docker export $cid | tar -t | grep -v "/$" > /tmp/d-files.txt; docker rm $cid >/dev/null; echo "== every file in image D: $(wc -l < /tmp/d-files.txt), of them time-zone data: $(grep -c "^usr/share/zoneinfo" /tmp/d-files.txt). The rest:"; grep -v "^usr/share/zoneinfo" /tmp/d-files.txt | column -c 220; echo "== any shell, busybox or package manager?"; grep -E "(^|/)(sh|bash|ash|busybox|apk|dpkg|apt)$" /tmp/d-files.txt || echo "none: no sh, bash, ash, busybox, apk, dpkg or apt anywhere in the image"
+# at 13:48:05 in /home/ubuntu/chainguard-technical-challenge
+== image D config user: 65532
+== a shell as the entrypoint:
+docker: Error response from daemon: failed to create task for container: failed to create shim task: OCI runtime create failed: runc create failed: unable to start container process: error during container init: exec: "sh": executable file not found in $PATH
+
+Run 'docker run --help' for more information
+exit code: 127
+== every file in image D: 1254, of them time-zone data: 1201. The rest:
+.dockerenv												etc/secfixes.d/wolfi
+bin													etc/services
+dev/console												etc/shadow
+dev/null												etc/shells
+dev/random												etc/ssl/cert.pem
+dev/urandom												etc/ssl/certs/.ca-certificates.crt.sha256
+dev/zero												etc/ssl/certs/ca-bundle.crt
+etc/apk/arch												etc/ssl/certs/ca-certificates.crt
+etc/apk/keys/chainguard-717fef45988854d7bfe4378796221d1a777fd1cc2f2ff515a84f4668c987c65c.rsa.pub	lib
+etc/apk/keys/chainguard-7fb528a64a862d44bbea6069093f1fec29fa864ba7e9754828eeceed3f487239.rsa.pub	lib64
+etc/apk/keys/chainguard-a758e63f677c21398431017ba63a5f1676378db460c8ee05bacf92d9227b1ba4.rsa.pub	sbin
+etc/apk/repositories											usr/lib/apk/db/installed
+etc/apk/world												usr/lib/apk/db/lock
+etc/apko.json												usr/lib/apk/db/scripts.tar
+etc/group												usr/lib/apk/db/triggers
+etc/host.conf												usr/lib64
+etc/hostname												usr/local/bin/hello-server
+etc/hosts												usr/local/lib64
+etc/mtab												usr/sbin
+etc/nsswitch.conf											usr/tmp
+etc/os-release												var/lib/db/sbom/ca-certificates-bundle-20261020-r0.spdx.json
+etc/passwd												var/lib/db/sbom/tzdata-2026f-r0.spdx.json
+etc/pki/tls/certs/ca-bundle.crt										var/lib/db/sbom/wolfi-baselayout-20230201-r31.spdx.json
+etc/profile												var/lock
+etc/profile.d/locale.sh											var/run
+etc/protocols												var/spool/mail
+etc/resolv.conf
+== any shell, busybox or package manager?
+none: no sh, bash, ash, busybox, apk, dpkg or apt anywhere in the image
+# exit 0
+
+$ git mv README.md CHALLENGE.md && git status --short CHALLENGE.md README.md && head -1 CHALLENGE.md
+# at 13:49:03 in /home/ubuntu/chainguard-technical-challenge
+R  README.md -> CHALLENGE.md
+# Chainguard Solutions Engineer Technical Challenge
+# exit 0
+
+$ git add -A && git commit -q -m "step 14: same-day rescan of A to D, results.json and tables generated by tools/results.sh, README front page, report sections 1, 7 and 8" && git push -q origin main && git log --oneline -1 && git show --stat --format= HEAD | tail -1 && git status -sb | head -1
+# at 13:52:21 in /home/ubuntu/chainguard-technical-challenge
+314bb36 step 14: same-day rescan of A to D, results.json and tables generated by tools/results.sh, README front page, report sections 1, 7 and 8
+ 43 files changed, 331083 insertions(+), 132 deletions(-)
+## main...origin/main
+# exit 0
+
+$ git add -A && git commit -q -m "checkpoint 3: core lab complete; journal records the guide corrections for steps 13 and 14" && git push -q origin main && git log --oneline -3 && git status -sb | head -1
+# at 13:55:06 in /home/ubuntu/chainguard-technical-challenge
+dbabe29 checkpoint 3: core lab complete; journal records the guide corrections for steps 13 and 14
+314bb36 step 14: same-day rescan of A to D, results.json and tables generated by tools/results.sh, README front page, report sections 1, 7 and 8
+cac3592 step 13: image D, patched app built with chainguard go; Grype, Trivy and govulncheck all 0
+## main...origin/main
+# exit 0

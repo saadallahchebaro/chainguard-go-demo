@@ -1,0 +1,267 @@
+
+===== STEP 11-image-c · 2026-11-16T10:33:24Z · chainguard
+
+# NOTE: SD=sha256:fc42af33e643f20d08baf03cddcc1c02ba57052dfb02edb0d79f3fc47bcea8d9
+
+$ echo "cgr.dev/chainguard/static:latest = $SD"; crane manifest cgr.dev/chainguard/static@$SD | jq -c ".mediaType, (.manifests[] | {platform: (.platform.os + \"/\" + .platform.architecture), digest: .digest[0:19]})"
+# at 10:33:26 in /home/ubuntu/chainguard-technical-challenge
+cgr.dev/chainguard/static:latest = sha256:fc42af33e643f20d08baf03cddcc1c02ba57052dfb02edb0d79f3fc47bcea8d9
+"application/vnd.oci.image.index.v1+json"
+{"platform":"linux/amd64","digest":"sha256:939754fefdbd"}
+{"platform":"linux/arm64","digest":"sha256:8f9c7533c770"}
+# exit 0
+
+$ cosign verify cgr.dev/chainguard/static@$SD --certificate-oidc-issuer=https://token.actions.githubusercontent.com --certificate-identity=https://github.com/chainguard-images/images/.github/workflows/release.yaml@refs/heads/main 2>&1 >/tmp/cg-verify.json | grep -v "^$"; jq -r ".[0] | \"signed digest: \" + .critical.image[\"docker-manifest-digest\"] + \"\nsigner:        \" + .optional.Subject + \"\nissuer:        \" + .optional.Issuer" /tmp/cg-verify.json
+# at 10:33:27 in /home/ubuntu/chainguard-technical-challenge
+Verification for cgr.dev/chainguard/static@sha256:fc42af33e643f20d08baf03cddcc1c02ba57052dfb02edb0d79f3fc47bcea8d9 --
+The following checks were performed on each of these signatures:
+  - The cosign claims were validated
+  - Existence of the claims in the transparency log was verified offline
+  - The code-signing certificate was verified using trusted certificate authority certificates
+signed digest: sha256:fc42af33e643f20d08baf03cddcc1c02ba57052dfb02edb0d79f3fc47bcea8d9
+signer:        https://github.com/chainguard-images/images/.github/workflows/release.yaml@refs/heads/main
+issuer:        https://token.actions.githubusercontent.com
+# exit 0
+
+$ echo "== Dockerfile B vs C, instructions only (comment lines removed):"; diff <(grep -v "^#" dockerfiles/Dockerfile.b-multi) <(grep -v "^#" dockerfiles/Dockerfile.c-chainguard); echo "diff exit code: $? (1 = files differ)"
+# at 10:33:54 in /home/ubuntu/chainguard-technical-challenge
+== Dockerfile B vs C, instructions only (comment lines removed):
+9c9
+< FROM debian:trixie-slim
+---
+> FROM cgr.dev/chainguard/static:latest@sha256:fc42af33e643f20d08baf03cddcc1c02ba57052dfb02edb0d79f3fc47bcea8d9
+diff exit code: 1 (1 = files differ)
+# exit 0
+
+$ docker build --progress=plain -t hello:c -f dockerfiles/Dockerfile.c-chainguard ./go
+# at 10:34:00 in /home/ubuntu/chainguard-technical-challenge
+#0 building with "default" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile.c-chainguard
+#1 transferring dockerfile: 1.13kB done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/golang:1.18
+#2 DONE 0.0s
+
+#3 [internal] load metadata for cgr.dev/chainguard/static:latest@sha256:fc42af33e643f20d08baf03cddcc1c02ba57052dfb02edb0d79f3fc47bcea8d9
+#3 DONE 3.7s
+
+#4 [internal] load .dockerignore
+#4 transferring context: 2B done
+#4 DONE 0.0s
+
+#5 [build 1/6] FROM docker.io/library/golang:1.18@sha256:50c889275d26f816b5314fc99f55425fa76b18fcaf16af255f5d57f09e1f48da
+#5 resolve docker.io/library/golang:1.18@sha256:50c889275d26f816b5314fc99f55425fa76b18fcaf16af255f5d57f09e1f48da 0.0s done
+#5 DONE 0.0s
+
+#6 [internal] load build context
+#6 transferring context: 139B done
+#6 DONE 0.0s
+
+#7 [build 3/6] COPY go.mod go.sum ./
+#7 CACHED
+
+#8 [build 2/6] WORKDIR /app
+#8 CACHED
+
+#9 [build 4/6] RUN go mod download
+#9 CACHED
+
+#10 [build 5/6] COPY . .
+#10 CACHED
+
+#11 [build 6/6] RUN CGO_ENABLED=0 go build -o hello-server .
+#11 CACHED
+
+#12 [stage-1 1/2] FROM cgr.dev/chainguard/static:latest@sha256:fc42af33e643f20d08baf03cddcc1c02ba57052dfb02edb0d79f3fc47bcea8d9
+#12 resolve cgr.dev/chainguard/static:latest@sha256:fc42af33e643f20d08baf03cddcc1c02ba57052dfb02edb0d79f3fc47bcea8d9 0.0s done
+#12 sha256:d6ec563ed8c18d733251192dafd2402e72c57485a4d422c260aaefcce27a2991 0B / 459.89kB 0.2s
+#12 sha256:d6ec563ed8c18d733251192dafd2402e72c57485a4d422c260aaefcce27a2991 459.89kB / 459.89kB 1.1s done
+#12 extracting sha256:d6ec563ed8c18d733251192dafd2402e72c57485a4d422c260aaefcce27a2991 0.1s done
+#12 DONE 1.2s
+
+#13 [stage-1 2/2] COPY --from=build /app/hello-server /usr/local/bin/hello-server
+#13 DONE 0.0s
+
+#14 exporting to image
+#14 exporting layers
+#14 exporting layers 0.2s done
+#14 exporting manifest sha256:9ae280d493739b0079abc12607bee13378058022703c2cb6750968706bf0fcd8 done
+#14 exporting config sha256:5ab933ad349ded20a7001cbccf9024810ad79c2b593c78d262a3668cc101cdcf done
+#14 exporting attestation manifest sha256:4ff11fb1b9af2b60d52de28efafa334b6f33705cf1c0dbbcc8e5a57929952b00 done
+#14 exporting manifest list sha256:4f75bad2bb90574ba25582652a5336cf4b67d9a56353fc2b9f3cc7dc51a23141 done
+#14 naming to docker.io/library/hello:c done
+#14 unpacking to docker.io/library/hello:c 0.1s done
+#14 DONE 0.3s
+# exit 0
+
+$ docker create --name tmp-a hello:a >/dev/null && docker cp -q tmp-a:/app/hello-server ./hello-server-a && docker rm tmp-a >/dev/null && docker create --name tmp-c hello:c >/dev/null && docker cp -q tmp-c:/usr/local/bin/hello-server ./hello-server-c && docker rm tmp-c >/dev/null && echo "== the app binary in A, B and C:" && sha256sum hello-server-a hello-server-b hello-server-c && echo && docker images | grep -E "^(IMAGE|cgr.dev|hello:)"
+# at 10:34:14 in /home/ubuntu/chainguard-technical-challenge
+== the app binary in A, B and C:
+ec6fa6de2be34bc33430a8a922239c94a7c4a324a11371b5f347b6514bd7ca7f  hello-server-a
+ec6fa6de2be34bc33430a8a922239c94a7c4a324a11371b5f347b6514bd7ca7f  hello-server-b
+ec6fa6de2be34bc33430a8a922239c94a7c4a324a11371b5f347b6514bd7ca7f  hello-server-c
+
+IMAGE                ID             DISK USAGE   CONTENT SIZE   EXTRA
+hello:a              9457bcf63aa4       1.49GB          374MB        
+hello:b              711ca3631aa1        155MB         35.4MB        
+hello:c              4f75bad2bb90         19MB         5.62MB        
+# exit 0
+
+$ docker run -d -p 8082:8080 --name hello-c hello:c >/dev/null && sleep 2 && echo "== curl:" && curl -s localhost:8082 && echo && echo "== user in the image config: [$(docker image inspect hello:c --format "{{.Config.User}}")]"; echo "== id inside the container:"; docker exec hello-c id; echo "exit code $?"; echo "== a shell inside the container:"; docker exec hello-c sh -c "echo shell works"; echo "exit code $?"; echo "== Gin log:"; docker logs hello-c 2>&1 | tail -1
+# at 10:34:25 in /home/ubuntu/chainguard-technical-challenge
+== curl:
+Hello World!
+== user in the image config: [65532]
+== id inside the container:
+OCI runtime exec failed: exec failed: unable to start container process: exec: "id": executable file not found in $PATH
+exit code 127
+== a shell inside the container:
+OCI runtime exec failed: exec failed: unable to start container process: exec: "sh": executable file not found in $PATH
+exit code 127
+== Gin log:
+[GIN] 2026/11/16 - 10:34:27 | 200 |      29.667µs |      172.17.0.1 | GET      "/"
+# exit 0
+
+$ echo "== the process on the VM (uid and gid it really runs as):"; ps -o uid,gid,args -C hello-server; echo "== /etc/passwd and /etc/group inside C:"; docker cp hello-c:/etc/passwd - | tar -xO; docker cp hello-c:/etc/group - | tar -xO | grep nonroot; echo "== every file in image C ($(docker export hello-c | tar -t | grep -v "/$" | wc -l) files, directories excluded), by top-level folder:"; docker export hello-c | tar -t | grep -v "/$" | cut -d/ -f1-2 | sort | uniq -c | sort -rn | head -12
+# at 10:34:40 in /home/ubuntu/chainguard-technical-challenge
+== the process on the VM (uid and gid it really runs as):
+  UID   GID COMMAND
+65532 65532 /usr/local/bin/hello-server
+== /etc/passwd and /etc/group inside C:
+root:x:0:0:root:/root:/bin/ash
+bin:x:1:1:bin:/bin:/sbin/nologin
+daemon:x:2:2:daemon:/sbin:/sbin/nologin
+adm:x:3:4:adm:/var/adm:/sbin/nologin
+lp:x:4:7:lp:/var/spool/lpd:/sbin/nologin
+sync:x:5:0:sync:/sbin:/bin/sync
+shutdown:x:6:0:shutdown:/sbin:/sbin/shutdown
+halt:x:7:0:halt:/sbin:/sbin/halt
+mail:x:8:12:mail:/var/mail:/sbin/nologin
+news:x:9:13:news:/var/lib/news:/sbin/nologin
+uucp:x:10:14:uucp:/var/spool/uucppublic:/sbin/nologin
+operator:x:11:0:operator:/root:/sbin/nologin
+man:x:13:15:man:/usr/man:/sbin/nologin
+postmaster:x:14:12:postmaster:/var/mail:/sbin/nologin
+cron:x:16:16:cron:/var/spool/cron:/sbin/nologin
+ftp:x:21:21::/var/lib/ftp:/sbin/nologin
+sshd:x:22:22:sshd:/dev/null:/sbin/nologin
+nobody:x:65534:65534:nobody:/:/sbin/nologin
+nonroot:x:65532:65532:Account created by apko:/home/nonroot:/bin/sh
+nonroot:x:65532:
+== every file in image C (1254 files, directories excluded), by top-level folder:
+   1201 usr/share
+      6 etc/apk
+      4 usr/lib
+      4 etc/ssl
+      3 var/lib
+      2 usr/local
+      1 var/spool
+      1 var/run
+      1 var/lock
+      1 usr/tmp
+      1 usr/sbin
+      1 usr/lib64
+# exit 0
+
+$ echo "== the process on the VM (uid and gid it really runs as):"; ps -o uid,gid,args -C hello-server; echo "== the nonroot user and group inside C:"; docker cp hello-c:/etc/passwd - | tar -xO | grep nonroot; docker cp hello-c:/etc/group - | tar -xO | grep nonroot; echo "== every file in image C: $(docker export hello-c | tar -t | grep -v "/$" | wc -l) files, by folder:"; docker export hello-c | tar -t | grep -v "/$" | cut -d/ -f1-3 | sort | uniq -c | sort -rn | head -8
+# at 10:34:57 in /home/ubuntu/chainguard-technical-challenge
+== the process on the VM (uid and gid it really runs as):
+  UID   GID COMMAND
+65532 65532 /usr/local/bin/hello-server
+== the nonroot user and group inside C:
+nonroot:x:65532:65532:Account created by apko:/home/nonroot:/bin/sh
+nonroot:x:65532:
+== every file in image C: 1254 files, by folder:
+   1201 usr/share/zoneinfo
+      4 usr/lib/apk
+      3 var/lib/db
+      3 etc/ssl/certs
+      3 etc/apk/keys
+      1 var/spool/mail
+      1 var/run
+      1 var/lock
+# exit 0
+
+$ { echo "Scan of image C, $(date -u +%FT%TZ)"; echo; bash tools/versions.sh | grep -E "grype|trivy|syft"; grype db status | grep -E "Schema|Built"; trivy version | grep -E "UpdatedAt"; } > reports/after/scanner-versions.txt && cat reports/after/scanner-versions.txt
+# at 10:35:08 in /home/ubuntu/chainguard-technical-challenge
+Scan of image C, 2026-11-16T10:35:08Z
+
+grype        0.121.3
+syft         1.57.1
+trivy        0.76.2
+Schema:    v6.1.10
+Built:     2026-11-16T06:30:54Z
+  UpdatedAt: 2026-11-16 07:10:39.763774809 +0000 UTC
+# exit 0
+
+$ grype hello:c --by-cve -o table=reports/after/c-grype.txt -o json=reports/after/c-grype.json -o sarif=reports/after/c-grype.sarif && trivy image --no-progress --format json --output reports/after/c-trivy.json hello:c 2>&1 | grep -E "Detecting|WARN" ; trivy convert --format table --output reports/after/c-trivy.txt reports/after/c-trivy.json && trivy convert --format sarif --output reports/after/c-trivy.sarif reports/after/c-trivy.json && bash tools/count.sh reports/after/c-grype.json reports/after/c-trivy.json
+# at 10:35:13 in /home/ubuntu/chainguard-technical-challenge
+2026-11-16T14:35:16+04:00	INFO	[wolfi] Detecting vulnerabilities...	pkg_num=3
+2026-11-16T14:35:16+04:00	INFO	[gobinary] Detecting vulnerabilities...
+2026-11-16T14:35:16+04:00	WARN	Using severities from other vendors for some vulnerabilities. Read https://trivy.dev/docs/v0.76/guide/scanner/vulnerability#severity-selection for details.
+2026-11-16T14:35:17+04:00	WARN	[report] No enabled scanners found. Summary table will not be displayed.
+== reports/after/c-grype.json
+  findings:    77
+  unique IDs:  69
+  by severity: Critical=5  High=36  Medium=26  Low=1  Unknown=1
+  by layer:    go-module=17  go-stdlib=60
+  fixable:     69
+== reports/after/c-trivy.json
+  findings:    168
+  unique IDs:  157
+  by severity: CRITICAL=4  HIGH=67  MEDIUM=78  LOW=4  UNKNOWN=4
+  by layer:    go-module=64  go-stdlib=104
+  fixable:     157
+# exit 0
+
+$ bash tools/compare.sh hello:a hello:b hello:c; echo; echo "== C OS packages (from Syft, since C has no package manager to ask):"; syft hello:c -q -o json | jq -r ".artifacts[] | select(.type==\"apk\") | \"   \" + .name + \" \" + .version"; echo; echo "== Grype, unique CVE IDs by layer:"; for i in a b; do printf "   %s: " $i; bash tools/count.sh reports/before/$i-grype.json | grep -E "unique IDs|by layer" | tr -s " " | tr "\n" " "; echo; done; printf "   c: "; bash tools/count.sh reports/after/c-grype.json | grep -E "unique IDs|by layer" | tr -s " " | tr "\n" " "; echo
+# at 10:35:31 in /home/ubuntu/chainguard-technical-challenge
+image     disk      compressed  packages  user uid:gid   shell  tools found (of: go gcc git make curl wget apt-get perl python3 ssh)
+hello:a   1.49GB    374MB       201       0:0            yes    go gcc git make curl wget apt-get perl python3 ssh 
+hello:b   155MB     35.4MB      78        65532:0        yes    apt-get perl 
+hello:c   19MB      5.62MB      (SBOM)    cfg:65532      no     (no shell to check from)
+
+== C OS packages (from Syft, since C has no package manager to ask):
+   ca-certificates-bundle 20261020-r0
+   tzdata 2026f-r0
+   wolfi-baselayout 20230201-r31
+
+== Grype, unique CVE IDs by layer:
+   a:  unique IDs: 734  by layer: go-module=17 go-stdlib=87 os-binary=118 os-deb=603 
+   b:  unique IDs: 161  by layer: go-module=17 go-stdlib=60 os-deb=92 
+   c:  unique IDs: 69  by layer: go-module=17 go-stdlib=60 
+# exit 0
+
+$ docker rm -f hello-c
+# at 10:35:49 in /home/ubuntu/chainguard-technical-challenge
+hello-c
+# exit 0
+
+$ git add -A && git status --short && git commit -q -m "step 11: image C on chainguard/static (pinned, signature verified): 19 MB, 0 OS CVEs, no shell, 65532:65532" && git push -q origin main && git log --oneline -1 && git status -sb | head -1
+# at 10:36:41 in /home/ubuntu/chainguard-technical-challenge
+M  JOURNAL.md
+M  REPORT.md
+M  RUNBOOK.md
+A  demo/screenshots/11-image-c-base-verified.png
+A  demo/screenshots/11-image-c-binary-sizes.png
+A  demo/screenshots/11-image-c-build.png
+A  demo/screenshots/11-image-c-compare-abc.png
+A  demo/screenshots/11-image-c-diff-b-c.png
+A  demo/screenshots/11-image-c-inside.png
+A  demo/screenshots/11-image-c-run-checks.png
+A  dockerfiles/Dockerfile.c-chainguard
+M  logs/10-triage.log
+A  logs/11-image-c-mac.log
+A  logs/11-image-c.log
+A  reports/after/c-grype.json
+A  reports/after/c-grype.sarif
+A  reports/after/c-grype.txt
+A  reports/after/c-trivy.json
+A  reports/after/c-trivy.sarif
+A  reports/after/c-trivy.txt
+A  reports/after/scanner-versions.txt
+e202785 step 11: image C on chainguard/static (pinned, signature verified): 19 MB, 0 OS CVEs, no shell, 65532:65532
+## main...origin/main
+# exit 0

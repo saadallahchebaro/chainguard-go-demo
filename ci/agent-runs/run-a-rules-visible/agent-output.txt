@@ -1,0 +1,13 @@
+I wrote the Dockerfile and added httpx to `requirements.txt`. Nothing is tested: I couldn't build the image, run `gate.sh`, or reach PyPI from this session.
+
+**`Dockerfile`** (it had been deleted from your working tree): I restored the same build as the last commit and added one comment line.
+- It builds in two stages, both on Chainguard Python images pinned to the same digests as before. The build stage installs the requirements into a venv and the runtime image runs `uvicorn app.main:app` on port 8080.
+- The runtime image runs as Chainguard's built-in non-root user, which is what the gate's "user" check needs.
+
+**`requirements.txt`**: added `httpcore==1.0.9` (httpx's one dependency that wasn't already pinned) and `httpx==0.28.1`. Its other dependencies are already pinned. httpcore 1.0.9 is compatible with your `h11==0.16.0`.
+
+**I picked these versions from memory, not from PyPI.** Both are from 2024–2025, so they are well past the 7-day cooldown. There may be newer releases that also clear it. If you want the latest eligible versions instead, allow `curl` to pypi.org (or WebFetch) and I'll look them up.
+
+**To check:** run `./gate.sh` on the build VM. It covers the image signatures, the 7-day cooldown, the build, the non-root user and the Grype scan.
+
+I haven't committed anything.

@@ -1,0 +1,1 @@
+../../ci/hello-ai/gate.sh

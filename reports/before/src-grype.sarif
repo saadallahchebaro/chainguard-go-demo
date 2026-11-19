@@ -1,0 +1,3055 @@
+{
+  "version": "2.1.0",
+  "$schema": "https://docs.oasis-open.org/sarif/sarif/v2.1.0/errata01/os/schemas/sarif-schema-2.1.0.json",
+  "runs": [
+    {
+      "tool": {
+        "driver": {
+          "name": "grype",
+          "version": "0.121.3",
+          "informationUri": "https://github.com/anchore/grype",
+          "rules": [
+            {
+              "id": "CVE-2023-44487-golang.org/x/net",
+              "name": "GoModuleMatcherExactDirectMatch",
+              "shortDescription": {
+                "text": "CVE-2023-44487 medium vulnerability for golang.org/x/net package"
+              },
+              "fullDescription": {
+                "text": "HTTP/2 Stream Cancellation Attack"
+              },
+              "helpUri": "https://github.com/advisories/GHSA-qppj-fm5r-hxr3",
+              "help": {
+                "text": "Vulnerability CVE-2023-44487\nSeverity: medium\nPackage: golang.org/x/net\nVersion: v0.0.0-20210226172049-e18ecbb05110\nFix Version: 0.17.0\nType: go-module\nLocation: /go.mod\nData Namespace: github:language:go\nLink: [CVE-2023-44487](https://github.com/advisories/GHSA-qppj-fm5r-hxr3)",
+                "markdown": "**Vulnerability CVE-2023-44487**\n| Severity | Package | Version | Fix Version | Type | Location | Data Namespace | Link |\n| --- | --- | --- | --- | --- | --- | --- | --- |\n| medium  | golang.org/x/net  | v0.0.0-20210226172049-e18ecbb05110  | 0.17.0  | go-module  | /go.mod  | github:language:go  | [CVE-2023-44487](https://github.com/advisories/GHSA-qppj-fm5r-hxr3)  |\n"
+              },
+              "properties": {
+                "purls": [
+                  "pkg:golang/golang.org/x/net@v0.0.0-20210226172049-e18ecbb05110"
+                ],
+                "security-severity": "6.9"
+              }
+            },
+            {
+              "id": "CVE-2023-48795-golang.org/x/crypto",
+              "name": "GoModuleMatcherExactDirectMatch",
+              "shortDescription": {
+                "text": "CVE-2023-48795 medium vulnerability for golang.org/x/crypto package"
+              },
+              "fullDescription": {
+                "text": "Prefix Truncation Attack against ChaCha20-Poly1305 and Encrypt-then-MAC aka Terrapin"
+              },
+              "helpUri": "https://github.com/advisories/GHSA-45x7-px36-x8w8",
+              "help": {
+                "text": "Vulnerability CVE-2023-48795\nSeverity: medium\nPackage: golang.org/x/crypto\nVersion: v0.0.0-20210711020723-a769d52b0f97\nFix Version: 0.0.0-20231218163308-9d2ee975ef9f\nType: go-module\nLocation: /go.mod\nData Namespace: github:language:go\nLink: [CVE-2023-48795](https://github.com/advisories/GHSA-45x7-px36-x8w8)",
+                "markdown": "**Vulnerability CVE-2023-48795**\n| Severity | Package | Version | Fix Version | Type | Location | Data Namespace | Link |\n| --- | --- | --- | --- | --- | --- | --- | --- |\n| medium  | golang.org/x/crypto  | v0.0.0-20210711020723-a769d52b0f97  | 0.0.0-20231218163308-9d2ee975ef9f  | go-module  | /go.mod  | github:language:go  | [CVE-2023-48795](https://github.com/advisories/GHSA-45x7-px36-x8w8)  |\n"
+              },
+              "properties": {
+                "purls": [
+                  "pkg:golang/golang.org/x/crypto@v0.0.0-20210711020723-a769d52b0f97"
+                ],
+                "security-severity": "5.9"
+              }
+            },
+            {
+              "id": "CVE-2023-45288-golang.org/x/net",
+              "name": "GoModuleMatcherExactDirectMatch",
+              "shortDescription": {
+                "text": "CVE-2023-45288 medium vulnerability for golang.org/x/net package"
+              },
+              "fullDescription": {
+                "text": "net/http, x/net/http2: close connections when receiving too many headers"
+              },
+              "helpUri": "https://github.com/advisories/GHSA-4v7x-pqxf-cx7m",
+              "help": {
+                "text": "Vulnerability CVE-2023-45288\nSeverity: medium\nPackage: golang.org/x/net\nVersion: v0.0.0-20210226172049-e18ecbb05110\nFix Version: 0.23.0\nType: go-module\nLocation: /go.mod\nData Namespace: github:language:go\nLink: [CVE-2023-45288](https://github.com/advisories/GHSA-4v7x-pqxf-cx7m)",
+                "markdown": "**Vulnerability CVE-2023-45288**\n| Severity | Package | Version | Fix Version | Type | Location | Data Namespace | Link |\n| --- | --- | --- | --- | --- | --- | --- | --- |\n| medium  | golang.org/x/net  | v0.0.0-20210226172049-e18ecbb05110  | 0.23.0  | go-module  | /go.mod  | github:language:go  | [CVE-2023-45288](https://github.com/advisories/GHSA-4v7x-pqxf-cx7m)  |\n"
+              },
+              "properties": {
+                "purls": [
+                  "pkg:golang/golang.org/x/net@v0.0.0-20210226172049-e18ecbb05110"
+                ],
+                "security-severity": "5.3"
+              }
+            },
+            {
+              "id": "CVE-2026-42508-golang.org/x/crypto",
+              "name": "GoModuleMatcherExactDirectMatch",
+              "shortDescription": {
+                "text": "CVE-2026-42508 critical vulnerability for golang.org/x/crypto package"
+              },
+              "fullDescription": {
+                "text": "golang.org/x/crypto vulnerable to auth bypass via unenforced @revoked status"
+              },
+              "helpUri": "https://github.com/advisories/GHSA-5cgq-3rg8-m6cv",
+              "help": {
+                "text": "Vulnerability CVE-2026-42508\nSeverity: critical\nPackage: golang.org/x/crypto\nVersion: v0.0.0-20210711020723-a769d52b0f97\nFix Version: 0.52.0\nType: go-module\nLocation: /go.mod\nData Namespace: github:language:go\nLink: [CVE-2026-42508](https://github.com/advisories/GHSA-5cgq-3rg8-m6cv)",
+                "markdown": "**Vulnerability CVE-2026-42508**\n| Severity | Package | Version | Fix Version | Type | Location | Data Namespace | Link |\n| --- | --- | --- | --- | --- | --- | --- | --- |\n| critical  | golang.org/x/crypto  | v0.0.0-20210711020723-a769d52b0f97  | 0.52.0  | go-module  | /go.mod  | github:language:go  | [CVE-2026-42508](https://github.com/advisories/GHSA-5cgq-3rg8-m6cv)  |\n"
+              },
+              "properties": {
+                "purls": [
+                  "pkg:golang/golang.org/x/crypto@v0.0.0-20210711020723-a769d52b0f97"
+                ],
+                "security-severity": "9.1"
+              }
+            },
+            {
+              "id": "CVE-2021-33194-golang.org/x/net",
+              "name": "GoModuleMatcherExactDirectMatch",
+              "shortDescription": {
+                "text": "CVE-2021-33194 high vulnerability for golang.org/x/net package"
+              },
+              "fullDescription": {
+                "text": "golang.org/x/net/html Infinite Loop vulnerability"
+              },
+              "helpUri": "https://github.com/advisories/GHSA-83g2-8m93-v3w7",
+              "help": {
+                "text": "Vulnerability CVE-2021-33194\nSeverity: high\nPackage: golang.org/x/net\nVersion: v0.0.0-20210226172049-e18ecbb05110\nFix Version: 0.0.0-20210520170846-37e1c6afe023\nType: go-module\nLocation: /go.mod\nData Namespace: github:language:go\nLink: [CVE-2021-33194](https://github.com/advisories/GHSA-83g2-8m93-v3w7)",
+                "markdown": "**Vulnerability CVE-2021-33194**\n| Severity | Package | Version | Fix Version | Type | Location | Data Namespace | Link |\n| --- | --- | --- | --- | --- | --- | --- | --- |\n| high  | golang.org/x/net  | v0.0.0-20210226172049-e18ecbb05110  | 0.0.0-20210520170846-37e1c6afe023  | go-module  | /go.mod  | github:language:go  | [CVE-2021-33194](https://github.com/advisories/GHSA-83g2-8m93-v3w7)  |\n"
+              },
+              "properties": {
+                "purls": [
+                  "pkg:golang/golang.org/x/net@v0.0.0-20210226172049-e18ecbb05110"
+                ],
+                "security-severity": "7.5"
+              }
+            },
+            {
+              "id": "CVE-2024-45337-golang.org/x/crypto",
+              "name": "GoModuleMatcherExactDirectMatch",
+              "shortDescription": {
+                "text": "CVE-2024-45337 critical vulnerability for golang.org/x/crypto package"
+              },
+              "fullDescription": {
+                "text": "Misuse of ServerConfig.PublicKeyCallback may cause authorization bypass in golang.org/x/crypto"
+              },
+              "helpUri": "https://github.com/advisories/GHSA-v778-237x-gjrc",
+              "help": {
+                "text": "Vulnerability CVE-2024-45337\nSeverity: critical\nPackage: golang.org/x/crypto\nVersion: v0.0.0-20210711020723-a769d52b0f97\nFix Version: 0.31.0\nType: go-module\nLocation: /go.mod\nData Namespace: github:language:go\nLink: [CVE-2024-45337](https://github.com/advisories/GHSA-v778-237x-gjrc)",
+                "markdown": "**Vulnerability CVE-2024-45337**\n| Severity | Package | Version | Fix Version | Type | Location | Data Namespace | Link |\n| --- | --- | --- | --- | --- | --- | --- | --- |\n| critical  | golang.org/x/crypto  | v0.0.0-20210711020723-a769d52b0f97  | 0.31.0  | go-module  | /go.mod  | github:language:go  | [CVE-2024-45337](https://github.com/advisories/GHSA-v778-237x-gjrc)  |\n"
+              },
+              "properties": {
+                "purls": [
+                  "pkg:golang/golang.org/x/crypto@v0.0.0-20210711020723-a769d52b0f97"
+                ],
+                "security-severity": "9.1"
+              }
+            },
+            {
+              "id": "CVE-2022-41723-golang.org/x/net",
+              "name": "GoModuleMatcherExactDirectMatch",
+              "shortDescription": {
+                "text": "CVE-2022-41723 high vulnerability for golang.org/x/net package"
+              },
+              "fullDescription": {
+                "text": "golang.org/x/net vulnerable to Uncontrolled Resource Consumption"
+              },
+              "helpUri": "https://github.com/advisories/GHSA-vvpx-j8f3-3w6h",
+              "help": {
+                "text": "Vulnerability CVE-2022-41723\nSeverity: high\nPackage: golang.org/x/net\nVersion: v0.0.0-20210226172049-e18ecbb05110\nFix Version: 0.7.0\nType: go-module\nLocation: /go.mod\nData Namespace: github:language:go\nLink: [CVE-2022-41723](https://github.com/advisories/GHSA-vvpx-j8f3-3w6h)",
+                "markdown": "**Vulnerability CVE-2022-41723**\n| Severity | Package | Version | Fix Version | Type | Location | Data Namespace | Link |\n| --- | --- | --- | --- | --- | --- | --- | --- |\n| high  | golang.org/x/net  | v0.0.0-20210226172049-e18ecbb05110  | 0.7.0  | go-module  | /go.mod  | github:language:go  | [CVE-2022-41723](https://github.com/advisories/GHSA-vvpx-j8f3-3w6h)  |\n"
+              },
+              "properties": {
+                "purls": [
+                  "pkg:golang/golang.org/x/net@v0.0.0-20210226172049-e18ecbb05110"
+                ],
+                "security-severity": "7.5"
+              }
+            },
+            {
+              "id": "CVE-2022-41717-golang.org/x/net",
+              "name": "GoModuleMatcherExactDirectMatch",
+              "shortDescription": {
+                "text": "CVE-2022-41717 medium vulnerability for golang.org/x/net package"
+              },
+              "fullDescription": {
+                "text": "golang.org/x/net/http2 vulnerable to possible excessive memory growth"
+              },
+              "helpUri": "https://github.com/advisories/GHSA-xrjj-mj9h-534m",
+              "help": {
+                "text": "Vulnerability CVE-2022-41717\nSeverity: medium\nPackage: golang.org/x/net\nVersion: v0.0.0-20210226172049-e18ecbb05110\nFix Version: 0.4.0\nType: go-module\nLocation: /go.mod\nData Namespace: github:language:go\nLink: [CVE-2022-41717](https://github.com/advisories/GHSA-xrjj-mj9h-534m)",
+                "markdown": "**Vulnerability CVE-2022-41717**\n| Severity | Package | Version | Fix Version | Type | Location | Data Namespace | Link |\n| --- | --- | --- | --- | --- | --- | --- | --- |\n| medium  | golang.org/x/net  | v0.0.0-20210226172049-e18ecbb05110  | 0.4.0  | go-module  | /go.mod  | github:language:go  | [CVE-2022-41717](https://github.com/advisories/GHSA-xrjj-mj9h-534m)  |\n"
+              },
+              "properties": {
+                "purls": [
+                  "pkg:golang/golang.org/x/net@v0.0.0-20210226172049-e18ecbb05110"
+                ],
+                "security-severity": "5.3"
+              }
+            },
+            {
+              "id": "CVE-2021-44716-golang.org/x/net",
+              "name": "GoModuleMatcherExactDirectMatch",
+              "shortDescription": {
+                "text": "CVE-2021-44716 high vulnerability for golang.org/x/net package"
+              },
+              "fullDescription": {
+                "text": "An attacker can cause unbounded memory growth in servers accepting HTTP/2 requests."
+              },
+              "helpUri": "https://go.dev/cl/369794",
+              "help": {
+                "text": "Vulnerability CVE-2021-44716\nSeverity: high\nPackage: golang.org/x/net\nVersion: v0.0.0-20210226172049-e18ecbb05110\nFix Version: 0.0.0-20211209124913-491a49abca63\nType: go-module\nLocation: /go.mod\nData Namespace: govulndb:language:go\nLink: [CVE-2021-44716](https://go.dev/cl/369794)",
+                "markdown": "**Vulnerability CVE-2021-44716**\n| Severity | Package | Version | Fix Version | Type | Location | Data Namespace | Link |\n| --- | --- | --- | --- | --- | --- | --- | --- |\n| high  | golang.org/x/net  | v0.0.0-20210226172049-e18ecbb05110  | 0.0.0-20211209124913-491a49abca63  | go-module  | /go.mod  | govulndb:language:go  | [CVE-2021-44716](https://go.dev/cl/369794)  |\n"
+              },
+              "properties": {
+                "purls": [
+                  "pkg:golang/golang.org/x/net@v0.0.0-20210226172049-e18ecbb05110"
+                ],
+                "security-severity": "7.5"
+              }
+            },
+            {
+              "id": "CVE-2022-28948-gopkg.in/yaml.v3",
+              "name": "GoModuleMatcherExactDirectMatch",
+              "shortDescription": {
+                "text": "CVE-2022-28948 high vulnerability for gopkg.in/yaml.v3 package"
+              },
+              "fullDescription": {
+                "text": "gopkg.in/yaml.v3 Denial of Service"
+              },
+              "helpUri": "https://github.com/advisories/GHSA-hp87-p4gw-j4gq",
+              "help": {
+                "text": "Vulnerability CVE-2022-28948\nSeverity: high\nPackage: gopkg.in/yaml.v3\nVersion: v3.0.0-20210107192922-496545a6307b\nFix Version: 3.0.1\nType: go-module\nLocation: /go.mod\nData Namespace: github:language:go\nLink: [CVE-2022-28948](https://github.com/advisories/GHSA-hp87-p4gw-j4gq)",
+                "markdown": "**Vulnerability CVE-2022-28948**\n| Severity | Package | Version | Fix Version | Type | Location | Data Namespace | Link |\n| --- | --- | --- | --- | --- | --- | --- | --- |\n| high  | gopkg.in/yaml.v3  | v3.0.0-20210107192922-496545a6307b  | 3.0.1  | go-module  | /go.mod  | github:language:go  | [CVE-2022-28948](https://github.com/advisories/GHSA-hp87-p4gw-j4gq)  |\n"
+              },
+              "properties": {
+                "purls": [
+                  "pkg:golang/gopkg.in/yaml.v3@v3.0.0-20210107192922-496545a6307b"
+                ],
+                "security-severity": "7.5"
+              }
+            },
+            {
+              "id": "CVE-2022-27191-golang.org/x/crypto",
+              "name": "GoModuleMatcherExactDirectMatch",
+              "shortDescription": {
+                "text": "CVE-2022-27191 high vulnerability for golang.org/x/crypto package"
+              },
+              "fullDescription": {
+                "text": "golang.org/x/crypto/ssh Denial of service via crafted Signer"
+              },
+              "helpUri": "https://github.com/advisories/GHSA-8c26-wmh5-6g9v",
+              "help": {
+                "text": "Vulnerability CVE-2022-27191\nSeverity: high\nPackage: golang.org/x/crypto\nVersion: v0.0.0-20210711020723-a769d52b0f97\nFix Version: 0.0.0-20220314234659-1baeb1ce4c0b\nType: go-module\nLocation: /go.mod\nData Namespace: github:language:go\nLink: [CVE-2022-27191](https://github.com/advisories/GHSA-8c26-wmh5-6g9v)",
+                "markdown": "**Vulnerability CVE-2022-27191**\n| Severity | Package | Version | Fix Version | Type | Location | Data Namespace | Link |\n| --- | --- | --- | --- | --- | --- | --- | --- |\n| high  | golang.org/x/crypto  | v0.0.0-20210711020723-a769d52b0f97  | 0.0.0-20220314234659-1baeb1ce4c0b  | go-module  | /go.mod  | github:language:go  | [CVE-2022-27191](https://github.com/advisories/GHSA-8c26-wmh5-6g9v)  |\n"
+              },
+              "properties": {
+                "purls": [
+                  "pkg:golang/golang.org/x/crypto@v0.0.0-20210711020723-a769d52b0f97"
+                ],
+                "security-severity": "7.5"
+              }
+            },
+            {
+              "id": "CVE-2023-39325-golang.org/x/net",
+              "name": "GoModuleMatcherExactDirectMatch",
+              "shortDescription": {
+                "text": "CVE-2023-39325 high vulnerability for golang.org/x/net package"
+              },
+              "fullDescription": {
+                "text": "HTTP/2 rapid reset can cause excessive work in net/http"
+              },
+              "helpUri": "https://github.com/advisories/GHSA-4374-p667-p6c8",
+              "help": {
+                "text": "Vulnerability CVE-2023-39325\nSeverity: high\nPackage: golang.org/x/net\nVersion: v0.0.0-20210226172049-e18ecbb05110\nFix Version: 0.17.0\nType: go-module\nLocation: /go.mod\nData Namespace: github:language:go\nLink: [CVE-2023-39325](https://github.com/advisories/GHSA-4374-p667-p6c8)",
+                "markdown": "**Vulnerability CVE-2023-39325**\n| Severity | Package | Version | Fix Version | Type | Location | Data Namespace | Link |\n| --- | --- | --- | --- | --- | --- | --- | --- |\n| high  | golang.org/x/net  | v0.0.0-20210226172049-e18ecbb05110  | 0.17.0  | go-module  | /go.mod  | github:language:go  | [CVE-2023-39325](https://github.com/advisories/GHSA-4374-p667-p6c8)  |\n"
+              },
+              "properties": {
+                "purls": [
+                  "pkg:golang/golang.org/x/net@v0.0.0-20210226172049-e18ecbb05110"
+                ],
+                "security-severity": "7.5"
+              }
+            },
+            {
+              "id": "CVE-2022-27664-golang.org/x/net",
+              "name": "GoModuleMatcherExactDirectMatch",
+              "shortDescription": {
+                "text": "CVE-2022-27664 high vulnerability for golang.org/x/net package"
+              },
+              "fullDescription": {
+                "text": "golang.org/x/net/http2 Denial of Service vulnerability"
+              },
+              "helpUri": "https://github.com/advisories/GHSA-69cg-p879-7622",
+              "help": {
+                "text": "Vulnerability CVE-2022-27664\nSeverity: high\nPackage: golang.org/x/net\nVersion: v0.0.0-20210226172049-e18ecbb05110\nFix Version: 0.0.0-20220906165146-f3363e06e74c\nType: go-module\nLocation: /go.mod\nData Namespace: github:language:go\nLink: [CVE-2022-27664](https://github.com/advisories/GHSA-69cg-p879-7622)",
+                "markdown": "**Vulnerability CVE-2022-27664**\n| Severity | Package | Version | Fix Version | Type | Location | Data Namespace | Link |\n| --- | --- | --- | --- | --- | --- | --- | --- |\n| high  | golang.org/x/net  | v0.0.0-20210226172049-e18ecbb05110  | 0.0.0-20220906165146-f3363e06e74c  | go-module  | /go.mod  | github:language:go  | [CVE-2022-27664](https://github.com/advisories/GHSA-69cg-p879-7622)  |\n"
+              },
+              "properties": {
+                "purls": [
+                  "pkg:golang/golang.org/x/net@v0.0.0-20210226172049-e18ecbb05110"
+                ],
+                "security-severity": "7.5"
+              }
+            },
+            {
+              "id": "CVE-2021-31525-golang.org/x/net",
+              "name": "GoModuleMatcherExactDirectMatch",
+              "shortDescription": {
+                "text": "CVE-2021-31525 medium vulnerability for golang.org/x/net package"
+              },
+              "fullDescription": {
+                "text": "golang.org/x/net/http/httpguts vulnerable to Uncontrolled Recursion"
+              },
+              "helpUri": "https://github.com/advisories/GHSA-h86h-8ppg-mxmh",
+              "help": {
+                "text": "Vulnerability CVE-2021-31525\nSeverity: medium\nPackage: golang.org/x/net\nVersion: v0.0.0-20210226172049-e18ecbb05110\nFix Version: 0.0.0-20210428140749-89ef3d95e781\nType: go-module\nLocation: /go.mod\nData Namespace: github:language:go\nLink: [CVE-2021-31525](https://github.com/advisories/GHSA-h86h-8ppg-mxmh)",
+                "markdown": "**Vulnerability CVE-2021-31525**\n| Severity | Package | Version | Fix Version | Type | Location | Data Namespace | Link |\n| --- | --- | --- | --- | --- | --- | --- | --- |\n| medium  | golang.org/x/net  | v0.0.0-20210226172049-e18ecbb05110  | 0.0.0-20210428140749-89ef3d95e781  | go-module  | /go.mod  | github:language:go  | [CVE-2021-31525](https://github.com/advisories/GHSA-h86h-8ppg-mxmh)  |\n"
+              },
+              "properties": {
+                "purls": [
+                  "pkg:golang/golang.org/x/net@v0.0.0-20210226172049-e18ecbb05110"
+                ],
+                "security-severity": "5.9"
+              }
+            },
+            {
+              "id": "CVE-2022-29526-golang.org/x/sys",
+              "name": "GoModuleMatcherExactDirectMatch",
+              "shortDescription": {
+                "text": "CVE-2022-29526 medium vulnerability for golang.org/x/sys package"
+              },
+              "fullDescription": {
+                "text": "golang.org/x/sys/unix has Incorrect privilege reporting in syscall"
+              },
+              "helpUri": "https://github.com/advisories/GHSA-p782-xgp4-8hr8",
+              "help": {
+                "text": "Vulnerability CVE-2022-29526\nSeverity: medium\nPackage: golang.org/x/sys\nVersion: v0.0.0-20210806184541-e5e7981a1069\nFix Version: 0.0.0-20220412211240-33da011f77ad\nType: go-module\nLocation: /go.mod\nData Namespace: github:language:go\nLink: [CVE-2022-29526](https://github.com/advisories/GHSA-p782-xgp4-8hr8)",
+                "markdown": "**Vulnerability CVE-2022-29526**\n| Severity | Package | Version | Fix Version | Type | Location | Data Namespace | Link |\n| --- | --- | --- | --- | --- | --- | --- | --- |\n| medium  | golang.org/x/sys  | v0.0.0-20210806184541-e5e7981a1069  | 0.0.0-20220412211240-33da011f77ad  | go-module  | /go.mod  | github:language:go  | [CVE-2022-29526](https://github.com/advisories/GHSA-p782-xgp4-8hr8)  |\n"
+              },
+              "properties": {
+                "purls": [
+                  "pkg:golang/golang.org/x/sys@v0.0.0-20210806184541-e5e7981a1069"
+                ],
+                "security-severity": "5.3"
+              }
+            },
+            {
+              "id": "CVE-2026-39821-golang.org/x/net",
+              "name": "GoModuleMatcherExactDirectMatch",
+              "shortDescription": {
+                "text": "CVE-2026-39821 high vulnerability for golang.org/x/net package"
+              },
+              "fullDescription": {
+                "text": "The ToASCII and ToUnicode functions incorrectly accept Punycode-encoded labels that decode to an ASCII-only label. For example, ToUnicode(\"xn--example-.com\") incorrectly returns the name \"example.com\" rather than an error.\n\nThis behavior can lead to privilege escalation in programs using the idna package. For example, a program which performs privilege checks on the ASCII hostname may reject \"example.com\" but permit \"xn--example-.com\". If that program subsequently converts the ASCII hostname to Unicode, it will inadvertently permits access to the Unicode name \"example.com\"."
+              },
+              "helpUri": "https://go.dev/cl/767220",
+              "help": {
+                "text": "Vulnerability CVE-2026-39821\nSeverity: high\nPackage: golang.org/x/net\nVersion: v0.0.0-20210226172049-e18ecbb05110\nFix Version: 0.55.0\nType: go-module\nLocation: /go.mod\nData Namespace: govulndb:language:go\nLink: [CVE-2026-39821](https://go.dev/cl/767220)",
+                "markdown": "**Vulnerability CVE-2026-39821**\n| Severity | Package | Version | Fix Version | Type | Location | Data Namespace | Link |\n| --- | --- | --- | --- | --- | --- | --- | --- |\n| high  | golang.org/x/net  | v0.0.0-20210226172049-e18ecbb05110  | 0.55.0  | go-module  | /go.mod  | govulndb:language:go  | [CVE-2026-39821](https://go.dev/cl/767220)  |\n"
+              },
+              "properties": {
+                "purls": [
+                  "pkg:golang/golang.org/x/net@v0.0.0-20210226172049-e18ecbb05110"
+                ],
+                "security-severity": "8.2"
+              }
+            },
+            {
+              "id": "CVE-2022-32149-golang.org/x/text",
+              "name": "GoModuleMatcherExactDirectMatch",
+              "shortDescription": {
+                "text": "CVE-2022-32149 high vulnerability for golang.org/x/text package"
+              },
+              "fullDescription": {
+                "text": "golang.org/x/text/language Denial of service via crafted Accept-Language header"
+              },
+              "helpUri": "https://github.com/advisories/GHSA-69ch-w2m2-3vjp",
+              "help": {
+                "text": "Vulnerability CVE-2022-32149\nSeverity: high\nPackage: golang.org/x/text\nVersion: v0.3.6\nFix Version: 0.3.8\nType: go-module\nLocation: /go.mod\nData Namespace: github:language:go\nLink: [CVE-2022-32149](https://github.com/advisories/GHSA-69ch-w2m2-3vjp)",
+                "markdown": "**Vulnerability CVE-2022-32149**\n| Severity | Package | Version | Fix Version | Type | Location | Data Namespace | Link |\n| --- | --- | --- | --- | --- | --- | --- | --- |\n| high  | golang.org/x/text  | v0.3.6  | 0.3.8  | go-module  | /go.mod  | github:language:go  | [CVE-2022-32149](https://github.com/advisories/GHSA-69ch-w2m2-3vjp)  |\n"
+              },
+              "properties": {
+                "purls": [
+                  "pkg:golang/golang.org/x/text@v0.3.6"
+                ],
+                "security-severity": "7.5"
+              }
+            },
+            {
+              "id": "CVE-2021-38561-golang.org/x/text",
+              "name": "GoModuleMatcherExactDirectMatch",
+              "shortDescription": {
+                "text": "CVE-2021-38561 high vulnerability for golang.org/x/text package"
+              },
+              "fullDescription": {
+                "text": "golang.org/x/text/language Out-of-bounds Read vulnerability"
+              },
+              "helpUri": "https://github.com/advisories/GHSA-ppp9-7jff-5vj2",
+              "help": {
+                "text": "Vulnerability CVE-2021-38561\nSeverity: high\nPackage: golang.org/x/text\nVersion: v0.3.6\nFix Version: 0.3.7\nType: go-module\nLocation: /go.mod\nData Namespace: github:language:go\nLink: [CVE-2021-38561](https://github.com/advisories/GHSA-ppp9-7jff-5vj2)",
+                "markdown": "**Vulnerability CVE-2021-38561**\n| Severity | Package | Version | Fix Version | Type | Location | Data Namespace | Link |\n| --- | --- | --- | --- | --- | --- | --- | --- |\n| high  | golang.org/x/text  | v0.3.6  | 0.3.7  | go-module  | /go.mod  | github:language:go  | [CVE-2021-38561](https://github.com/advisories/GHSA-ppp9-7jff-5vj2)  |\n"
+              },
+              "properties": {
+                "purls": [
+                  "pkg:golang/golang.org/x/text@v0.3.6"
+                ],
+                "security-severity": "7.5"
+              }
+            },
+            {
+              "id": "CVE-2021-43565-golang.org/x/crypto",
+              "name": "GoModuleMatcherExactDirectMatch",
+              "shortDescription": {
+                "text": "CVE-2021-43565 high vulnerability for golang.org/x/crypto package"
+              },
+              "fullDescription": {
+                "text": "x/crypto/ssh vulnerable to panic via malformed packets"
+              },
+              "helpUri": "https://github.com/advisories/GHSA-gwc9-m7rh-j2ww",
+              "help": {
+                "text": "Vulnerability CVE-2021-43565\nSeverity: high\nPackage: golang.org/x/crypto\nVersion: v0.0.0-20210711020723-a769d52b0f97\nFix Version: 0.0.0-20211202192323-5770296d904e\nType: go-module\nLocation: /go.mod\nData Namespace: github:language:go\nLink: [CVE-2021-43565](https://github.com/advisories/GHSA-gwc9-m7rh-j2ww)",
+                "markdown": "**Vulnerability CVE-2021-43565**\n| Severity | Package | Version | Fix Version | Type | Location | Data Namespace | Link |\n| --- | --- | --- | --- | --- | --- | --- | --- |\n| high  | golang.org/x/crypto  | v0.0.0-20210711020723-a769d52b0f97  | 0.0.0-20211202192323-5770296d904e  | go-module  | /go.mod  | github:language:go  | [CVE-2021-43565](https://github.com/advisories/GHSA-gwc9-m7rh-j2ww)  |\n"
+              },
+              "properties": {
+                "purls": [
+                  "pkg:golang/golang.org/x/crypto@v0.0.0-20210711020723-a769d52b0f97"
+                ],
+                "security-severity": "7.5"
+              }
+            },
+            {
+              "id": "CVE-2026-78663-golang.org/x/net",
+              "name": "GoModuleMatcherExactDirectMatch",
+              "shortDescription": {
+                "text": "CVE-2026-78663 critical vulnerability for golang.org/x/net package"
+              },
+              "fullDescription": {
+                "text": "The HTTP/2 server can refund connection-level flow control twice for the same data: Once when a client resets a stream (refunding data for any sent-but-unread portion of the stream), and again when a request handler reads the buffered data. A malicious client can exploit this to bypass the configured connection-level flow control limit (MaxReceiveBufferPerConnection). Total buffered data is still limited by the concurrent stream limit and stream-level flow control."
+              },
+              "helpUri": "https://go.dev/cl/847187",
+              "help": {
+                "text": "Vulnerability CVE-2026-78663\nSeverity: critical\nPackage: golang.org/x/net\nVersion: v0.0.0-20210226172049-e18ecbb05110\nFix Version: 0.60.0\nType: go-module\nLocation: /go.mod\nData Namespace: govulndb:language:go\nLink: [CVE-2026-78663](https://go.dev/cl/847187)",
+                "markdown": "**Vulnerability CVE-2026-78663**\n| Severity | Package | Version | Fix Version | Type | Location | Data Namespace | Link |\n| --- | --- | --- | --- | --- | --- | --- | --- |\n| critical  | golang.org/x/net  | v0.0.0-20210226172049-e18ecbb05110  | 0.60.0  | go-module  | /go.mod  | govulndb:language:go  | [CVE-2026-78663](https://go.dev/cl/847187)  |\n"
+              },
+              "properties": {
+                "purls": [
+                  "pkg:golang/golang.org/x/net@v0.0.0-20210226172049-e18ecbb05110"
+                ],
+                "security-severity": "9.1"
+              }
+            },
+            {
+              "id": "CVE-2024-24786-google.golang.org/protobuf",
+              "name": "GoModuleMatcherExactDirectMatch",
+              "shortDescription": {
+                "text": "CVE-2024-24786 medium vulnerability for google.golang.org/protobuf package"
+              },
+              "fullDescription": {
+                "text": "Golang protojson.Unmarshal function infinite loop when unmarshaling certain forms of invalid JSON"
+              },
+              "helpUri": "https://github.com/advisories/GHSA-8r3f-844c-mc37",
+              "help": {
+                "text": "Vulnerability CVE-2024-24786\nSeverity: medium\nPackage: google.golang.org/protobuf\nVersion: v1.28.0\nFix Version: 1.33.0\nType: go-module\nLocation: /go.mod\nData Namespace: github:language:go\nLink: [CVE-2024-24786](https://github.com/advisories/GHSA-8r3f-844c-mc37)",
+                "markdown": "**Vulnerability CVE-2024-24786**\n| Severity | Package | Version | Fix Version | Type | Location | Data Namespace | Link |\n| --- | --- | --- | --- | --- | --- | --- | --- |\n| medium  | google.golang.org/protobuf  | v1.28.0  | 1.33.0  | go-module  | /go.mod  | github:language:go  | [CVE-2024-24786](https://github.com/advisories/GHSA-8r3f-844c-mc37)  |\n"
+              },
+              "properties": {
+                "purls": [
+                  "pkg:golang/google.golang.org/protobuf@v1.28.0"
+                ],
+                "security-severity": "7.5"
+              }
+            },
+            {
+              "id": "CVE-2025-22869-golang.org/x/crypto",
+              "name": "GoModuleMatcherExactDirectMatch",
+              "shortDescription": {
+                "text": "CVE-2025-22869 high vulnerability for golang.org/x/crypto package"
+              },
+              "fullDescription": {
+                "text": "golang.org/x/crypto Vulnerable to Denial of Service (DoS) via Slow or Incomplete Key Exchange"
+              },
+              "helpUri": "https://github.com/advisories/GHSA-hcg3-q754-cr77",
+              "help": {
+                "text": "Vulnerability CVE-2025-22869\nSeverity: high\nPackage: golang.org/x/crypto\nVersion: v0.0.0-20210711020723-a769d52b0f97\nFix Version: 0.35.0\nType: go-module\nLocation: /go.mod\nData Namespace: github:language:go\nLink: [CVE-2025-22869](https://github.com/advisories/GHSA-hcg3-q754-cr77)",
+                "markdown": "**Vulnerability CVE-2025-22869**\n| Severity | Package | Version | Fix Version | Type | Location | Data Namespace | Link |\n| --- | --- | --- | --- | --- | --- | --- | --- |\n| high  | golang.org/x/crypto  | v0.0.0-20210711020723-a769d52b0f97  | 0.35.0  | go-module  | /go.mod  | github:language:go  | [CVE-2025-22869](https://github.com/advisories/GHSA-hcg3-q754-cr77)  |\n"
+              },
+              "properties": {
+                "purls": [
+                  "pkg:golang/golang.org/x/crypto@v0.0.0-20210711020723-a769d52b0f97"
+                ],
+                "security-severity": "7.5"
+              }
+            },
+            {
+              "id": "CVE-2026-78659-golang.org/x/net",
+              "name": "GoModuleMatcherExactDirectMatch",
+              "shortDescription": {
+                "text": "CVE-2026-78659 high vulnerability for golang.org/x/net package"
+              },
+              "fullDescription": {
+                "text": "When \"Trailer\" headers are sent by a client, the HTTP server internally uses the header values to populate the Request.Trailer map passed to the server handler. Because Request.Trailer is a map, each entry incurs memory overhead. For HTTP/2 servers, a malicious client can exploit this by sending a \"Trailer\" header that declares a large number of fields, causing the server to allocate a disproportionate amount of memory while bypassing Server.MaxHeaderValueCount and Server.MaxHeaderBytes limits. This exploit is not applicable for HTTP/1 servers, which do not support multiplexing a large number of requests over one TCP connection, and whose Server.MaxHeaderBytes are calculated differently."
+              },
+              "helpUri": "https://go.dev/cl/847185",
+              "help": {
+                "text": "Vulnerability CVE-2026-78659\nSeverity: high\nPackage: golang.org/x/net\nVersion: v0.0.0-20210226172049-e18ecbb05110\nFix Version: 0.60.0\nType: go-module\nLocation: /go.mod\nData Namespace: govulndb:language:go\nLink: [CVE-2026-78659](https://go.dev/cl/847185)",
+                "markdown": "**Vulnerability CVE-2026-78659**\n| Severity | Package | Version | Fix Version | Type | Location | Data Namespace | Link |\n| --- | --- | --- | --- | --- | --- | --- | --- |\n| high  | golang.org/x/net  | v0.0.0-20210226172049-e18ecbb05110  | 0.60.0  | go-module  | /go.mod  | govulndb:language:go  | [CVE-2026-78659](https://go.dev/cl/847185)  |\n"
+              },
+              "properties": {
+                "purls": [
+                  "pkg:golang/golang.org/x/net@v0.0.0-20210226172049-e18ecbb05110"
+                ],
+                "security-severity": "7.5"
+              }
+            },
+            {
+              "id": "CVE-2026-78669-golang.org/x/net",
+              "name": "GoModuleMatcherExactDirectMatch",
+              "shortDescription": {
+                "text": "CVE-2026-78669 high vulnerability for golang.org/x/net package"
+              },
+              "fullDescription": {
+                "text": "A malicious HTTP/2 peer can cause excessive CPU consumption in the client or server by opening a large number of streams and then sending many small SETTINGS frames containing SETTINGS_INITIAL_WINDOW_SIZE values."
+              },
+              "helpUri": "https://go.dev/cl/847186",
+              "help": {
+                "text": "Vulnerability CVE-2026-78669\nSeverity: high\nPackage: golang.org/x/net\nVersion: v0.0.0-20210226172049-e18ecbb05110\nFix Version: 0.60.0\nType: go-module\nLocation: /go.mod\nData Namespace: govulndb:language:go\nLink: [CVE-2026-78669](https://go.dev/cl/847186)",
+                "markdown": "**Vulnerability CVE-2026-78669**\n| Severity | Package | Version | Fix Version | Type | Location | Data Namespace | Link |\n| --- | --- | --- | --- | --- | --- | --- | --- |\n| high  | golang.org/x/net  | v0.0.0-20210226172049-e18ecbb05110  | 0.60.0  | go-module  | /go.mod  | govulndb:language:go  | [CVE-2026-78669](https://go.dev/cl/847186)  |\n"
+              },
+              "properties": {
+                "purls": [
+                  "pkg:golang/golang.org/x/net@v0.0.0-20210226172049-e18ecbb05110"
+                ],
+                "security-severity": "7.5"
+              }
+            },
+            {
+              "id": "CVE-2026-33814-golang.org/x/net",
+              "name": "GoModuleMatcherExactDirectMatch",
+              "shortDescription": {
+                "text": "CVE-2026-33814 high vulnerability for golang.org/x/net package"
+              },
+              "fullDescription": {
+                "text": "When processing HTTP/2 SETTINGS frames, transport will enter an infinite loop of writing CONTINUATION frames if it receives a SETTINGS_MAX_FRAME_SIZE with a value of 0."
+              },
+              "helpUri": "https://go.dev/cl/761581",
+              "help": {
+                "text": "Vulnerability CVE-2026-33814\nSeverity: high\nPackage: golang.org/x/net\nVersion: v0.0.0-20210226172049-e18ecbb05110\nFix Version: 0.53.0\nType: go-module\nLocation: /go.mod\nData Namespace: govulndb:language:go\nLink: [CVE-2026-33814](https://go.dev/cl/761581)",
+                "markdown": "**Vulnerability CVE-2026-33814**\n| Severity | Package | Version | Fix Version | Type | Location | Data Namespace | Link |\n| --- | --- | --- | --- | --- | --- | --- | --- |\n| high  | golang.org/x/net  | v0.0.0-20210226172049-e18ecbb05110  | 0.53.0  | go-module  | /go.mod  | govulndb:language:go  | [CVE-2026-33814](https://go.dev/cl/761581)  |\n"
+              },
+              "properties": {
+                "purls": [
+                  "pkg:golang/golang.org/x/net@v0.0.0-20210226172049-e18ecbb05110"
+                ],
+                "security-severity": "7.5"
+              }
+            },
+            {
+              "id": "CVE-2026-39832-golang.org/x/crypto",
+              "name": "GoModuleMatcherExactDirectMatch",
+              "shortDescription": {
+                "text": "CVE-2026-39832 critical vulnerability for golang.org/x/crypto package"
+              },
+              "fullDescription": {
+                "text": "golang.org/x/crypto doesn't drop invoking agent constraints when forwarding keys"
+              },
+              "helpUri": "https://github.com/advisories/GHSA-f5wc-c3c7-36mc",
+              "help": {
+                "text": "Vulnerability CVE-2026-39832\nSeverity: critical\nPackage: golang.org/x/crypto\nVersion: v0.0.0-20210711020723-a769d52b0f97\nFix Version: 0.52.0\nType: go-module\nLocation: /go.mod\nData Namespace: github:language:go\nLink: [CVE-2026-39832](https://github.com/advisories/GHSA-f5wc-c3c7-36mc)",
+                "markdown": "**Vulnerability CVE-2026-39832**\n| Severity | Package | Version | Fix Version | Type | Location | Data Namespace | Link |\n| --- | --- | --- | --- | --- | --- | --- | --- |\n| critical  | golang.org/x/crypto  | v0.0.0-20210711020723-a769d52b0f97  | 0.52.0  | go-module  | /go.mod  | github:language:go  | [CVE-2026-39832](https://github.com/advisories/GHSA-f5wc-c3c7-36mc)  |\n"
+              },
+              "properties": {
+                "purls": [
+                  "pkg:golang/golang.org/x/crypto@v0.0.0-20210711020723-a769d52b0f97"
+                ],
+                "security-severity": "9.1"
+              }
+            },
+            {
+              "id": "CVE-2026-39830-golang.org/x/crypto",
+              "name": "GoModuleMatcherExactDirectMatch",
+              "shortDescription": {
+                "text": "CVE-2026-39830 critical vulnerability for golang.org/x/crypto package"
+              },
+              "fullDescription": {
+                "text": "golang.org/x/crypto: Invoking client can cause server deadlock on unexpected responses"
+              },
+              "helpUri": "https://github.com/advisories/GHSA-vgwf-h737-ff37",
+              "help": {
+                "text": "Vulnerability CVE-2026-39830\nSeverity: critical\nPackage: golang.org/x/crypto\nVersion: v0.0.0-20210711020723-a769d52b0f97\nFix Version: 0.52.0\nType: go-module\nLocation: /go.mod\nData Namespace: github:language:go\nLink: [CVE-2026-39830](https://github.com/advisories/GHSA-vgwf-h737-ff37)",
+                "markdown": "**Vulnerability CVE-2026-39830**\n| Severity | Package | Version | Fix Version | Type | Location | Data Namespace | Link |\n| --- | --- | --- | --- | --- | --- | --- | --- |\n| critical  | golang.org/x/crypto  | v0.0.0-20210711020723-a769d52b0f97  | 0.52.0  | go-module  | /go.mod  | github:language:go  | [CVE-2026-39830](https://github.com/advisories/GHSA-vgwf-h737-ff37)  |\n"
+              },
+              "properties": {
+                "purls": [
+                  "pkg:golang/golang.org/x/crypto@v0.0.0-20210711020723-a769d52b0f97"
+                ],
+                "security-severity": "9.1"
+              }
+            },
+            {
+              "id": "CVE-2024-45338-golang.org/x/net",
+              "name": "GoModuleMatcherExactDirectMatch",
+              "shortDescription": {
+                "text": "CVE-2024-45338 medium vulnerability for golang.org/x/net package"
+              },
+              "fullDescription": {
+                "text": "An attacker can craft an input to the Parse functions that would be processed non-linearly with respect to its length, resulting in extremely slow parsing. This could cause a denial of service."
+              },
+              "helpUri": "https://go.dev/cl/637536",
+              "help": {
+                "text": "Vulnerability CVE-2024-45338\nSeverity: medium\nPackage: golang.org/x/net\nVersion: v0.0.0-20210226172049-e18ecbb05110\nFix Version: 0.33.0\nType: go-module\nLocation: /go.mod\nData Namespace: govulndb:language:go\nLink: [CVE-2024-45338](https://go.dev/cl/637536)",
+                "markdown": "**Vulnerability CVE-2024-45338**\n| Severity | Package | Version | Fix Version | Type | Location | Data Namespace | Link |\n| --- | --- | --- | --- | --- | --- | --- | --- |\n| medium  | golang.org/x/net  | v0.0.0-20210226172049-e18ecbb05110  | 0.33.0  | go-module  | /go.mod  | govulndb:language:go  | [CVE-2024-45338](https://go.dev/cl/637536)  |\n"
+              },
+              "properties": {
+                "purls": [
+                  "pkg:golang/golang.org/x/net@v0.0.0-20210226172049-e18ecbb05110"
+                ],
+                "security-severity": "5.3"
+              }
+            },
+            {
+              "id": "CVE-2026-39834-golang.org/x/crypto",
+              "name": "GoModuleMatcherExactDirectMatch",
+              "shortDescription": {
+                "text": "CVE-2026-39834 critical vulnerability for golang.org/x/crypto package"
+              },
+              "fullDescription": {
+                "text": "golang.org/x/crypto vulnerable to infinite loop on large channel writes"
+              },
+              "helpUri": "https://github.com/advisories/GHSA-rm3j-f69w-wqmq",
+              "help": {
+                "text": "Vulnerability CVE-2026-39834\nSeverity: critical\nPackage: golang.org/x/crypto\nVersion: v0.0.0-20210711020723-a769d52b0f97\nFix Version: 0.52.0\nType: go-module\nLocation: /go.mod\nData Namespace: github:language:go\nLink: [CVE-2026-39834](https://github.com/advisories/GHSA-rm3j-f69w-wqmq)",
+                "markdown": "**Vulnerability CVE-2026-39834**\n| Severity | Package | Version | Fix Version | Type | Location | Data Namespace | Link |\n| --- | --- | --- | --- | --- | --- | --- | --- |\n| critical  | golang.org/x/crypto  | v0.0.0-20210711020723-a769d52b0f97  | 0.52.0  | go-module  | /go.mod  | github:language:go  | [CVE-2026-39834](https://github.com/advisories/GHSA-rm3j-f69w-wqmq)  |\n"
+              },
+              "properties": {
+                "purls": [
+                  "pkg:golang/golang.org/x/crypto@v0.0.0-20210711020723-a769d52b0f97"
+                ],
+                "security-severity": "9.1"
+              }
+            },
+            {
+              "id": "CVE-2026-46595-golang.org/x/crypto",
+              "name": "GoModuleMatcherExactDirectMatch",
+              "shortDescription": {
+                "text": "CVE-2026-46595 critical vulnerability for golang.org/x/crypto package"
+              },
+              "fullDescription": {
+                "text": "golang.org/x/crypto: Invoking VerifiedPublicKeyCallback permissions skip enforcement"
+              },
+              "helpUri": "https://github.com/advisories/GHSA-x527-x647-q7gg",
+              "help": {
+                "text": "Vulnerability CVE-2026-46595\nSeverity: critical\nPackage: golang.org/x/crypto\nVersion: v0.0.0-20210711020723-a769d52b0f97\nFix Version: 0.52.0\nType: go-module\nLocation: /go.mod\nData Namespace: github:language:go\nLink: [CVE-2026-46595](https://github.com/advisories/GHSA-x527-x647-q7gg)",
+                "markdown": "**Vulnerability CVE-2026-46595**\n| Severity | Package | Version | Fix Version | Type | Location | Data Namespace | Link |\n| --- | --- | --- | --- | --- | --- | --- | --- |\n| critical  | golang.org/x/crypto  | v0.0.0-20210711020723-a769d52b0f97  | 0.52.0  | go-module  | /go.mod  | github:language:go  | [CVE-2026-46595](https://github.com/advisories/GHSA-x527-x647-q7gg)  |\n"
+              },
+              "properties": {
+                "purls": [
+                  "pkg:golang/golang.org/x/crypto@v0.0.0-20210711020723-a769d52b0f97"
+                ],
+                "security-severity": "10.0"
+              }
+            },
+            {
+              "id": "CVE-2026-97032-golang.org/x/net",
+              "name": "GoModuleMatcherExactDirectMatch",
+              "shortDescription": {
+                "text": "CVE-2026-97032 high vulnerability for golang.org/x/net package"
+              },
+              "fullDescription": {
+                "text": "HTTP/2 servers could end up crashing due to inadvertently modifying its HPACK encoder concurrently. This happens because the server modifies the HPACK encoder from two goroutines without synchronization: one uses the encoder to encode a HEADERS frame as part of a response sent to a client and the other modifies the encoder's table size when handling a SETTINGS frame containing SETTINGS_HEADER_TABLE_SIZE that a client sends. A malicious client can repeatedly send a request while changing the header table size to crash the server."
+              },
+              "helpUri": "https://go.dev/cl/847188",
+              "help": {
+                "text": "Vulnerability CVE-2026-97032\nSeverity: high\nPackage: golang.org/x/net\nVersion: v0.0.0-20210226172049-e18ecbb05110\nFix Version: 0.60.0\nType: go-module\nLocation: /go.mod\nData Namespace: govulndb:language:go\nLink: [CVE-2026-97032](https://go.dev/cl/847188)",
+                "markdown": "**Vulnerability CVE-2026-97032**\n| Severity | Package | Version | Fix Version | Type | Location | Data Namespace | Link |\n| --- | --- | --- | --- | --- | --- | --- | --- |\n| high  | golang.org/x/net  | v0.0.0-20210226172049-e18ecbb05110  | 0.60.0  | go-module  | /go.mod  | govulndb:language:go  | [CVE-2026-97032](https://go.dev/cl/847188)  |\n"
+              },
+              "properties": {
+                "purls": [
+                  "pkg:golang/golang.org/x/net@v0.0.0-20210226172049-e18ecbb05110"
+                ],
+                "security-severity": "7.5"
+              }
+            },
+            {
+              "id": "CVE-2025-47913-golang.org/x/crypto",
+              "name": "GoModuleMatcherExactDirectMatch",
+              "shortDescription": {
+                "text": "CVE-2025-47913 high vulnerability for golang.org/x/crypto package"
+              },
+              "fullDescription": {
+                "text": "SSH clients receiving SSH_AGENT_SUCCESS when expecting a typed response will panic and cause early termination of the client process."
+              },
+              "helpUri": "https://go.dev/cl/700295",
+              "help": {
+                "text": "Vulnerability CVE-2025-47913\nSeverity: high\nPackage: golang.org/x/crypto\nVersion: v0.0.0-20210711020723-a769d52b0f97\nFix Version: 0.43.0\nType: go-module\nLocation: /go.mod\nData Namespace: govulndb:language:go\nLink: [CVE-2025-47913](https://go.dev/cl/700295)",
+                "markdown": "**Vulnerability CVE-2025-47913**\n| Severity | Package | Version | Fix Version | Type | Location | Data Namespace | Link |\n| --- | --- | --- | --- | --- | --- | --- | --- |\n| high  | golang.org/x/crypto  | v0.0.0-20210711020723-a769d52b0f97  | 0.43.0  | go-module  | /go.mod  | govulndb:language:go  | [CVE-2025-47913](https://go.dev/cl/700295)  |\n"
+              },
+              "properties": {
+                "purls": [
+                  "pkg:golang/golang.org/x/crypto@v0.0.0-20210711020723-a769d52b0f97"
+                ],
+                "security-severity": "7.5"
+              }
+            },
+            {
+              "id": "CVE-2023-26125-github.com/gin-gonic/gin",
+              "name": "GoModuleMatcherExactDirectMatch",
+              "shortDescription": {
+                "text": "CVE-2023-26125 medium vulnerability for github.com/gin-gonic/gin package"
+              },
+              "fullDescription": {
+                "text": "Improper input validation in github.com/gin-gonic/gin"
+              },
+              "helpUri": "https://github.com/advisories/GHSA-3vp4-m3rf-835h",
+              "help": {
+                "text": "Vulnerability CVE-2023-26125\nSeverity: medium\nPackage: github.com/gin-gonic/gin\nVersion: v1.8.1\nFix Version: 1.9.0\nType: go-module\nLocation: /go.mod\nData Namespace: github:language:go\nLink: [CVE-2023-26125](https://github.com/advisories/GHSA-3vp4-m3rf-835h)",
+                "markdown": "**Vulnerability CVE-2023-26125**\n| Severity | Package | Version | Fix Version | Type | Location | Data Namespace | Link |\n| --- | --- | --- | --- | --- | --- | --- | --- |\n| medium  | github.com/gin-gonic/gin  | v1.8.1  | 1.9.0  | go-module  | /go.mod  | github:language:go  | [CVE-2023-26125](https://github.com/advisories/GHSA-3vp4-m3rf-835h)  |\n"
+              },
+              "properties": {
+                "purls": [
+                  "pkg:golang/github.com/gin-gonic/gin@v1.8.1"
+                ],
+                "security-severity": "5.6"
+              }
+            },
+            {
+              "id": "CVE-2022-30636-golang.org/x/crypto",
+              "name": "GoModuleMatcherExactDirectMatch",
+              "shortDescription": {
+                "text": "CVE-2022-30636 high vulnerability for golang.org/x/crypto package"
+              },
+              "fullDescription": {
+                "text": "httpTokenCacheKey uses path.Base to extract the expected HTTP-01 token value to lookup in the DirCache implementation. On Windows, path.Base acts differently to filepath.Base, since Windows uses a different path separator (\\ vs. /), allowing a user to provide a relative path, i.e. .well-known/acme-challenge/..\\..\\asd becomes ..\\..\\asd. The extracted path is then suffixed with +http-01, joined with the cache directory, and opened.\n\nSince the controlled path is suffixed with +http-01 before opening, the impact of this is significantly limited, since it only allows reading arbitrary files on the system if and only if they have this suffix."
+              },
+              "helpUri": "https://go.dev/cl/408694",
+              "help": {
+                "text": "Vulnerability CVE-2022-30636\nSeverity: high\nPackage: golang.org/x/crypto\nVersion: v0.0.0-20210711020723-a769d52b0f97\nFix Version: 0.0.0-20220525230936-793ad666bf5e\nType: go-module\nLocation: /go.mod\nData Namespace: govulndb:language:go\nLink: [CVE-2022-30636](https://go.dev/cl/408694)",
+                "markdown": "**Vulnerability CVE-2022-30636**\n| Severity | Package | Version | Fix Version | Type | Location | Data Namespace | Link |\n| --- | --- | --- | --- | --- | --- | --- | --- |\n| high  | golang.org/x/crypto  | v0.0.0-20210711020723-a769d52b0f97  | 0.0.0-20220525230936-793ad666bf5e  | go-module  | /go.mod  | govulndb:language:go  | [CVE-2022-30636](https://go.dev/cl/408694)  |\n"
+              },
+              "properties": {
+                "purls": [
+                  "pkg:golang/golang.org/x/crypto@v0.0.0-20210711020723-a769d52b0f97"
+                ],
+                "security-severity": "7.5"
+              }
+            },
+            {
+              "id": "CVE-2023-3978-golang.org/x/net",
+              "name": "GoModuleMatcherExactDirectMatch",
+              "shortDescription": {
+                "text": "CVE-2023-3978 medium vulnerability for golang.org/x/net package"
+              },
+              "fullDescription": {
+                "text": "Improper rendering of text nodes in golang.org/x/net/html"
+              },
+              "helpUri": "https://github.com/advisories/GHSA-2wrh-6pvc-2jm9",
+              "help": {
+                "text": "Vulnerability CVE-2023-3978\nSeverity: medium\nPackage: golang.org/x/net\nVersion: v0.0.0-20210226172049-e18ecbb05110\nFix Version: 0.13.0\nType: go-module\nLocation: /go.mod\nData Namespace: github:language:go\nLink: [CVE-2023-3978](https://github.com/advisories/GHSA-2wrh-6pvc-2jm9)",
+                "markdown": "**Vulnerability CVE-2023-3978**\n| Severity | Package | Version | Fix Version | Type | Location | Data Namespace | Link |\n| --- | --- | --- | --- | --- | --- | --- | --- |\n| medium  | golang.org/x/net  | v0.0.0-20210226172049-e18ecbb05110  | 0.13.0  | go-module  | /go.mod  | github:language:go  | [CVE-2023-3978](https://github.com/advisories/GHSA-2wrh-6pvc-2jm9)  |\n"
+              },
+              "properties": {
+                "purls": [
+                  "pkg:golang/golang.org/x/net@v0.0.0-20210226172049-e18ecbb05110"
+                ],
+                "security-severity": "6.1"
+              }
+            },
+            {
+              "id": "CVE-2026-39831-golang.org/x/crypto",
+              "name": "GoModuleMatcherExactDirectMatch",
+              "shortDescription": {
+                "text": "CVE-2026-39831 critical vulnerability for golang.org/x/crypto package"
+              },
+              "fullDescription": {
+                "text": "golang.org/x/crypto: FIDO/U2F security key physical presence check can be bypassed"
+              },
+              "helpUri": "https://github.com/advisories/GHSA-89gr-r52h-f8rx",
+              "help": {
+                "text": "Vulnerability CVE-2026-39831\nSeverity: critical\nPackage: golang.org/x/crypto\nVersion: v0.0.0-20210711020723-a769d52b0f97\nFix Version: 0.52.0\nType: go-module\nLocation: /go.mod\nData Namespace: github:language:go\nLink: [CVE-2026-39831](https://github.com/advisories/GHSA-89gr-r52h-f8rx)",
+                "markdown": "**Vulnerability CVE-2026-39831**\n| Severity | Package | Version | Fix Version | Type | Location | Data Namespace | Link |\n| --- | --- | --- | --- | --- | --- | --- | --- |\n| critical  | golang.org/x/crypto  | v0.0.0-20210711020723-a769d52b0f97  | 0.52.0  | go-module  | /go.mod  | github:language:go  | [CVE-2026-39831](https://github.com/advisories/GHSA-89gr-r52h-f8rx)  |\n"
+              },
+              "properties": {
+                "purls": [
+                  "pkg:golang/golang.org/x/crypto@v0.0.0-20210711020723-a769d52b0f97"
+                ],
+                "security-severity": "9.1"
+              }
+            },
+            {
+              "id": "CVE-2026-39833-golang.org/x/crypto",
+              "name": "GoModuleMatcherExactDirectMatch",
+              "shortDescription": {
+                "text": "CVE-2026-39833 critical vulnerability for golang.org/x/crypto package"
+              },
+              "fullDescription": {
+                "text": "golang.org/x/crypto doesn't enforce invoking key constraints"
+              },
+              "helpUri": "https://github.com/advisories/GHSA-jppx-rxg9-jmrx",
+              "help": {
+                "text": "Vulnerability CVE-2026-39833\nSeverity: critical\nPackage: golang.org/x/crypto\nVersion: v0.0.0-20210711020723-a769d52b0f97\nFix Version: 0.52.0\nType: go-module\nLocation: /go.mod\nData Namespace: github:language:go\nLink: [CVE-2026-39833](https://github.com/advisories/GHSA-jppx-rxg9-jmrx)",
+                "markdown": "**Vulnerability CVE-2026-39833**\n| Severity | Package | Version | Fix Version | Type | Location | Data Namespace | Link |\n| --- | --- | --- | --- | --- | --- | --- | --- |\n| critical  | golang.org/x/crypto  | v0.0.0-20210711020723-a769d52b0f97  | 0.52.0  | go-module  | /go.mod  | github:language:go  | [CVE-2026-39833](https://github.com/advisories/GHSA-jppx-rxg9-jmrx)  |\n"
+              },
+              "properties": {
+                "purls": [
+                  "pkg:golang/golang.org/x/crypto@v0.0.0-20210711020723-a769d52b0f97"
+                ],
+                "security-severity": "9.1"
+              }
+            },
+            {
+              "id": "CVE-2026-46600-golang.org/x/net",
+              "name": "GoModuleMatcherExactDirectMatch",
+              "shortDescription": {
+                "text": "CVE-2026-46600 high vulnerability for golang.org/x/net package"
+              },
+              "fullDescription": {
+                "text": "Parsing an invalid SVCB or HTTPS RR can panic when the size of a parameter value overflows the message buffer."
+              },
+              "helpUri": "https://go.dev/cl/786345",
+              "help": {
+                "text": "Vulnerability CVE-2026-46600\nSeverity: high\nPackage: golang.org/x/net\nVersion: v0.0.0-20210226172049-e18ecbb05110\nFix Version: 0.56.0\nType: go-module\nLocation: /go.mod\nData Namespace: govulndb:language:go\nLink: [CVE-2026-46600](https://go.dev/cl/786345)",
+                "markdown": "**Vulnerability CVE-2026-46600**\n| Severity | Package | Version | Fix Version | Type | Location | Data Namespace | Link |\n| --- | --- | --- | --- | --- | --- | --- | --- |\n| high  | golang.org/x/net  | v0.0.0-20210226172049-e18ecbb05110  | 0.56.0  | go-module  | /go.mod  | govulndb:language:go  | [CVE-2026-46600](https://go.dev/cl/786345)  |\n"
+              },
+              "properties": {
+                "purls": [
+                  "pkg:golang/golang.org/x/net@v0.0.0-20210226172049-e18ecbb05110"
+                ],
+                "security-severity": "7.5"
+              }
+            },
+            {
+              "id": "CVE-2026-78660-golang.org/x/net",
+              "name": "GoModuleMatcherExactDirectMatch",
+              "shortDescription": {
+                "text": "CVE-2026-78660 high vulnerability for golang.org/x/net package"
+              },
+              "fullDescription": {
+                "text": "Historically, we have been rather lax about malformed framing-related headers in our HTTP/2 implementation, as they cannot interfere with HTTP/2 framing. However, this makes it possible for our HTTP/2 implementation to forward responses containing such headers to an HTTP/1 client when acting as a reverse proxy. If the HTTP/1 client also does not behave strictly enough, this can result in response smuggling."
+              },
+              "helpUri": "https://go.dev/cl/835145",
+              "help": {
+                "text": "Vulnerability CVE-2026-78660\nSeverity: high\nPackage: golang.org/x/net\nVersion: v0.0.0-20210226172049-e18ecbb05110\nFix Version: 0.60.0\nType: go-module\nLocation: /go.mod\nData Namespace: govulndb:language:go\nLink: [CVE-2026-78660](https://go.dev/cl/835145)",
+                "markdown": "**Vulnerability CVE-2026-78660**\n| Severity | Package | Version | Fix Version | Type | Location | Data Namespace | Link |\n| --- | --- | --- | --- | --- | --- | --- | --- |\n| high  | golang.org/x/net  | v0.0.0-20210226172049-e18ecbb05110  | 0.60.0  | go-module  | /go.mod  | govulndb:language:go  | [CVE-2026-78660](https://go.dev/cl/835145)  |\n"
+              },
+              "properties": {
+                "purls": [
+                  "pkg:golang/golang.org/x/net@v0.0.0-20210226172049-e18ecbb05110"
+                ],
+                "security-severity": "7.5"
+              }
+            },
+            {
+              "id": "CVE-2026-56855-golang.org/x/crypto",
+              "name": "GoModuleMatcherExactDirectMatch",
+              "shortDescription": {
+                "text": "CVE-2026-56855 high vulnerability for golang.org/x/crypto package"
+              },
+              "fullDescription": {
+                "text": "Previously, after a channel has been established, a malicious peer could send crafted messages that would deadlock the entire connection.\n\nNow, we handle all RFC 4254 channel messages; global requests are handled explicitly. Then, treat all other messages as a protocol error and tear the connection down instead of buffering and blocking."
+              },
+              "helpUri": "https://go.dev/issue/81317",
+              "help": {
+                "text": "Vulnerability CVE-2026-56855\nSeverity: high\nPackage: golang.org/x/crypto\nVersion: v0.0.0-20210711020723-a769d52b0f97\nFix Version: 0.56.0\nType: go-module\nLocation: /go.mod\nData Namespace: govulndb:language:go\nLink: [CVE-2026-56855](https://go.dev/issue/81317)",
+                "markdown": "**Vulnerability CVE-2026-56855**\n| Severity | Package | Version | Fix Version | Type | Location | Data Namespace | Link |\n| --- | --- | --- | --- | --- | --- | --- | --- |\n| high  | golang.org/x/crypto  | v0.0.0-20210711020723-a769d52b0f97  | 0.56.0  | go-module  | /go.mod  | govulndb:language:go  | [CVE-2026-56855](https://go.dev/issue/81317)  |\n"
+              },
+              "properties": {
+                "purls": [
+                  "pkg:golang/golang.org/x/crypto@v0.0.0-20210711020723-a769d52b0f97"
+                ],
+                "security-severity": "7.5"
+              }
+            },
+            {
+              "id": "CVE-2026-56852-golang.org/x/text",
+              "name": "GoModuleMatcherExactDirectMatch",
+              "shortDescription": {
+                "text": "CVE-2026-56852 high vulnerability for golang.org/x/text package"
+              },
+              "fullDescription": {
+                "text": "A norm.Iter can enter an infinite loop when handling input containing invalid UTF-8 bytes."
+              },
+              "helpUri": "https://go.dev/issue/80142",
+              "help": {
+                "text": "Vulnerability CVE-2026-56852\nSeverity: high\nPackage: golang.org/x/text\nVersion: v0.3.6\nFix Version: 0.39.0\nType: go-module\nLocation: /go.mod\nData Namespace: govulndb:language:go\nLink: [CVE-2026-56852](https://go.dev/issue/80142)",
+                "markdown": "**Vulnerability CVE-2026-56852**\n| Severity | Package | Version | Fix Version | Type | Location | Data Namespace | Link |\n| --- | --- | --- | --- | --- | --- | --- | --- |\n| high  | golang.org/x/text  | v0.3.6  | 0.39.0  | go-module  | /go.mod  | govulndb:language:go  | [CVE-2026-56852](https://go.dev/issue/80142)  |\n"
+              },
+              "properties": {
+                "purls": [
+                  "pkg:golang/golang.org/x/text@v0.3.6"
+                ],
+                "security-severity": "7.5"
+              }
+            },
+            {
+              "id": "CVE-2026-46597-golang.org/x/crypto",
+              "name": "GoModuleMatcherExactDirectMatch",
+              "shortDescription": {
+                "text": "CVE-2026-46597 high vulnerability for golang.org/x/crypto package"
+              },
+              "fullDescription": {
+                "text": "golang.org/x/crypto: Invoking byte arithmetic causes underflow and panic"
+              },
+              "helpUri": "https://github.com/advisories/GHSA-q4h4-gmj2-qvw2",
+              "help": {
+                "text": "Vulnerability CVE-2026-46597\nSeverity: high\nPackage: golang.org/x/crypto\nVersion: v0.0.0-20210711020723-a769d52b0f97\nFix Version: 0.52.0\nType: go-module\nLocation: /go.mod\nData Namespace: github:language:go\nLink: [CVE-2026-46597](https://github.com/advisories/GHSA-q4h4-gmj2-qvw2)",
+                "markdown": "**Vulnerability CVE-2026-46597**\n| Severity | Package | Version | Fix Version | Type | Location | Data Namespace | Link |\n| --- | --- | --- | --- | --- | --- | --- | --- |\n| high  | golang.org/x/crypto  | v0.0.0-20210711020723-a769d52b0f97  | 0.52.0  | go-module  | /go.mod  | github:language:go  | [CVE-2026-46597](https://github.com/advisories/GHSA-q4h4-gmj2-qvw2)  |\n"
+              },
+              "properties": {
+                "purls": [
+                  "pkg:golang/golang.org/x/crypto@v0.0.0-20210711020723-a769d52b0f97"
+                ],
+                "security-severity": "7.5"
+              }
+            },
+            {
+              "id": "CVE-2026-39829-golang.org/x/crypto",
+              "name": "GoModuleMatcherExactDirectMatch",
+              "shortDescription": {
+                "text": "CVE-2026-39829 high vulnerability for golang.org/x/crypto package"
+              },
+              "fullDescription": {
+                "text": "golang.org/x/crypto: Invoking pathological RSA/DSA parameters may cause DoS"
+              },
+              "helpUri": "https://github.com/advisories/GHSA-w879-237q-wc7r",
+              "help": {
+                "text": "Vulnerability CVE-2026-39829\nSeverity: high\nPackage: golang.org/x/crypto\nVersion: v0.0.0-20210711020723-a769d52b0f97\nFix Version: 0.52.0\nType: go-module\nLocation: /go.mod\nData Namespace: github:language:go\nLink: [CVE-2026-39829](https://github.com/advisories/GHSA-w879-237q-wc7r)",
+                "markdown": "**Vulnerability CVE-2026-39829**\n| Severity | Package | Version | Fix Version | Type | Location | Data Namespace | Link |\n| --- | --- | --- | --- | --- | --- | --- | --- |\n| high  | golang.org/x/crypto  | v0.0.0-20210711020723-a769d52b0f97  | 0.52.0  | go-module  | /go.mod  | github:language:go  | [CVE-2026-39829](https://github.com/advisories/GHSA-w879-237q-wc7r)  |\n"
+              },
+              "properties": {
+                "purls": [
+                  "pkg:golang/golang.org/x/crypto@v0.0.0-20210711020723-a769d52b0f97"
+                ],
+                "security-severity": "7.5"
+              }
+            },
+            {
+              "id": "CVE-2026-56851-golang.org/x/text",
+              "name": "GoModuleMatcherExactDirectMatch",
+              "shortDescription": {
+                "text": "CVE-2026-56851 high vulnerability for golang.org/x/text package"
+              },
+              "fullDescription": {
+                "text": "The Nickname profile can panic with an out-of-bounds slice error when transforming crafted input into a short destination buffer."
+              },
+              "helpUri": "https://go.dev/cl/793360",
+              "help": {
+                "text": "Vulnerability CVE-2026-56851\nSeverity: high\nPackage: golang.org/x/text\nVersion: v0.3.6\nFix Version: 0.41.0\nType: go-module\nLocation: /go.mod\nData Namespace: govulndb:language:go\nLink: [CVE-2026-56851](https://go.dev/cl/793360)",
+                "markdown": "**Vulnerability CVE-2026-56851**\n| Severity | Package | Version | Fix Version | Type | Location | Data Namespace | Link |\n| --- | --- | --- | --- | --- | --- | --- | --- |\n| high  | golang.org/x/text  | v0.3.6  | 0.41.0  | go-module  | /go.mod  | govulndb:language:go  | [CVE-2026-56851](https://go.dev/cl/793360)  |\n"
+              },
+              "properties": {
+                "purls": [
+                  "pkg:golang/golang.org/x/text@v0.3.6"
+                ],
+                "security-severity": "7.5"
+              }
+            },
+            {
+              "id": "CVE-2026-56854-golang.org/x/crypto",
+              "name": "GoModuleMatcherExactDirectMatch",
+              "shortDescription": {
+                "text": "CVE-2026-56854 high vulnerability for golang.org/x/crypto package"
+              },
+              "fullDescription": {
+                "text": "The source-address critical option in the Permissions returned by an authentication callback was only enforced for the PublicKeyCallback and VerifiedPublicKeyCallback paths, extending the fix for CVE-2026-46595. Permissions returned by the PasswordCallback, KeyboardInteractiveCallback, NoClientAuthCallback, and GSSAPIWithMICConfig.AllowLogin callbacks were not validated against the client's remote address, so a source-address restriction set by those callbacks was silently ignored. The check is now applied to the Permissions returned by any authentication callback."
+              },
+              "helpUri": "https://go.dev/issue/80213",
+              "help": {
+                "text": "Vulnerability CVE-2026-56854\nSeverity: high\nPackage: golang.org/x/crypto\nVersion: v0.0.0-20210711020723-a769d52b0f97\nFix Version: 0.55.0\nType: go-module\nLocation: /go.mod\nData Namespace: govulndb:language:go\nLink: [CVE-2026-56854](https://go.dev/issue/80213)",
+                "markdown": "**Vulnerability CVE-2026-56854**\n| Severity | Package | Version | Fix Version | Type | Location | Data Namespace | Link |\n| --- | --- | --- | --- | --- | --- | --- | --- |\n| high  | golang.org/x/crypto  | v0.0.0-20210711020723-a769d52b0f97  | 0.55.0  | go-module  | /go.mod  | govulndb:language:go  | [CVE-2026-56854](https://go.dev/issue/80213)  |\n"
+              },
+              "properties": {
+                "purls": [
+                  "pkg:golang/golang.org/x/crypto@v0.0.0-20210711020723-a769d52b0f97"
+                ],
+                "security-severity": "7.5"
+              }
+            },
+            {
+              "id": "CVE-2026-78662-golang.org/x/crypto",
+              "name": "GoModuleMatcherExactDirectMatch",
+              "shortDescription": {
+                "text": "CVE-2026-78662 high vulnerability for golang.org/x/crypto package"
+              },
+              "fullDescription": {
+                "text": "Previously, a channel registered in the mux's chanList is not usable until it is established. A malicious peer was able flood the channel's incomingRequests, deadlocking the entire connection.\n\nNow, we add an atomic established state, set when a channel becomes usable. Until such a time, handlePacket drops every packet other than the open confirmation/failure, without blocking and without tearing down the connection."
+              },
+              "helpUri": "https://go.dev/issue/81316",
+              "help": {
+                "text": "Vulnerability CVE-2026-78662\nSeverity: high\nPackage: golang.org/x/crypto\nVersion: v0.0.0-20210711020723-a769d52b0f97\nFix Version: 0.56.0\nType: go-module\nLocation: /go.mod\nData Namespace: govulndb:language:go\nLink: [CVE-2026-78662](https://go.dev/issue/81316)",
+                "markdown": "**Vulnerability CVE-2026-78662**\n| Severity | Package | Version | Fix Version | Type | Location | Data Namespace | Link |\n| --- | --- | --- | --- | --- | --- | --- | --- |\n| high  | golang.org/x/crypto  | v0.0.0-20210711020723-a769d52b0f97  | 0.56.0  | go-module  | /go.mod  | govulndb:language:go  | [CVE-2026-78662](https://go.dev/issue/81316)  |\n"
+              },
+              "properties": {
+                "purls": [
+                  "pkg:golang/golang.org/x/crypto@v0.0.0-20210711020723-a769d52b0f97"
+                ],
+                "security-severity": "7.5"
+              }
+            },
+            {
+              "id": "CVE-2025-58181-golang.org/x/crypto",
+              "name": "GoModuleMatcherExactDirectMatch",
+              "shortDescription": {
+                "text": "CVE-2025-58181 medium vulnerability for golang.org/x/crypto package"
+              },
+              "fullDescription": {
+                "text": "golang.org/x/crypto/ssh allows an attacker to cause unbounded memory consumption"
+              },
+              "helpUri": "https://github.com/advisories/GHSA-j5w8-q4qc-rx2x",
+              "help": {
+                "text": "Vulnerability CVE-2025-58181\nSeverity: medium\nPackage: golang.org/x/crypto\nVersion: v0.0.0-20210711020723-a769d52b0f97\nFix Version: 0.45.0\nType: go-module\nLocation: /go.mod\nData Namespace: github:language:go\nLink: [CVE-2025-58181](https://github.com/advisories/GHSA-j5w8-q4qc-rx2x)",
+                "markdown": "**Vulnerability CVE-2025-58181**\n| Severity | Package | Version | Fix Version | Type | Location | Data Namespace | Link |\n| --- | --- | --- | --- | --- | --- | --- | --- |\n| medium  | golang.org/x/crypto  | v0.0.0-20210711020723-a769d52b0f97  | 0.45.0  | go-module  | /go.mod  | github:language:go  | [CVE-2025-58181](https://github.com/advisories/GHSA-j5w8-q4qc-rx2x)  |\n"
+              },
+              "properties": {
+                "purls": [
+                  "pkg:golang/golang.org/x/crypto@v0.0.0-20210711020723-a769d52b0f97"
+                ],
+                "security-severity": "5.3"
+              }
+            },
+            {
+              "id": "CVE-2026-78661-golang.org/x/net",
+              "name": "GoModuleMatcherExactDirectMatch",
+              "shortDescription": {
+                "text": "CVE-2026-78661 high vulnerability for golang.org/x/net package"
+              },
+              "fullDescription": {
+                "text": "When coalescing adjacent text nodes in addText and fosterParent, appending to an existing TextNode's Data via string concatenation (n.Data += text) reallocated and copied the accumulated string on every token. Inputs containing many short text runs separated by ignored end tags (such as \"a\u003c/x\u003e\") caused O(n^2) allocations and byte copies.\n\nAccumulate coalesced text in per-node byte slices during parsing and materialize Data strings once at the end of parse."
+              },
+              "helpUri": "https://go.dev/cl/849365",
+              "help": {
+                "text": "Vulnerability CVE-2026-78661\nSeverity: high\nPackage: golang.org/x/net\nVersion: v0.0.0-20210226172049-e18ecbb05110\nFix Version: 0.62.0\nType: go-module\nLocation: /go.mod\nData Namespace: govulndb:language:go\nLink: [CVE-2026-78661](https://go.dev/cl/849365)",
+                "markdown": "**Vulnerability CVE-2026-78661**\n| Severity | Package | Version | Fix Version | Type | Location | Data Namespace | Link |\n| --- | --- | --- | --- | --- | --- | --- | --- |\n| high  | golang.org/x/net  | v0.0.0-20210226172049-e18ecbb05110  | 0.62.0  | go-module  | /go.mod  | govulndb:language:go  | [CVE-2026-78661](https://go.dev/cl/849365)  |\n"
+              },
+              "properties": {
+                "purls": [
+                  "pkg:golang/golang.org/x/net@v0.0.0-20210226172049-e18ecbb05110"
+                ],
+                "security-severity": "7.5"
+              }
+            },
+            {
+              "id": "CVE-2025-47911-golang.org/x/net",
+              "name": "GoModuleMatcherExactDirectMatch",
+              "shortDescription": {
+                "text": "CVE-2025-47911 medium vulnerability for golang.org/x/net package"
+              },
+              "fullDescription": {
+                "text": "The html.Parse function in golang.org/x/net/html has quadratic parsing complexity when processing certain inputs, which can lead to denial of service (DoS) if an attacker provides specially crafted HTML content."
+              },
+              "helpUri": "https://go.dev/cl/709876",
+              "help": {
+                "text": "Vulnerability CVE-2025-47911\nSeverity: medium\nPackage: golang.org/x/net\nVersion: v0.0.0-20210226172049-e18ecbb05110\nFix Version: 0.45.0\nType: go-module\nLocation: /go.mod\nData Namespace: govulndb:language:go\nLink: [CVE-2025-47911](https://go.dev/cl/709876)",
+                "markdown": "**Vulnerability CVE-2025-47911**\n| Severity | Package | Version | Fix Version | Type | Location | Data Namespace | Link |\n| --- | --- | --- | --- | --- | --- | --- | --- |\n| medium  | golang.org/x/net  | v0.0.0-20210226172049-e18ecbb05110  | 0.45.0  | go-module  | /go.mod  | govulndb:language:go  | [CVE-2025-47911](https://go.dev/cl/709876)  |\n"
+              },
+              "properties": {
+                "purls": [
+                  "pkg:golang/golang.org/x/net@v0.0.0-20210226172049-e18ecbb05110"
+                ],
+                "security-severity": "5.3"
+              }
+            },
+            {
+              "id": "CVE-2025-22872-golang.org/x/net",
+              "name": "GoModuleMatcherExactDirectMatch",
+              "shortDescription": {
+                "text": "CVE-2025-22872 medium vulnerability for golang.org/x/net package"
+              },
+              "fullDescription": {
+                "text": "golang.org/x/net vulnerable to Cross-site Scripting"
+              },
+              "helpUri": "https://github.com/advisories/GHSA-vvgc-356p-c3xw",
+              "help": {
+                "text": "Vulnerability CVE-2025-22872\nSeverity: medium\nPackage: golang.org/x/net\nVersion: v0.0.0-20210226172049-e18ecbb05110\nFix Version: 0.38.0\nType: go-module\nLocation: /go.mod\nData Namespace: github:language:go\nLink: [CVE-2025-22872](https://github.com/advisories/GHSA-vvgc-356p-c3xw)",
+                "markdown": "**Vulnerability CVE-2025-22872**\n| Severity | Package | Version | Fix Version | Type | Location | Data Namespace | Link |\n| --- | --- | --- | --- | --- | --- | --- | --- |\n| medium  | golang.org/x/net  | v0.0.0-20210226172049-e18ecbb05110  | 0.38.0  | go-module  | /go.mod  | github:language:go  | [CVE-2025-22872](https://github.com/advisories/GHSA-vvgc-356p-c3xw)  |\n"
+              },
+              "properties": {
+                "purls": [
+                  "pkg:golang/golang.org/x/net@v0.0.0-20210226172049-e18ecbb05110"
+                ],
+                "security-severity": "5.3"
+              }
+            },
+            {
+              "id": "CVE-2025-47914-golang.org/x/crypto",
+              "name": "GoModuleMatcherExactDirectMatch",
+              "shortDescription": {
+                "text": "CVE-2025-47914 medium vulnerability for golang.org/x/crypto package"
+              },
+              "fullDescription": {
+                "text": "golang.org/x/crypto/ssh/agent vulnerable to panic if message is malformed due to out of bounds read"
+              },
+              "helpUri": "https://github.com/advisories/GHSA-f6x5-jh6r-wrfv",
+              "help": {
+                "text": "Vulnerability CVE-2025-47914\nSeverity: medium\nPackage: golang.org/x/crypto\nVersion: v0.0.0-20210711020723-a769d52b0f97\nFix Version: 0.45.0\nType: go-module\nLocation: /go.mod\nData Namespace: github:language:go\nLink: [CVE-2025-47914](https://github.com/advisories/GHSA-f6x5-jh6r-wrfv)",
+                "markdown": "**Vulnerability CVE-2025-47914**\n| Severity | Package | Version | Fix Version | Type | Location | Data Namespace | Link |\n| --- | --- | --- | --- | --- | --- | --- | --- |\n| medium  | golang.org/x/crypto  | v0.0.0-20210711020723-a769d52b0f97  | 0.45.0  | go-module  | /go.mod  | github:language:go  | [CVE-2025-47914](https://github.com/advisories/GHSA-f6x5-jh6r-wrfv)  |\n"
+              },
+              "properties": {
+                "purls": [
+                  "pkg:golang/golang.org/x/crypto@v0.0.0-20210711020723-a769d52b0f97"
+                ],
+                "security-severity": "5.3"
+              }
+            },
+            {
+              "id": "CVE-2025-58190-golang.org/x/net",
+              "name": "GoModuleMatcherExactDirectMatch",
+              "shortDescription": {
+                "text": "CVE-2025-58190 medium vulnerability for golang.org/x/net package"
+              },
+              "fullDescription": {
+                "text": "The html.Parse function in golang.org/x/net/html has an infinite parsing loop when processing certain inputs, which can lead to denial of service (DoS) if an attacker provides specially crafted HTML content."
+              },
+              "helpUri": "https://groups.google.com/g/golang-announce/c/jnQcOYpiR2c",
+              "help": {
+                "text": "Vulnerability CVE-2025-58190\nSeverity: medium\nPackage: golang.org/x/net\nVersion: v0.0.0-20210226172049-e18ecbb05110\nFix Version: 0.45.0\nType: go-module\nLocation: /go.mod\nData Namespace: govulndb:language:go\nLink: [CVE-2025-58190](https://groups.google.com/g/golang-announce/c/jnQcOYpiR2c)",
+                "markdown": "**Vulnerability CVE-2025-58190**\n| Severity | Package | Version | Fix Version | Type | Location | Data Namespace | Link |\n| --- | --- | --- | --- | --- | --- | --- | --- |\n| medium  | golang.org/x/net  | v0.0.0-20210226172049-e18ecbb05110  | 0.45.0  | go-module  | /go.mod  | govulndb:language:go  | [CVE-2025-58190](https://groups.google.com/g/golang-announce/c/jnQcOYpiR2c)  |\n"
+              },
+              "properties": {
+                "purls": [
+                  "pkg:golang/golang.org/x/net@v0.0.0-20210226172049-e18ecbb05110"
+                ],
+                "security-severity": "5.3"
+              }
+            },
+            {
+              "id": "CVE-2026-39835-golang.org/x/crypto",
+              "name": "GoModuleMatcherExactDirectMatch",
+              "shortDescription": {
+                "text": "CVE-2026-39835 medium vulnerability for golang.org/x/crypto package"
+              },
+              "fullDescription": {
+                "text": "golang.org/x/crypto is vulnerable to invoking server panic during CheckHostKey/Authenticate flow"
+              },
+              "helpUri": "https://github.com/advisories/GHSA-78mq-xcr3-xm33",
+              "help": {
+                "text": "Vulnerability CVE-2026-39835\nSeverity: medium\nPackage: golang.org/x/crypto\nVersion: v0.0.0-20210711020723-a769d52b0f97\nFix Version: 0.52.0\nType: go-module\nLocation: /go.mod\nData Namespace: github:language:go\nLink: [CVE-2026-39835](https://github.com/advisories/GHSA-78mq-xcr3-xm33)",
+                "markdown": "**Vulnerability CVE-2026-39835**\n| Severity | Package | Version | Fix Version | Type | Location | Data Namespace | Link |\n| --- | --- | --- | --- | --- | --- | --- | --- |\n| medium  | golang.org/x/crypto  | v0.0.0-20210711020723-a769d52b0f97  | 0.52.0  | go-module  | /go.mod  | github:language:go  | [CVE-2026-39835](https://github.com/advisories/GHSA-78mq-xcr3-xm33)  |\n"
+              },
+              "properties": {
+                "purls": [
+                  "pkg:golang/golang.org/x/crypto@v0.0.0-20210711020723-a769d52b0f97"
+                ],
+                "security-severity": "5.3"
+              }
+            },
+            {
+              "id": "CVE-2023-29401-github.com/gin-gonic/gin",
+              "name": "GoModuleMatcherExactDirectMatch",
+              "shortDescription": {
+                "text": "CVE-2023-29401 medium vulnerability for github.com/gin-gonic/gin package"
+              },
+              "fullDescription": {
+                "text": "Gin Web Framework does not properly sanitize filename parameter of Context.FileAttachment function"
+              },
+              "helpUri": "https://github.com/advisories/GHSA-2c4m-59x9-fr2g",
+              "help": {
+                "text": "Vulnerability CVE-2023-29401\nSeverity: medium\nPackage: github.com/gin-gonic/gin\nVersion: v1.8.1\nFix Version: 1.9.1\nType: go-module\nLocation: /go.mod\nData Namespace: github:language:go\nLink: [CVE-2023-29401](https://github.com/advisories/GHSA-2c4m-59x9-fr2g)",
+                "markdown": "**Vulnerability CVE-2023-29401**\n| Severity | Package | Version | Fix Version | Type | Location | Data Namespace | Link |\n| --- | --- | --- | --- | --- | --- | --- | --- |\n| medium  | github.com/gin-gonic/gin  | v1.8.1  | 1.9.1  | go-module  | /go.mod  | github:language:go  | [CVE-2023-29401](https://github.com/advisories/GHSA-2c4m-59x9-fr2g)  |\n"
+              },
+              "properties": {
+                "purls": [
+                  "pkg:golang/github.com/gin-gonic/gin@v1.8.1"
+                ],
+                "security-severity": "4.3"
+              }
+            },
+            {
+              "id": "CVE-2026-46598-golang.org/x/crypto",
+              "name": "GoModuleMatcherExactDirectMatch",
+              "shortDescription": {
+                "text": "CVE-2026-46598 medium vulnerability for golang.org/x/crypto package"
+              },
+              "fullDescription": {
+                "text": "golang.org/x/crypto: Invoking pathological inputs can lead to client panic"
+              },
+              "helpUri": "https://github.com/advisories/GHSA-9m57-25v3-79x9",
+              "help": {
+                "text": "Vulnerability CVE-2026-46598\nSeverity: medium\nPackage: golang.org/x/crypto\nVersion: v0.0.0-20210711020723-a769d52b0f97\nFix Version: 0.52.0\nType: go-module\nLocation: /go.mod\nData Namespace: github:language:go\nLink: [CVE-2026-46598](https://github.com/advisories/GHSA-9m57-25v3-79x9)",
+                "markdown": "**Vulnerability CVE-2026-46598**\n| Severity | Package | Version | Fix Version | Type | Location | Data Namespace | Link |\n| --- | --- | --- | --- | --- | --- | --- | --- |\n| medium  | golang.org/x/crypto  | v0.0.0-20210711020723-a769d52b0f97  | 0.52.0  | go-module  | /go.mod  | github:language:go  | [CVE-2026-46598](https://github.com/advisories/GHSA-9m57-25v3-79x9)  |\n"
+              },
+              "properties": {
+                "purls": [
+                  "pkg:golang/golang.org/x/crypto@v0.0.0-20210711020723-a769d52b0f97"
+                ],
+                "security-severity": "5.3"
+              }
+            },
+            {
+              "id": "CVE-2026-39828-golang.org/x/crypto",
+              "name": "GoModuleMatcherExactDirectMatch",
+              "shortDescription": {
+                "text": "CVE-2026-39828 medium vulnerability for golang.org/x/crypto package"
+              },
+              "fullDescription": {
+                "text": "golang.org/x/crypto vulnerable to invoking bypass of certificate restrictions"
+              },
+              "helpUri": "https://github.com/advisories/GHSA-45gg-vh54-h5m9",
+              "help": {
+                "text": "Vulnerability CVE-2026-39828\nSeverity: medium\nPackage: golang.org/x/crypto\nVersion: v0.0.0-20210711020723-a769d52b0f97\nFix Version: 0.52.0\nType: go-module\nLocation: /go.mod\nData Namespace: github:language:go\nLink: [CVE-2026-39828](https://github.com/advisories/GHSA-45gg-vh54-h5m9)",
+                "markdown": "**Vulnerability CVE-2026-39828**\n| Severity | Package | Version | Fix Version | Type | Location | Data Namespace | Link |\n| --- | --- | --- | --- | --- | --- | --- | --- |\n| medium  | golang.org/x/crypto  | v0.0.0-20210711020723-a769d52b0f97  | 0.52.0  | go-module  | /go.mod  | github:language:go  | [CVE-2026-39828](https://github.com/advisories/GHSA-45gg-vh54-h5m9)  |\n"
+              },
+              "properties": {
+                "purls": [
+                  "pkg:golang/golang.org/x/crypto@v0.0.0-20210711020723-a769d52b0f97"
+                ],
+                "security-severity": "6.3"
+              }
+            },
+            {
+              "id": "CVE-2025-22870-golang.org/x/net",
+              "name": "GoModuleMatcherExactDirectMatch",
+              "shortDescription": {
+                "text": "CVE-2025-22870 medium vulnerability for golang.org/x/net package"
+              },
+              "fullDescription": {
+                "text": "HTTP Proxy bypass using IPv6 Zone IDs in golang.org/x/net"
+              },
+              "helpUri": "https://github.com/advisories/GHSA-qxp5-gwg8-xv66",
+              "help": {
+                "text": "Vulnerability CVE-2025-22870\nSeverity: medium\nPackage: golang.org/x/net\nVersion: v0.0.0-20210226172049-e18ecbb05110\nFix Version: 0.36.0\nType: go-module\nLocation: /go.mod\nData Namespace: github:language:go\nLink: [CVE-2025-22870](https://github.com/advisories/GHSA-qxp5-gwg8-xv66)",
+                "markdown": "**Vulnerability CVE-2025-22870**\n| Severity | Package | Version | Fix Version | Type | Location | Data Namespace | Link |\n| --- | --- | --- | --- | --- | --- | --- | --- |\n| medium  | golang.org/x/net  | v0.0.0-20210226172049-e18ecbb05110  | 0.36.0  | go-module  | /go.mod  | github:language:go  | [CVE-2025-22870](https://github.com/advisories/GHSA-qxp5-gwg8-xv66)  |\n"
+              },
+              "properties": {
+                "purls": [
+                  "pkg:golang/golang.org/x/net@v0.0.0-20210226172049-e18ecbb05110"
+                ],
+                "security-severity": "4.4"
+              }
+            },
+            {
+              "id": "CVE-2026-25680-golang.org/x/net",
+              "name": "GoModuleMatcherExactDirectMatch",
+              "shortDescription": {
+                "text": "CVE-2026-25680 medium vulnerability for golang.org/x/net package"
+              },
+              "fullDescription": {
+                "text": "Go Net HTML parser is vulnerable to denial of service"
+              },
+              "helpUri": "https://github.com/advisories/GHSA-5cv4-jp36-h3mw",
+              "help": {
+                "text": "Vulnerability CVE-2026-25680\nSeverity: medium\nPackage: golang.org/x/net\nVersion: v0.0.0-20210226172049-e18ecbb05110\nFix Version: 0.55.0\nType: go-module\nLocation: /go.mod\nData Namespace: github:language:go\nLink: [CVE-2026-25680](https://github.com/advisories/GHSA-5cv4-jp36-h3mw)",
+                "markdown": "**Vulnerability CVE-2026-25680**\n| Severity | Package | Version | Fix Version | Type | Location | Data Namespace | Link |\n| --- | --- | --- | --- | --- | --- | --- | --- |\n| medium  | golang.org/x/net  | v0.0.0-20210226172049-e18ecbb05110  | 0.55.0  | go-module  | /go.mod  | github:language:go  | [CVE-2026-25680](https://github.com/advisories/GHSA-5cv4-jp36-h3mw)  |\n"
+              },
+              "properties": {
+                "purls": [
+                  "pkg:golang/golang.org/x/net@v0.0.0-20210226172049-e18ecbb05110"
+                ],
+                "security-severity": "6.5"
+              }
+            },
+            {
+              "id": "CVE-2026-39827-golang.org/x/crypto",
+              "name": "GoModuleMatcherExactDirectMatch",
+              "shortDescription": {
+                "text": "CVE-2026-39827 medium vulnerability for golang.org/x/crypto package"
+              },
+              "fullDescription": {
+                "text": "golang.org/x/crypto: Invoking memory leak when rejecting channels can lead to DoS"
+              },
+              "helpUri": "https://github.com/advisories/GHSA-qpw4-5x99-6vjp",
+              "help": {
+                "text": "Vulnerability CVE-2026-39827\nSeverity: medium\nPackage: golang.org/x/crypto\nVersion: v0.0.0-20210711020723-a769d52b0f97\nFix Version: 0.52.0\nType: go-module\nLocation: /go.mod\nData Namespace: github:language:go\nLink: [CVE-2026-39827](https://github.com/advisories/GHSA-qpw4-5x99-6vjp)",
+                "markdown": "**Vulnerability CVE-2026-39827**\n| Severity | Package | Version | Fix Version | Type | Location | Data Namespace | Link |\n| --- | --- | --- | --- | --- | --- | --- | --- |\n| medium  | golang.org/x/crypto  | v0.0.0-20210711020723-a769d52b0f97  | 0.52.0  | go-module  | /go.mod  | github:language:go  | [CVE-2026-39827](https://github.com/advisories/GHSA-qpw4-5x99-6vjp)  |\n"
+              },
+              "properties": {
+                "purls": [
+                  "pkg:golang/golang.org/x/crypto@v0.0.0-20210711020723-a769d52b0f97"
+                ],
+                "security-severity": "6.5"
+              }
+            },
+            {
+              "id": "CVE-2026-97045-golang.org/x/net",
+              "name": "GoModuleMatcherExactDirectMatch",
+              "shortDescription": {
+                "text": "CVE-2026-97045 medium vulnerability for golang.org/x/net package"
+              },
+              "fullDescription": {
+                "text": "In childTextNodesAreLiteral, walking up the tree previously stopped at the nearest foreign ancestor once an HTML integration point was found. However, that integration point may itself be a descendant of an element that was foster-parented into a foreign namespace (such as \u003cmglyph\u003e or \u003cmalignmark\u003e fostered under \u003cmtext\u003e), causing a parser to resolve the subtree in a different foreign namespace upon re-parsing the rendered output.\n\nContinue walking the full ancestor chain and verify that every transition from a non-empty namespace occurs at an HTML integration point before emitting literal text."
+              },
+              "helpUri": "https://go.dev/cl/855121",
+              "help": {
+                "text": "Vulnerability CVE-2026-97045\nSeverity: medium\nPackage: golang.org/x/net\nVersion: v0.0.0-20210226172049-e18ecbb05110\nFix Version: 0.62.0\nType: go-module\nLocation: /go.mod\nData Namespace: govulndb:language:go\nLink: [CVE-2026-97045](https://go.dev/cl/855121)",
+                "markdown": "**Vulnerability CVE-2026-97045**\n| Severity | Package | Version | Fix Version | Type | Location | Data Namespace | Link |\n| --- | --- | --- | --- | --- | --- | --- | --- |\n| medium  | golang.org/x/net  | v0.0.0-20210226172049-e18ecbb05110  | 0.62.0  | go-module  | /go.mod  | govulndb:language:go  | [CVE-2026-97045](https://go.dev/cl/855121)  |\n"
+              },
+              "properties": {
+                "purls": [
+                  "pkg:golang/golang.org/x/net@v0.0.0-20210226172049-e18ecbb05110"
+                ],
+                "security-severity": "6.1"
+              }
+            },
+            {
+              "id": "CVE-2026-25681-golang.org/x/net",
+              "name": "GoModuleMatcherExactDirectMatch",
+              "shortDescription": {
+                "text": "CVE-2026-25681 medium vulnerability for golang.org/x/net package"
+              },
+              "fullDescription": {
+                "text": "Parsing arbitrary HTML which is then rendered using Render can result in an unexpected HTML tree. This can be leveraged to execute XSS attacks in applications that attempt to sanitize input HTML before rendering."
+              },
+              "helpUri": "https://go.dev/issue/79574",
+              "help": {
+                "text": "Vulnerability CVE-2026-25681\nSeverity: medium\nPackage: golang.org/x/net\nVersion: v0.0.0-20210226172049-e18ecbb05110\nFix Version: 0.55.0\nType: go-module\nLocation: /go.mod\nData Namespace: govulndb:language:go\nLink: [CVE-2026-25681](https://go.dev/issue/79574)",
+                "markdown": "**Vulnerability CVE-2026-25681**\n| Severity | Package | Version | Fix Version | Type | Location | Data Namespace | Link |\n| --- | --- | --- | --- | --- | --- | --- | --- |\n| medium  | golang.org/x/net  | v0.0.0-20210226172049-e18ecbb05110  | 0.55.0  | go-module  | /go.mod  | govulndb:language:go  | [CVE-2026-25681](https://go.dev/issue/79574)  |\n"
+              },
+              "properties": {
+                "purls": [
+                  "pkg:golang/golang.org/x/net@v0.0.0-20210226172049-e18ecbb05110"
+                ],
+                "security-severity": "6.1"
+              }
+            },
+            {
+              "id": "CVE-2026-27136-golang.org/x/net",
+              "name": "GoModuleMatcherExactDirectMatch",
+              "shortDescription": {
+                "text": "CVE-2026-27136 medium vulnerability for golang.org/x/net package"
+              },
+              "fullDescription": {
+                "text": "Parsing arbitrary HTML which is then rendered using Render can result in an unexpected HTML tree. This can be leveraged to execute XSS attacks in applications that attempt to sanitize input HTML before rendering."
+              },
+              "helpUri": "https://go.dev/issue/79575",
+              "help": {
+                "text": "Vulnerability CVE-2026-27136\nSeverity: medium\nPackage: golang.org/x/net\nVersion: v0.0.0-20210226172049-e18ecbb05110\nFix Version: 0.55.0\nType: go-module\nLocation: /go.mod\nData Namespace: govulndb:language:go\nLink: [CVE-2026-27136](https://go.dev/issue/79575)",
+                "markdown": "**Vulnerability CVE-2026-27136**\n| Severity | Package | Version | Fix Version | Type | Location | Data Namespace | Link |\n| --- | --- | --- | --- | --- | --- | --- | --- |\n| medium  | golang.org/x/net  | v0.0.0-20210226172049-e18ecbb05110  | 0.55.0  | go-module  | /go.mod  | govulndb:language:go  | [CVE-2026-27136](https://go.dev/issue/79575)  |\n"
+              },
+              "properties": {
+                "purls": [
+                  "pkg:golang/golang.org/x/net@v0.0.0-20210226172049-e18ecbb05110"
+                ],
+                "security-severity": "6.1"
+              }
+            },
+            {
+              "id": "CVE-2026-42506-golang.org/x/net",
+              "name": "GoModuleMatcherExactDirectMatch",
+              "shortDescription": {
+                "text": "CVE-2026-42506 medium vulnerability for golang.org/x/net package"
+              },
+              "fullDescription": {
+                "text": "Parsing arbitrary HTML which is then rendered using Render can result in an unexpected HTML tree. This can be leveraged to execute XSS attacks in applications that attempt to sanitize input HTML before rendering."
+              },
+              "helpUri": "https://go.dev/issue/79571",
+              "help": {
+                "text": "Vulnerability CVE-2026-42506\nSeverity: medium\nPackage: golang.org/x/net\nVersion: v0.0.0-20210226172049-e18ecbb05110\nFix Version: 0.55.0\nType: go-module\nLocation: /go.mod\nData Namespace: govulndb:language:go\nLink: [CVE-2026-42506](https://go.dev/issue/79571)",
+                "markdown": "**Vulnerability CVE-2026-42506**\n| Severity | Package | Version | Fix Version | Type | Location | Data Namespace | Link |\n| --- | --- | --- | --- | --- | --- | --- | --- |\n| medium  | golang.org/x/net  | v0.0.0-20210226172049-e18ecbb05110  | 0.55.0  | go-module  | /go.mod  | govulndb:language:go  | [CVE-2026-42506](https://go.dev/issue/79571)  |\n"
+              },
+              "properties": {
+                "purls": [
+                  "pkg:golang/golang.org/x/net@v0.0.0-20210226172049-e18ecbb05110"
+                ],
+                "security-severity": "6.1"
+              }
+            },
+            {
+              "id": "CVE-2026-42502-golang.org/x/net",
+              "name": "GoModuleMatcherExactDirectMatch",
+              "shortDescription": {
+                "text": "CVE-2026-42502 medium vulnerability for golang.org/x/net package"
+              },
+              "fullDescription": {
+                "text": "Parsing arbitrary HTML which is then rendered using Render can result in an unexpected HTML tree. This can be leveraged to execute XSS attacks in applications that attempt to sanitize input HTML before rendering."
+              },
+              "helpUri": "https://go.dev/issue/79572",
+              "help": {
+                "text": "Vulnerability CVE-2026-42502\nSeverity: medium\nPackage: golang.org/x/net\nVersion: v0.0.0-20210226172049-e18ecbb05110\nFix Version: 0.55.0\nType: go-module\nLocation: /go.mod\nData Namespace: govulndb:language:go\nLink: [CVE-2026-42502](https://go.dev/issue/79572)",
+                "markdown": "**Vulnerability CVE-2026-42502**\n| Severity | Package | Version | Fix Version | Type | Location | Data Namespace | Link |\n| --- | --- | --- | --- | --- | --- | --- | --- |\n| medium  | golang.org/x/net  | v0.0.0-20210226172049-e18ecbb05110  | 0.55.0  | go-module  | /go.mod  | govulndb:language:go  | [CVE-2026-42502](https://go.dev/issue/79572)  |\n"
+              },
+              "properties": {
+                "purls": [
+                  "pkg:golang/golang.org/x/net@v0.0.0-20210226172049-e18ecbb05110"
+                ],
+                "security-severity": "6.1"
+              }
+            },
+            {
+              "id": "CVE-2026-39824-golang.org/x/sys",
+              "name": "GoModuleMatcherExactDirectMatch",
+              "shortDescription": {
+                "text": "CVE-2026-39824 low vulnerability for golang.org/x/sys package"
+              },
+              "fullDescription": {
+                "text": "NewNTUnicodeString does not check for string length overflow. When provided with a string that overflows the maximum size of a NTUnicodeString (a 16-bit number of bytes), it returns a truncated string rather than an error."
+              },
+              "helpUri": "https://go.dev/issue/78916",
+              "help": {
+                "text": "Vulnerability CVE-2026-39824\nSeverity: low\nPackage: golang.org/x/sys\nVersion: v0.0.0-20210806184541-e5e7981a1069\nFix Version: 0.44.0\nType: go-module\nLocation: /go.mod\nData Namespace: govulndb:language:go\nLink: [CVE-2026-39824](https://go.dev/issue/78916)",
+                "markdown": "**Vulnerability CVE-2026-39824**\n| Severity | Package | Version | Fix Version | Type | Location | Data Namespace | Link |\n| --- | --- | --- | --- | --- | --- | --- | --- |\n| low  | golang.org/x/sys  | v0.0.0-20210806184541-e5e7981a1069  | 0.44.0  | go-module  | /go.mod  | govulndb:language:go  | [CVE-2026-39824](https://go.dev/issue/78916)  |\n"
+              },
+              "properties": {
+                "purls": [
+                  "pkg:golang/golang.org/x/sys@v0.0.0-20210806184541-e5e7981a1069"
+                ],
+                "security-severity": "3.3"
+              }
+            },
+            {
+              "id": "GO-2026-5932-golang.org/x/crypto",
+              "name": "GoModuleMatcherExactDirectMatch",
+              "shortDescription": {
+                "text": "GO-2026-5932 low vulnerability for golang.org/x/crypto package"
+              },
+              "fullDescription": {
+                "text": "The golang.org/x/crypto/openpgp package is unsafe by design, has numerous known security issues, is not maintained, and should not be used.\n\nIf you are required to interoperate with OpenPGP systems and need a maintained package, consider github.com/ProtonMail/go-crypto/openpgp which is a maintained fork that aims to be a drop-in replacement for this package."
+              },
+              "helpUri": "https://go.dev/issue/44226",
+              "help": {
+                "text": "Vulnerability GO-2026-5932\nSeverity: low\nPackage: golang.org/x/crypto\nVersion: v0.0.0-20210711020723-a769d52b0f97\nFix Version: 0.58.1-0.20261009181718-2f1f834330b2\nType: go-module\nLocation: /go.mod\nData Namespace: govulndb:language:go\nLink: [GO-2026-5932](https://go.dev/issue/44226)",
+                "markdown": "**Vulnerability GO-2026-5932**\n| Severity | Package | Version | Fix Version | Type | Location | Data Namespace | Link |\n| --- | --- | --- | --- | --- | --- | --- | --- |\n| low  | golang.org/x/crypto  | v0.0.0-20210711020723-a769d52b0f97  | 0.58.1-0.20261009181718-2f1f834330b2  | go-module  | /go.mod  | govulndb:language:go  | [GO-2026-5932](https://go.dev/issue/44226)  |\n"
+              },
+              "properties": {
+                "purls": [
+                  "pkg:golang/golang.org/x/crypto@v0.0.0-20210711020723-a769d52b0f97"
+                ],
+                "security-severity": "0.0"
+              }
+            }
+          ]
+        }
+      },
+      "results": [
+        {
+          "ruleId": "CVE-2023-44487-golang.org/x/net",
+          "level": "warning",
+          "message": {
+            "text": "A medium vulnerability in go-module package: golang.org/x/net, version v0.0.0-20210226172049-e18ecbb05110 was found at: /go.mod"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/go.mod"
+                },
+                "region": {
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primaryLocationLineHash": "d455c30acf624063c67a09b962f26eb593ddfdf6770c84cba13abe9dca37ba06:1"
+          }
+        },
+        {
+          "ruleId": "CVE-2023-48795-golang.org/x/crypto",
+          "level": "warning",
+          "message": {
+            "text": "A medium vulnerability in go-module package: golang.org/x/crypto, version v0.0.0-20210711020723-a769d52b0f97 was found at: /go.mod"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/go.mod"
+                },
+                "region": {
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primaryLocationLineHash": "67603442dc580d13661081916d95fdf6abc32fbfaef4f5037a19092d6be0e4b3:1"
+          }
+        },
+        {
+          "ruleId": "CVE-2023-45288-golang.org/x/net",
+          "level": "warning",
+          "message": {
+            "text": "A medium vulnerability in go-module package: golang.org/x/net, version v0.0.0-20210226172049-e18ecbb05110 was found at: /go.mod"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/go.mod"
+                },
+                "region": {
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primaryLocationLineHash": "d455c30acf624063c67a09b962f26eb593ddfdf6770c84cba13abe9dca37ba06:1"
+          }
+        },
+        {
+          "ruleId": "CVE-2026-42508-golang.org/x/crypto",
+          "level": "error",
+          "message": {
+            "text": "A critical vulnerability in go-module package: golang.org/x/crypto, version v0.0.0-20210711020723-a769d52b0f97 was found at: /go.mod"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/go.mod"
+                },
+                "region": {
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primaryLocationLineHash": "67603442dc580d13661081916d95fdf6abc32fbfaef4f5037a19092d6be0e4b3:1"
+          }
+        },
+        {
+          "ruleId": "CVE-2021-33194-golang.org/x/net",
+          "level": "error",
+          "message": {
+            "text": "A high vulnerability in go-module package: golang.org/x/net, version v0.0.0-20210226172049-e18ecbb05110 was found at: /go.mod"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/go.mod"
+                },
+                "region": {
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primaryLocationLineHash": "d455c30acf624063c67a09b962f26eb593ddfdf6770c84cba13abe9dca37ba06:1"
+          }
+        },
+        {
+          "ruleId": "CVE-2024-45337-golang.org/x/crypto",
+          "level": "error",
+          "message": {
+            "text": "A critical vulnerability in go-module package: golang.org/x/crypto, version v0.0.0-20210711020723-a769d52b0f97 was found at: /go.mod"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/go.mod"
+                },
+                "region": {
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primaryLocationLineHash": "67603442dc580d13661081916d95fdf6abc32fbfaef4f5037a19092d6be0e4b3:1"
+          }
+        },
+        {
+          "ruleId": "CVE-2022-41723-golang.org/x/net",
+          "level": "error",
+          "message": {
+            "text": "A high vulnerability in go-module package: golang.org/x/net, version v0.0.0-20210226172049-e18ecbb05110 was found at: /go.mod"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/go.mod"
+                },
+                "region": {
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primaryLocationLineHash": "d455c30acf624063c67a09b962f26eb593ddfdf6770c84cba13abe9dca37ba06:1"
+          }
+        },
+        {
+          "ruleId": "CVE-2022-41717-golang.org/x/net",
+          "level": "warning",
+          "message": {
+            "text": "A medium vulnerability in go-module package: golang.org/x/net, version v0.0.0-20210226172049-e18ecbb05110 was found at: /go.mod"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/go.mod"
+                },
+                "region": {
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primaryLocationLineHash": "d455c30acf624063c67a09b962f26eb593ddfdf6770c84cba13abe9dca37ba06:1"
+          }
+        },
+        {
+          "ruleId": "CVE-2021-44716-golang.org/x/net",
+          "level": "error",
+          "message": {
+            "text": "A high vulnerability in go-module package: golang.org/x/net, version v0.0.0-20210226172049-e18ecbb05110 was found at: /go.mod"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/go.mod"
+                },
+                "region": {
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primaryLocationLineHash": "d455c30acf624063c67a09b962f26eb593ddfdf6770c84cba13abe9dca37ba06:1"
+          }
+        },
+        {
+          "ruleId": "CVE-2022-28948-gopkg.in/yaml.v3",
+          "level": "error",
+          "message": {
+            "text": "A high vulnerability in go-module package: gopkg.in/yaml.v3, version v3.0.0-20210107192922-496545a6307b was found at: /go.mod"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/go.mod"
+                },
+                "region": {
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primaryLocationLineHash": "94f58be13ddecb6dd2660ad89f5d3a24bb95d84ce1daf8b4e417b7f901cc6b44:1"
+          }
+        },
+        {
+          "ruleId": "CVE-2022-27191-golang.org/x/crypto",
+          "level": "error",
+          "message": {
+            "text": "A high vulnerability in go-module package: golang.org/x/crypto, version v0.0.0-20210711020723-a769d52b0f97 was found at: /go.mod"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/go.mod"
+                },
+                "region": {
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primaryLocationLineHash": "67603442dc580d13661081916d95fdf6abc32fbfaef4f5037a19092d6be0e4b3:1"
+          }
+        },
+        {
+          "ruleId": "CVE-2023-39325-golang.org/x/net",
+          "level": "error",
+          "message": {
+            "text": "A high vulnerability in go-module package: golang.org/x/net, version v0.0.0-20210226172049-e18ecbb05110 was found at: /go.mod"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/go.mod"
+                },
+                "region": {
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primaryLocationLineHash": "d455c30acf624063c67a09b962f26eb593ddfdf6770c84cba13abe9dca37ba06:1"
+          }
+        },
+        {
+          "ruleId": "CVE-2022-27664-golang.org/x/net",
+          "level": "error",
+          "message": {
+            "text": "A high vulnerability in go-module package: golang.org/x/net, version v0.0.0-20210226172049-e18ecbb05110 was found at: /go.mod"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/go.mod"
+                },
+                "region": {
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primaryLocationLineHash": "d455c30acf624063c67a09b962f26eb593ddfdf6770c84cba13abe9dca37ba06:1"
+          }
+        },
+        {
+          "ruleId": "CVE-2021-31525-golang.org/x/net",
+          "level": "warning",
+          "message": {
+            "text": "A medium vulnerability in go-module package: golang.org/x/net, version v0.0.0-20210226172049-e18ecbb05110 was found at: /go.mod"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/go.mod"
+                },
+                "region": {
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primaryLocationLineHash": "d455c30acf624063c67a09b962f26eb593ddfdf6770c84cba13abe9dca37ba06:1"
+          }
+        },
+        {
+          "ruleId": "CVE-2022-29526-golang.org/x/sys",
+          "level": "warning",
+          "message": {
+            "text": "A medium vulnerability in go-module package: golang.org/x/sys, version v0.0.0-20210806184541-e5e7981a1069 was found at: /go.mod"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/go.mod"
+                },
+                "region": {
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primaryLocationLineHash": "11bb9a9e72a5a47492239afe7242b3ed8f5a2f694a4a180a0cabc890ca1d7b16:1"
+          }
+        },
+        {
+          "ruleId": "CVE-2026-39821-golang.org/x/net",
+          "level": "error",
+          "message": {
+            "text": "A high vulnerability in go-module package: golang.org/x/net, version v0.0.0-20210226172049-e18ecbb05110 was found at: /go.mod"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/go.mod"
+                },
+                "region": {
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primaryLocationLineHash": "d455c30acf624063c67a09b962f26eb593ddfdf6770c84cba13abe9dca37ba06:1"
+          }
+        },
+        {
+          "ruleId": "CVE-2022-32149-golang.org/x/text",
+          "level": "error",
+          "message": {
+            "text": "A high vulnerability in go-module package: golang.org/x/text, version v0.3.6 was found at: /go.mod"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/go.mod"
+                },
+                "region": {
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primaryLocationLineHash": "413b61c61b5011c5b80ddb2ae064600682c9d721decdd4906e4a240064f982df:1"
+          }
+        },
+        {
+          "ruleId": "CVE-2021-38561-golang.org/x/text",
+          "level": "error",
+          "message": {
+            "text": "A high vulnerability in go-module package: golang.org/x/text, version v0.3.6 was found at: /go.mod"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/go.mod"
+                },
+                "region": {
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primaryLocationLineHash": "413b61c61b5011c5b80ddb2ae064600682c9d721decdd4906e4a240064f982df:1"
+          }
+        },
+        {
+          "ruleId": "CVE-2021-43565-golang.org/x/crypto",
+          "level": "error",
+          "message": {
+            "text": "A high vulnerability in go-module package: golang.org/x/crypto, version v0.0.0-20210711020723-a769d52b0f97 was found at: /go.mod"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/go.mod"
+                },
+                "region": {
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primaryLocationLineHash": "67603442dc580d13661081916d95fdf6abc32fbfaef4f5037a19092d6be0e4b3:1"
+          }
+        },
+        {
+          "ruleId": "CVE-2026-78663-golang.org/x/net",
+          "level": "error",
+          "message": {
+            "text": "A critical vulnerability in go-module package: golang.org/x/net, version v0.0.0-20210226172049-e18ecbb05110 was found at: /go.mod"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/go.mod"
+                },
+                "region": {
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primaryLocationLineHash": "d455c30acf624063c67a09b962f26eb593ddfdf6770c84cba13abe9dca37ba06:1"
+          }
+        },
+        {
+          "ruleId": "CVE-2024-24786-google.golang.org/protobuf",
+          "level": "warning",
+          "message": {
+            "text": "A medium vulnerability in go-module package: google.golang.org/protobuf, version v1.28.0 was found at: /go.mod"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/go.mod"
+                },
+                "region": {
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primaryLocationLineHash": "01cd983e37d9c3ef1328a4d2f5ca0a441d63ffcfbb9d557593c5e313a32f80fe:1"
+          }
+        },
+        {
+          "ruleId": "CVE-2025-22869-golang.org/x/crypto",
+          "level": "error",
+          "message": {
+            "text": "A high vulnerability in go-module package: golang.org/x/crypto, version v0.0.0-20210711020723-a769d52b0f97 was found at: /go.mod"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/go.mod"
+                },
+                "region": {
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primaryLocationLineHash": "67603442dc580d13661081916d95fdf6abc32fbfaef4f5037a19092d6be0e4b3:1"
+          }
+        },
+        {
+          "ruleId": "CVE-2026-78659-golang.org/x/net",
+          "level": "error",
+          "message": {
+            "text": "A high vulnerability in go-module package: golang.org/x/net, version v0.0.0-20210226172049-e18ecbb05110 was found at: /go.mod"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/go.mod"
+                },
+                "region": {
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primaryLocationLineHash": "d455c30acf624063c67a09b962f26eb593ddfdf6770c84cba13abe9dca37ba06:1"
+          }
+        },
+        {
+          "ruleId": "CVE-2026-78669-golang.org/x/net",
+          "level": "error",
+          "message": {
+            "text": "A high vulnerability in go-module package: golang.org/x/net, version v0.0.0-20210226172049-e18ecbb05110 was found at: /go.mod"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/go.mod"
+                },
+                "region": {
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primaryLocationLineHash": "d455c30acf624063c67a09b962f26eb593ddfdf6770c84cba13abe9dca37ba06:1"
+          }
+        },
+        {
+          "ruleId": "CVE-2026-33814-golang.org/x/net",
+          "level": "error",
+          "message": {
+            "text": "A high vulnerability in go-module package: golang.org/x/net, version v0.0.0-20210226172049-e18ecbb05110 was found at: /go.mod"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/go.mod"
+                },
+                "region": {
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primaryLocationLineHash": "d455c30acf624063c67a09b962f26eb593ddfdf6770c84cba13abe9dca37ba06:1"
+          }
+        },
+        {
+          "ruleId": "CVE-2026-39832-golang.org/x/crypto",
+          "level": "error",
+          "message": {
+            "text": "A critical vulnerability in go-module package: golang.org/x/crypto, version v0.0.0-20210711020723-a769d52b0f97 was found at: /go.mod"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/go.mod"
+                },
+                "region": {
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primaryLocationLineHash": "67603442dc580d13661081916d95fdf6abc32fbfaef4f5037a19092d6be0e4b3:1"
+          }
+        },
+        {
+          "ruleId": "CVE-2026-39830-golang.org/x/crypto",
+          "level": "error",
+          "message": {
+            "text": "A critical vulnerability in go-module package: golang.org/x/crypto, version v0.0.0-20210711020723-a769d52b0f97 was found at: /go.mod"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/go.mod"
+                },
+                "region": {
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primaryLocationLineHash": "67603442dc580d13661081916d95fdf6abc32fbfaef4f5037a19092d6be0e4b3:1"
+          }
+        },
+        {
+          "ruleId": "CVE-2024-45338-golang.org/x/net",
+          "level": "warning",
+          "message": {
+            "text": "A medium vulnerability in go-module package: golang.org/x/net, version v0.0.0-20210226172049-e18ecbb05110 was found at: /go.mod"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/go.mod"
+                },
+                "region": {
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primaryLocationLineHash": "d455c30acf624063c67a09b962f26eb593ddfdf6770c84cba13abe9dca37ba06:1"
+          }
+        },
+        {
+          "ruleId": "CVE-2026-39834-golang.org/x/crypto",
+          "level": "error",
+          "message": {
+            "text": "A critical vulnerability in go-module package: golang.org/x/crypto, version v0.0.0-20210711020723-a769d52b0f97 was found at: /go.mod"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/go.mod"
+                },
+                "region": {
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primaryLocationLineHash": "67603442dc580d13661081916d95fdf6abc32fbfaef4f5037a19092d6be0e4b3:1"
+          }
+        },
+        {
+          "ruleId": "CVE-2026-46595-golang.org/x/crypto",
+          "level": "error",
+          "message": {
+            "text": "A critical vulnerability in go-module package: golang.org/x/crypto, version v0.0.0-20210711020723-a769d52b0f97 was found at: /go.mod"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/go.mod"
+                },
+                "region": {
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primaryLocationLineHash": "67603442dc580d13661081916d95fdf6abc32fbfaef4f5037a19092d6be0e4b3:1"
+          }
+        },
+        {
+          "ruleId": "CVE-2026-97032-golang.org/x/net",
+          "level": "error",
+          "message": {
+            "text": "A high vulnerability in go-module package: golang.org/x/net, version v0.0.0-20210226172049-e18ecbb05110 was found at: /go.mod"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/go.mod"
+                },
+                "region": {
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primaryLocationLineHash": "d455c30acf624063c67a09b962f26eb593ddfdf6770c84cba13abe9dca37ba06:1"
+          }
+        },
+        {
+          "ruleId": "CVE-2025-47913-golang.org/x/crypto",
+          "level": "error",
+          "message": {
+            "text": "A high vulnerability in go-module package: golang.org/x/crypto, version v0.0.0-20210711020723-a769d52b0f97 was found at: /go.mod"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/go.mod"
+                },
+                "region": {
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primaryLocationLineHash": "67603442dc580d13661081916d95fdf6abc32fbfaef4f5037a19092d6be0e4b3:1"
+          }
+        },
+        {
+          "ruleId": "CVE-2023-26125-github.com/gin-gonic/gin",
+          "level": "warning",
+          "message": {
+            "text": "A medium vulnerability in go-module package: github.com/gin-gonic/gin, version v1.8.1 was found at: /go.mod"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/go.mod"
+                },
+                "region": {
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primaryLocationLineHash": "beb21eeba2aeba59ad87edee661ca0d4459a9931868f85165691f2e2aed3b0e9:1"
+          }
+        },
+        {
+          "ruleId": "CVE-2022-30636-golang.org/x/crypto",
+          "level": "error",
+          "message": {
+            "text": "A high vulnerability in go-module package: golang.org/x/crypto, version v0.0.0-20210711020723-a769d52b0f97 was found at: /go.mod"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/go.mod"
+                },
+                "region": {
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primaryLocationLineHash": "67603442dc580d13661081916d95fdf6abc32fbfaef4f5037a19092d6be0e4b3:1"
+          }
+        },
+        {
+          "ruleId": "CVE-2023-3978-golang.org/x/net",
+          "level": "warning",
+          "message": {
+            "text": "A medium vulnerability in go-module package: golang.org/x/net, version v0.0.0-20210226172049-e18ecbb05110 was found at: /go.mod"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/go.mod"
+                },
+                "region": {
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primaryLocationLineHash": "d455c30acf624063c67a09b962f26eb593ddfdf6770c84cba13abe9dca37ba06:1"
+          }
+        },
+        {
+          "ruleId": "CVE-2026-39831-golang.org/x/crypto",
+          "level": "error",
+          "message": {
+            "text": "A critical vulnerability in go-module package: golang.org/x/crypto, version v0.0.0-20210711020723-a769d52b0f97 was found at: /go.mod"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/go.mod"
+                },
+                "region": {
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primaryLocationLineHash": "67603442dc580d13661081916d95fdf6abc32fbfaef4f5037a19092d6be0e4b3:1"
+          }
+        },
+        {
+          "ruleId": "CVE-2026-39833-golang.org/x/crypto",
+          "level": "error",
+          "message": {
+            "text": "A critical vulnerability in go-module package: golang.org/x/crypto, version v0.0.0-20210711020723-a769d52b0f97 was found at: /go.mod"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/go.mod"
+                },
+                "region": {
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primaryLocationLineHash": "67603442dc580d13661081916d95fdf6abc32fbfaef4f5037a19092d6be0e4b3:1"
+          }
+        },
+        {
+          "ruleId": "CVE-2026-46600-golang.org/x/net",
+          "level": "error",
+          "message": {
+            "text": "A high vulnerability in go-module package: golang.org/x/net, version v0.0.0-20210226172049-e18ecbb05110 was found at: /go.mod"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/go.mod"
+                },
+                "region": {
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primaryLocationLineHash": "d455c30acf624063c67a09b962f26eb593ddfdf6770c84cba13abe9dca37ba06:1"
+          }
+        },
+        {
+          "ruleId": "CVE-2026-78660-golang.org/x/net",
+          "level": "error",
+          "message": {
+            "text": "A high vulnerability in go-module package: golang.org/x/net, version v0.0.0-20210226172049-e18ecbb05110 was found at: /go.mod"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/go.mod"
+                },
+                "region": {
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primaryLocationLineHash": "d455c30acf624063c67a09b962f26eb593ddfdf6770c84cba13abe9dca37ba06:1"
+          }
+        },
+        {
+          "ruleId": "CVE-2026-56855-golang.org/x/crypto",
+          "level": "error",
+          "message": {
+            "text": "A high vulnerability in go-module package: golang.org/x/crypto, version v0.0.0-20210711020723-a769d52b0f97 was found at: /go.mod"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/go.mod"
+                },
+                "region": {
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primaryLocationLineHash": "67603442dc580d13661081916d95fdf6abc32fbfaef4f5037a19092d6be0e4b3:1"
+          }
+        },
+        {
+          "ruleId": "CVE-2026-56852-golang.org/x/text",
+          "level": "error",
+          "message": {
+            "text": "A high vulnerability in go-module package: golang.org/x/text, version v0.3.6 was found at: /go.mod"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/go.mod"
+                },
+                "region": {
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primaryLocationLineHash": "413b61c61b5011c5b80ddb2ae064600682c9d721decdd4906e4a240064f982df:1"
+          }
+        },
+        {
+          "ruleId": "CVE-2026-46597-golang.org/x/crypto",
+          "level": "error",
+          "message": {
+            "text": "A high vulnerability in go-module package: golang.org/x/crypto, version v0.0.0-20210711020723-a769d52b0f97 was found at: /go.mod"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/go.mod"
+                },
+                "region": {
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primaryLocationLineHash": "67603442dc580d13661081916d95fdf6abc32fbfaef4f5037a19092d6be0e4b3:1"
+          }
+        },
+        {
+          "ruleId": "CVE-2026-39829-golang.org/x/crypto",
+          "level": "error",
+          "message": {
+            "text": "A high vulnerability in go-module package: golang.org/x/crypto, version v0.0.0-20210711020723-a769d52b0f97 was found at: /go.mod"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/go.mod"
+                },
+                "region": {
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primaryLocationLineHash": "67603442dc580d13661081916d95fdf6abc32fbfaef4f5037a19092d6be0e4b3:1"
+          }
+        },
+        {
+          "ruleId": "CVE-2026-56851-golang.org/x/text",
+          "level": "error",
+          "message": {
+            "text": "A high vulnerability in go-module package: golang.org/x/text, version v0.3.6 was found at: /go.mod"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/go.mod"
+                },
+                "region": {
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primaryLocationLineHash": "413b61c61b5011c5b80ddb2ae064600682c9d721decdd4906e4a240064f982df:1"
+          }
+        },
+        {
+          "ruleId": "CVE-2026-56854-golang.org/x/crypto",
+          "level": "error",
+          "message": {
+            "text": "A high vulnerability in go-module package: golang.org/x/crypto, version v0.0.0-20210711020723-a769d52b0f97 was found at: /go.mod"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/go.mod"
+                },
+                "region": {
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primaryLocationLineHash": "67603442dc580d13661081916d95fdf6abc32fbfaef4f5037a19092d6be0e4b3:1"
+          }
+        },
+        {
+          "ruleId": "CVE-2026-78662-golang.org/x/crypto",
+          "level": "error",
+          "message": {
+            "text": "A high vulnerability in go-module package: golang.org/x/crypto, version v0.0.0-20210711020723-a769d52b0f97 was found at: /go.mod"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/go.mod"
+                },
+                "region": {
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primaryLocationLineHash": "67603442dc580d13661081916d95fdf6abc32fbfaef4f5037a19092d6be0e4b3:1"
+          }
+        },
+        {
+          "ruleId": "CVE-2025-58181-golang.org/x/crypto",
+          "level": "warning",
+          "message": {
+            "text": "A medium vulnerability in go-module package: golang.org/x/crypto, version v0.0.0-20210711020723-a769d52b0f97 was found at: /go.mod"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/go.mod"
+                },
+                "region": {
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primaryLocationLineHash": "67603442dc580d13661081916d95fdf6abc32fbfaef4f5037a19092d6be0e4b3:1"
+          }
+        },
+        {
+          "ruleId": "CVE-2026-78661-golang.org/x/net",
+          "level": "error",
+          "message": {
+            "text": "A high vulnerability in go-module package: golang.org/x/net, version v0.0.0-20210226172049-e18ecbb05110 was found at: /go.mod"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/go.mod"
+                },
+                "region": {
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primaryLocationLineHash": "d455c30acf624063c67a09b962f26eb593ddfdf6770c84cba13abe9dca37ba06:1"
+          }
+        },
+        {
+          "ruleId": "CVE-2025-47911-golang.org/x/net",
+          "level": "warning",
+          "message": {
+            "text": "A medium vulnerability in go-module package: golang.org/x/net, version v0.0.0-20210226172049-e18ecbb05110 was found at: /go.mod"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/go.mod"
+                },
+                "region": {
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primaryLocationLineHash": "d455c30acf624063c67a09b962f26eb593ddfdf6770c84cba13abe9dca37ba06:1"
+          }
+        },
+        {
+          "ruleId": "CVE-2025-22872-golang.org/x/net",
+          "level": "warning",
+          "message": {
+            "text": "A medium vulnerability in go-module package: golang.org/x/net, version v0.0.0-20210226172049-e18ecbb05110 was found at: /go.mod"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/go.mod"
+                },
+                "region": {
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primaryLocationLineHash": "d455c30acf624063c67a09b962f26eb593ddfdf6770c84cba13abe9dca37ba06:1"
+          }
+        },
+        {
+          "ruleId": "CVE-2025-47914-golang.org/x/crypto",
+          "level": "warning",
+          "message": {
+            "text": "A medium vulnerability in go-module package: golang.org/x/crypto, version v0.0.0-20210711020723-a769d52b0f97 was found at: /go.mod"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/go.mod"
+                },
+                "region": {
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primaryLocationLineHash": "67603442dc580d13661081916d95fdf6abc32fbfaef4f5037a19092d6be0e4b3:1"
+          }
+        },
+        {
+          "ruleId": "CVE-2025-58190-golang.org/x/net",
+          "level": "warning",
+          "message": {
+            "text": "A medium vulnerability in go-module package: golang.org/x/net, version v0.0.0-20210226172049-e18ecbb05110 was found at: /go.mod"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/go.mod"
+                },
+                "region": {
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primaryLocationLineHash": "d455c30acf624063c67a09b962f26eb593ddfdf6770c84cba13abe9dca37ba06:1"
+          }
+        },
+        {
+          "ruleId": "CVE-2026-39835-golang.org/x/crypto",
+          "level": "warning",
+          "message": {
+            "text": "A medium vulnerability in go-module package: golang.org/x/crypto, version v0.0.0-20210711020723-a769d52b0f97 was found at: /go.mod"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/go.mod"
+                },
+                "region": {
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primaryLocationLineHash": "67603442dc580d13661081916d95fdf6abc32fbfaef4f5037a19092d6be0e4b3:1"
+          }
+        },
+        {
+          "ruleId": "CVE-2023-29401-github.com/gin-gonic/gin",
+          "level": "warning",
+          "message": {
+            "text": "A medium vulnerability in go-module package: github.com/gin-gonic/gin, version v1.8.1 was found at: /go.mod"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/go.mod"
+                },
+                "region": {
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primaryLocationLineHash": "beb21eeba2aeba59ad87edee661ca0d4459a9931868f85165691f2e2aed3b0e9:1"
+          }
+        },
+        {
+          "ruleId": "CVE-2026-46598-golang.org/x/crypto",
+          "level": "warning",
+          "message": {
+            "text": "A medium vulnerability in go-module package: golang.org/x/crypto, version v0.0.0-20210711020723-a769d52b0f97 was found at: /go.mod"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/go.mod"
+                },
+                "region": {
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primaryLocationLineHash": "67603442dc580d13661081916d95fdf6abc32fbfaef4f5037a19092d6be0e4b3:1"
+          }
+        },
+        {
+          "ruleId": "CVE-2026-39828-golang.org/x/crypto",
+          "level": "warning",
+          "message": {
+            "text": "A medium vulnerability in go-module package: golang.org/x/crypto, version v0.0.0-20210711020723-a769d52b0f97 was found at: /go.mod"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/go.mod"
+                },
+                "region": {
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primaryLocationLineHash": "67603442dc580d13661081916d95fdf6abc32fbfaef4f5037a19092d6be0e4b3:1"
+          }
+        },
+        {
+          "ruleId": "CVE-2025-22870-golang.org/x/net",
+          "level": "warning",
+          "message": {
+            "text": "A medium vulnerability in go-module package: golang.org/x/net, version v0.0.0-20210226172049-e18ecbb05110 was found at: /go.mod"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/go.mod"
+                },
+                "region": {
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primaryLocationLineHash": "d455c30acf624063c67a09b962f26eb593ddfdf6770c84cba13abe9dca37ba06:1"
+          }
+        },
+        {
+          "ruleId": "CVE-2026-25680-golang.org/x/net",
+          "level": "warning",
+          "message": {
+            "text": "A medium vulnerability in go-module package: golang.org/x/net, version v0.0.0-20210226172049-e18ecbb05110 was found at: /go.mod"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/go.mod"
+                },
+                "region": {
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primaryLocationLineHash": "d455c30acf624063c67a09b962f26eb593ddfdf6770c84cba13abe9dca37ba06:1"
+          }
+        },
+        {
+          "ruleId": "CVE-2026-39827-golang.org/x/crypto",
+          "level": "warning",
+          "message": {
+            "text": "A medium vulnerability in go-module package: golang.org/x/crypto, version v0.0.0-20210711020723-a769d52b0f97 was found at: /go.mod"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/go.mod"
+                },
+                "region": {
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primaryLocationLineHash": "67603442dc580d13661081916d95fdf6abc32fbfaef4f5037a19092d6be0e4b3:1"
+          }
+        },
+        {
+          "ruleId": "CVE-2026-97045-golang.org/x/net",
+          "level": "warning",
+          "message": {
+            "text": "A medium vulnerability in go-module package: golang.org/x/net, version v0.0.0-20210226172049-e18ecbb05110 was found at: /go.mod"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/go.mod"
+                },
+                "region": {
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primaryLocationLineHash": "d455c30acf624063c67a09b962f26eb593ddfdf6770c84cba13abe9dca37ba06:1"
+          }
+        },
+        {
+          "ruleId": "CVE-2026-25681-golang.org/x/net",
+          "level": "warning",
+          "message": {
+            "text": "A medium vulnerability in go-module package: golang.org/x/net, version v0.0.0-20210226172049-e18ecbb05110 was found at: /go.mod"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/go.mod"
+                },
+                "region": {
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primaryLocationLineHash": "d455c30acf624063c67a09b962f26eb593ddfdf6770c84cba13abe9dca37ba06:1"
+          }
+        },
+        {
+          "ruleId": "CVE-2026-27136-golang.org/x/net",
+          "level": "warning",
+          "message": {
+            "text": "A medium vulnerability in go-module package: golang.org/x/net, version v0.0.0-20210226172049-e18ecbb05110 was found at: /go.mod"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/go.mod"
+                },
+                "region": {
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primaryLocationLineHash": "d455c30acf624063c67a09b962f26eb593ddfdf6770c84cba13abe9dca37ba06:1"
+          }
+        },
+        {
+          "ruleId": "CVE-2026-42506-golang.org/x/net",
+          "level": "warning",
+          "message": {
+            "text": "A medium vulnerability in go-module package: golang.org/x/net, version v0.0.0-20210226172049-e18ecbb05110 was found at: /go.mod"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/go.mod"
+                },
+                "region": {
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primaryLocationLineHash": "d455c30acf624063c67a09b962f26eb593ddfdf6770c84cba13abe9dca37ba06:1"
+          }
+        },
+        {
+          "ruleId": "CVE-2026-42502-golang.org/x/net",
+          "level": "warning",
+          "message": {
+            "text": "A medium vulnerability in go-module package: golang.org/x/net, version v0.0.0-20210226172049-e18ecbb05110 was found at: /go.mod"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/go.mod"
+                },
+                "region": {
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primaryLocationLineHash": "d455c30acf624063c67a09b962f26eb593ddfdf6770c84cba13abe9dca37ba06:1"
+          }
+        },
+        {
+          "ruleId": "CVE-2026-39824-golang.org/x/sys",
+          "level": "note",
+          "message": {
+            "text": "A low vulnerability in go-module package: golang.org/x/sys, version v0.0.0-20210806184541-e5e7981a1069 was found at: /go.mod"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/go.mod"
+                },
+                "region": {
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primaryLocationLineHash": "11bb9a9e72a5a47492239afe7242b3ed8f5a2f694a4a180a0cabc890ca1d7b16:1"
+          }
+        },
+        {
+          "ruleId": "GO-2026-5932-golang.org/x/crypto",
+          "level": "note",
+          "message": {
+            "text": "A low vulnerability in go-module package: golang.org/x/crypto, version v0.0.0-20210711020723-a769d52b0f97 was found at: /go.mod"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/go.mod"
+                },
+                "region": {
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primaryLocationLineHash": "67603442dc580d13661081916d95fdf6abc32fbfaef4f5037a19092d6be0e4b3:1"
+          }
+        }
+      ]
+    }
+  ]
+}

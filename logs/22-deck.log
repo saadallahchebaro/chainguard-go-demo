@@ -1,0 +1,12 @@
+
+===== STEP 22-deck · 2026-11-16T17:19:46Z · chainguard
+
+# NOTE: Step 22: the deck, a local file kept outside the repo, now carries the lab results; the walkthrough (v16), quiz (v18) and guide (v52) were aligned with the lab. In the repo only JOURNAL.md changes.
+
+$ echo "== key or token material among the files to commit: $(git add -A -n | awk "{print \$2}" | sed "s/^.//; s/.$//" | grep -v -x -e logs/21-agent.log -e logs/22-deck.log | xargs grep -l -E "PRIVATE KEY-----$|ghp_[A-Za-z0-9]{20,}|github_pat_[A-Za-z0-9]{10,}" 2>/dev/null | wc -l) files"; git add -A && git status --short | wc -l && git commit -q -m "step 22: the deck carries the lab results; walkthrough, quiz and guide aligned with the lab; surprises 46 and 47" && git push -q origin main && git log --oneline -1 && git status -sb | head -1
+# at 17:19:46 in /home/ubuntu/chainguard-technical-challenge
+== key or token material among the files to commit: 0 files
+3
+adb86a8 step 22: the deck carries the lab results; walkthrough, quiz and guide aligned with the lab; surprises 46 and 47
+## main...origin/main
+# exit 0

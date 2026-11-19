@@ -1,0 +1,39 @@
+{
+  // Open this over Remote-SSH on the build VM (Host chainguard-lab):
+  //   code --file-uri "vscode-remote://ssh-remote+chainguard-lab/home/ubuntu/chainguard-technical-challenge/chainguard-lab.code-workspace"
+  // The Showcase folder comes first: the files worth opening, as links. The full repo is underneath.
+  "folders": [
+    { "name": "Showcase: open these", "path": "showcase" },
+    { "name": "Full repo", "path": "." }
+  ],
+  "settings": {
+    "files.exclude": { "**/.git": true, "**/*.gz": true, "**/*.sarif": true, "**/node_modules": true },
+    "explorer.compactFolders": false,
+    // Over Remote-SSH, VS Code asks before opening any file above 10 MB; image A's SPDX SBOM is 10.06 MB
+    "workbench.editorLargeFileConfirmation": 50,
+    "explorer.sortOrder": "default",
+    "editor.fontSize": 15,
+    "editor.wordWrap": "on",
+    "editor.minimap.enabled": false,
+    "editor.renderWhitespace": "none",
+    "workbench.startupEditor": "none",
+    "workbench.editor.wrapTabs": true,
+    "files.associations": { "*.Dockerfile": "dockerfile", "*.SKILL.md": "markdown", "pre-receive": "shellscript" },
+    "terminal.integrated.fontSize": 15,
+    "terminal.integrated.cwd": "/home/ubuntu/chainguard-technical-challenge",
+    "terminal.integrated.defaultProfile.linux": "Build VM: lab folder",
+    "terminal.integrated.profiles.linux": {
+      "Build VM: lab folder": { "path": "bash", "args": ["-l"] },
+      // The command deck (http://127.0.0.1:8077/deck on the Mac) types its answers into the tmux session "show": this terminal attaches to it
+      "Command deck: show session": { "path": "bash", "args": ["-lc", "cd ~/chainguard-technical-challenge && tmux new -A -s show"] },
+      "Image A: a shell inside": { "path": "bash", "args": ["-lc", "echo 'Image A (golang:1.18, single-stage), as its default user. Type exit to leave.'; docker run --rm -it --entrypoint bash hello:a"] },
+      "Image B: a shell inside": { "path": "bash", "args": ["-lc", "echo 'Image B (Debian trixie-slim runtime), as user 65532. Type exit to leave.'; docker run --rm -it --entrypoint bash hello:b"] },
+      "Image C: no shell, a sidecar": { "path": "bash", "args": ["-lc", "docker run -d --rm --name vsc-c hello:c >/dev/null; echo 'Image C has no shell. This is a Chainguard wolfi-base sidecar sharing its processes and network:'; echo 'try: ps -o pid,user,args   ls /proc/1/root   (exit stops C)'; docker run --rm -it --cap-add SYS_PTRACE --pid=container:vsc-c --network=container:vsc-c cgr.dev/chainguard/wolfi-base sh; docker stop vsc-c >/dev/null"] },
+      "Image D: no shell, a sidecar": { "path": "bash", "args": ["-lc", "docker run -d --rm --name vsc-d hello:d >/dev/null; echo 'Image D has no shell. This is a Chainguard wolfi-base sidecar sharing its processes and network:'; echo 'try: ps -o pid,user,args   ls /proc/1/root   (exit stops D)'; docker run --rm -it --cap-add SYS_PTRACE --pid=container:vsc-d --network=container:vsc-d cgr.dev/chainguard/wolfi-base sh; docker stop vsc-d >/dev/null"] },
+      "Cluster: kubectl": { "path": "bash", "args": ["-lc", "kubectl get nodes; kubectl get deploy,pods -o wide; exec bash -l"] }
+    }
+  },
+  "extensions": {
+    "recommendations": ["ms-azuretools.vscode-containers", "ms-kubernetes-tools.vscode-kubernetes-tools", "redhat.vscode-yaml"]
+  }
+}

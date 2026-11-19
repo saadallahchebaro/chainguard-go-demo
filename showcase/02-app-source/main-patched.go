@@ -1,0 +1,1 @@
+../../go-patched/main.go

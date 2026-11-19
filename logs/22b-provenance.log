@@ -1,0 +1,81 @@
+
+===== STEP 22b-provenance · 2026-11-16T17:21:28Z · chainguard
+
+# NOTE: static index sha256:fc42af33e643f20d08baf03cddcc1c02ba57052dfb02edb0d79f3fc47bcea8d9, arm64 sha256:8f9c7533c7709270342660bca209e5fc593483c27f95283e1082424c1e0da967; go index sha256:64c93a14feeb5320f251691bab838fd580721f45cb090697a5c1b0a482e503cb, arm64 sha256:6d6af7de6e188c8a9bd6499a36f36fc334d2679fc770b001388ad6bfcb2fbfc9
+
+$ for i in static@$S64 go@$G64; do echo "== cosign tree cgr.dev/chainguard/$i"; cosign tree cgr.dev/chainguard/$i 2>&1 | grep -v "^$" | sed -E "s/(sha256:[0-9a-f]{12})[0-9a-f]+/\1…/g"; done
+# at 17:21:32 in /home/ubuntu/chainguard-technical-challenge
+== cosign tree cgr.dev/chainguard/static@sha256:8f9c7533c7709270342660bca209e5fc593483c27f95283e1082424c1e0da967
+📦 Supply Chain Security Related artifacts for an image: cgr.dev/chainguard/static@sha256:8f9c7533c770…
+└── 💾 Attestations for an image tag: cgr.dev/chainguard/static:sha256-8f9c7533c7709270342660bca209e5fc593483c27f95283e1082424c1e0da967.att
+   ├── 🍒 sha256:bff4172067d4…
+   ├── 🍒 sha256:e8f12d91cfdf…
+   └── 🍒 sha256:f7087cd22e04…
+└── 🔐 Signatures for an image tag: cgr.dev/chainguard/static:sha256-8f9c7533c7709270342660bca209e5fc593483c27f95283e1082424c1e0da967.sig
+   └── 🍒 sha256:4acd175e4cf5…
+== cosign tree cgr.dev/chainguard/go@sha256:6d6af7de6e188c8a9bd6499a36f36fc334d2679fc770b001388ad6bfcb2fbfc9
+📦 Supply Chain Security Related artifacts for an image: cgr.dev/chainguard/go@sha256:6d6af7de6e18…
+└── 💾 Attestations for an image tag: cgr.dev/chainguard/go:sha256-6d6af7de6e188c8a9bd6499a36f36fc334d2679fc770b001388ad6bfcb2fbfc9.att
+   ├── 🍒 sha256:f14f0ea902e2…
+   ├── 🍒 sha256:ed2d0ccb4eeb…
+   └── 🍒 sha256:d293cc1cb84a…
+└── 🔐 Signatures for an image tag: cgr.dev/chainguard/go:sha256-6d6af7de6e188c8a9bd6499a36f36fc334d2679fc770b001388ad6bfcb2fbfc9.sig
+   └── 🍒 sha256:961e9618561f…
+# exit 0
+
+$ for i in "static $S64" "go $G64"; do set -- $i; echo "== cosign verify-attestation --type https://slsa.dev/provenance/v1 on cgr.dev/chainguard/$1@${2:0:19}…"; cosign verify-attestation --type https://slsa.dev/provenance/v1 --certificate-oidc-issuer=https://token.actions.githubusercontent.com --certificate-identity=https://github.com/chainguard-images/images/.github/workflows/release.yaml@refs/heads/main cgr.dev/chainguard/$1@$2 2>/tmp/slsa.err >/tmp/slsa.json; echo "exit $?, attestations returned: $(wc -l < /tmp/slsa.json)"; grep -E "^  - |^Certificate subject|^Error" /tmp/slsa.err; head -1 /tmp/slsa.json | jq -r .payload | base64 -d | jq . > reports/provenance/chainguard-$1-slsa.json; jq -r "\"predicateType: \" + .predicateType, \"subject:       sha256:\" + .subject[0].digest.sha256[0:12] + \"… (the image verified: \" + ((\"sha256:\" + .subject[0].digest.sha256) == \"$2\" | tostring) + \")\", \"buildType:     \" + (.predicate.buildDefinition.buildType // \"-\"), \"builder:       \" + (.predicate.runDetails.builder.id // \"-\"), \"resolved deps: \" + (.predicate.buildDefinition.resolvedDependencies // [] | length | tostring)" reports/provenance/chainguard-$1-slsa.json; done
+# at 17:22:06 in /home/ubuntu/chainguard-technical-challenge
+== cosign verify-attestation --type https://slsa.dev/provenance/v1 on cgr.dev/chainguard/static@sha256:8f9c7533c770…
+exit 0, attestations returned: 1
+  - The cosign claims were validated
+  - Existence of the claims in the transparency log was verified offline
+  - The code-signing certificate was verified using trusted certificate authority certificates
+Certificate subject: https://github.com/chainguard-images/images/.github/workflows/release.yaml@refs/heads/main
+predicateType: https://slsa.dev/provenance/v1
+subject:       sha256:8f9c7533c770… (the image verified: true)
+buildType:     https://apko.dev/slsa-build-type@v1
+builder:       https://github.com/chainguard-dev/terraform-provider-apko
+resolved deps: 0
+== cosign verify-attestation --type https://slsa.dev/provenance/v1 on cgr.dev/chainguard/go@sha256:6d6af7de6e18…
+exit 0, attestations returned: 1
+  - The cosign claims were validated
+  - Existence of the claims in the transparency log was verified offline
+  - The code-signing certificate was verified using trusted certificate authority certificates
+Certificate subject: https://github.com/chainguard-images/images/.github/workflows/release.yaml@refs/heads/main
+predicateType: https://slsa.dev/provenance/v1
+subject:       sha256:6d6af7de6e18… (the image verified: true)
+buildType:     https://apko.dev/slsa-build-type@v1
+builder:       https://github.com/chainguard-dev/terraform-provider-apko
+resolved deps: 0
+# exit 0
+
+$ P=reports/provenance; echo "== static: the packages its provenance names (Syft found the same 3 at step 15)"; jq -r ".predicate.buildDefinition.internalParameters | to_entries[] | \"   \" + .key + \"  \" + .value" $P/chainguard-static-slsa.json; echo "== go: packages named: $(jq ".predicate.buildDefinition.internalParameters | length" $P/chainguard-go-slsa.json) (Syft counted apk=66 at step 13); go-1.27 $(jq -r ".predicate.buildDefinition.internalParameters[\"go-1.27\"]" $P/chainguard-go-slsa.json), gcc $(jq -r ".predicate.buildDefinition.internalParameters.gcc" $P/chainguard-go-slsa.json)"; echo "== builder and invocation (static):"; jq -r ".predicate.runDetails | \"   \" + .builder.id + \", apko \" + .builder.version.apko + \", terraform-provider-apko \" + .builder.version[\"terraform-provider-apko\"], \"   invocationId \" + .metadata.invocationId[0:52] + \"…\"" $P/chainguard-static-slsa.json; echo "== not in either statement:"; for f in $P/chainguard-static-slsa.json $P/chainguard-go-slsa.json; do jq -r "\"   \" + (input_filename | split(\"/\")[-1]) + \": externalParameters \" + (.predicate.buildDefinition.externalParameters // \"absent\" | tostring) + \", resolvedDependencies \" + (.predicate.buildDefinition.resolvedDependencies // \"absent\" | tostring) + \", the word level: \" + ([.. | strings | select(test(\"level\"; \"i\"))] | length | tostring)" $f; done
+# at 17:24:00 in /home/ubuntu/chainguard-technical-challenge
+== static: the packages its provenance names (Syft found the same 3 at step 15)
+   ca-certificates-bundle  20261020-r0
+   tzdata  2026f-r0
+   wolfi-baselayout  20230201-r31
+== go: packages named: 66 (Syft counted apk=66 at step 13); go-1.27 1.27.4-r0, gcc 16.2.0-r4
+== builder and invocation (static):
+   https://github.com/chainguard-dev/terraform-provider-apko, apko v1.4.14, terraform-provider-apko v1.2.28
+   invocationId cgr.dev/chainguard/static@sha256:fc42af33e643f20d08b…
+== not in either statement:
+   chainguard-static-slsa.json: externalParameters absent, resolvedDependencies absent, the word level: 0
+   chainguard-go-slsa.json: externalParameters absent, resolvedDependencies absent, the word level: 0
+# exit 0
+
+$ git status --short; echo "== key or token material among the files to commit: $(git add -A -n | awk "{print \$2}" | sed "s/^.//; s/.$//" | grep -v -x -e logs/21-agent.log -e logs/22-deck.log -e logs/22b-provenance.log | xargs grep -l -E "PRIVATE KEY-----$|ghp_[A-Za-z0-9]{20,}|github_pat_[A-Za-z0-9]{10,}" 2>/dev/null | wc -l) files"; git add -A && git commit -q -m "step 22b: Chainguard SLSA provenance for static and go verified; the level is stated as Chainguard says it" && git push -q origin main && git log --oneline -1 && git status -sb | head -1
+# at 17:27:22 in /home/ubuntu/chainguard-technical-challenge
+ M JOURNAL.md
+ M REPORT.md
+ M RUNBOOK.md
+ M logs/22-deck.log
+?? demo/screenshots/22b-chainguard-slsa-contents.png
+?? demo/screenshots/22b-chainguard-slsa-verified.png
+?? logs/22b-provenance.log
+?? reports/provenance/chainguard-go-slsa.json
+?? reports/provenance/chainguard-static-slsa.json
+== key or token material among the files to commit: 0 files
+46ccf2e step 22b: Chainguard SLSA provenance for static and go verified; the level is stated as Chainguard says it
+## main...origin/main
+# exit 0

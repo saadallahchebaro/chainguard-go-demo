@@ -1,0 +1,195 @@
+
+===== STEP 15-sbom · 2026-11-16T14:14:43Z · chainguard
+
+$ mkdir -p sbom && for t in a b c d; do syft hello:$t -q -o spdx-json=sbom/$t.spdx.json -o cyclonedx-json=sbom/$t.cyclonedx.json; done; ls -l sbom; echo; for t in a b c d; do jq -r --arg t $t "\"hello:\" + \$t + \"  \" + .spdxVersion + \", made by \" + (.creationInfo.creators | map(select(startswith(\"Tool\"))) | join(\",\")) + \", packages: \" + (.packages | length | tostring) + \"  by purl type: \" + ([.packages[].externalRefs[]? | select(.referenceType == \"purl\") | .referenceLocator | capture(\"^pkg:(?<t>[^/]+)/\").t] | group_by(.) | map(.[0] + \"=\" + (length | tostring)) | join(\" \"))" sbom/$t.spdx.json; done
+# at 14:14:43 in /home/ubuntu/chainguard-technical-challenge
+total 19772
+-rw-r--r-- 1 ubuntu ubuntu  4165062 Nov 16 18:14 a.cyclonedx.json
+-rw-r--r-- 1 ubuntu ubuntu 10548664 Nov 16 18:14 a.spdx.json
+-rw-r--r-- 1 ubuntu ubuntu   879163 Nov 16 18:14 b.cyclonedx.json
+-rw-r--r-- 1 ubuntu ubuntu  2063433 Nov 16 18:14 b.spdx.json
+-rw-r--r-- 1 ubuntu ubuntu   353872 Nov 16 18:14 c.cyclonedx.json
+-rw-r--r-- 1 ubuntu ubuntu   928097 Nov 16 18:14 c.spdx.json
+-rw-r--r-- 1 ubuntu ubuntu   358980 Nov 16 18:14 d.cyclonedx.json
+-rw-r--r-- 1 ubuntu ubuntu   935482 Nov 16 18:14 d.spdx.json
+
+hello:a  SPDX-2.3, made by Tool: syft-1.57.1, packages: 260  by purl type: deb=201 generic=1 golang=55 npm=1 oci=1 pypi=1
+hello:b  SPDX-2.3, made by Tool: syft-1.57.1, packages: 96  by purl type: deb=78 golang=17 oci=1
+hello:c  SPDX-2.3, made by Tool: syft-1.57.1, packages: 21  by purl type: apk=3 golang=17 oci=1
+hello:d  SPDX-2.3, made by Tool: syft-1.57.1, packages: 25  by purl type: apk=3 golang=21 oci=1
+# exit 0
+
+$ echo "== image A: the packages that are neither deb nor golang"; jq -r ".packages[] | select(any(.externalRefs[]?; .referenceType == \"purl\" and (.referenceLocator | test(\"^pkg:(npm|pypi|generic)/\")))) | \"   \" + .name + \" \" + (.versionInfo // \"-\") + \"   \" + ([.externalRefs[]? | select(.referenceType == \"purl\") | .referenceLocator][0]) + \"\n      \" + (.sourceInfo // \"\")" sbom/a.spdx.json
+# at 14:15:09 in /home/ubuntu/chainguard-technical-challenge
+== image A: the packages that are neither deb nor golang
+   d3-pprof 2.0.0   pkg:npm/d3-pprof@2.0.0
+      acquired package info from installed node module manifest file: /usr/local/go/src/cmd/vendor/github.com/google/pprof/third_party/d3flamegraph/package.json
+   go 1.18.10   pkg:generic/go@1.18.10
+      acquired package info from the following paths: /usr/local/go/bin/go
+   mercurial 5.6.1   pkg:pypi/mercurial@5.6.1
+      acquired package info from installed python package manifest file: /usr/lib/python3/dist-packages/mercurial-5.6.1.egg-info
+# exit 0
+
+$ export GRYPE_DB_AUTO_UPDATE=false; mkdir -p reports/sbom; for t in a b c d; do grype sbom:./sbom/$t.spdx.json --by-cve -q -o json=reports/sbom/$t-grype-from-spdx.json; done; grype sbom:./sbom/c.cyclonedx.json --by-cve -q -o json=reports/sbom/c-grype-from-cyclonedx.json; sum() { bash tools/count.sh $1 | grep -E "unique IDs|by layer" | sed -E "s/^ +//; s/ +/ /g" | tr "\n" " "; }; for t in a b c d; do echo "== hello:$t"; echo "   image scan: $(sum reports/final/$t-grype.json)"; echo "   from SBOM:  $(sum reports/sbom/$t-grype-from-spdx.json)"; done; echo "== hello:c from the CycloneDX SBOM: $(sum reports/sbom/c-grype-from-cyclonedx.json)"; ls -l reports/sbom
+# at 14:15:28 in /home/ubuntu/chainguard-technical-challenge
+== hello:a
+   image scan: unique IDs: 734 by layer: go-module=17 go-stdlib=87 os-binary=118 os-deb=603 
+   from SBOM:  unique IDs: 780 by layer: go-module=65 go-stdlib=104 os-UnknownPackage=118 os-deb=603 
+== hello:b
+   image scan: unique IDs: 161 by layer: go-module=17 go-stdlib=60 os-deb=92 
+   from SBOM:  unique IDs: 250 by layer: go-module=65 go-stdlib=104 os-deb=92 
+== hello:c
+   image scan: unique IDs: 69 by layer: go-module=17 go-stdlib=60 
+   from SBOM:  unique IDs: 158 by layer: go-module=65 go-stdlib=104 
+== hello:d
+   image scan: unique IDs: 0 by layer:  
+   from SBOM:  unique IDs: 0 by layer:  
+== hello:c from the CycloneDX SBOM: unique IDs: 158 by layer: go-module=65 go-stdlib=104 
+total 55056
+-rw-r--r-- 1 ubuntu ubuntu 53674984 Nov 16 18:15 a-grype-from-spdx.json
+-rw-r--r-- 1 ubuntu ubuntu  1408338 Nov 16 18:15 b-grype-from-spdx.json
+-rw-r--r-- 1 ubuntu ubuntu   654098 Nov 16 18:16 c-grype-from-cyclonedx.json
+-rw-r--r-- 1 ubuntu ubuntu   623458 Nov 16 18:15 c-grype-from-spdx.json
+-rw-r--r-- 1 ubuntu ubuntu     5993 Nov 16 18:15 d-grype-from-spdx.json
+# exit 0
+
+$ goids() { jq -r "[.matches[] | select(.artifact.type == \"go-module\") | .vulnerability.id] | unique[]" $1 | sort; }; tgo() { jq -r "[.Results[]? | select(.Type == \"gobinary\") | .Vulnerabilities[]?.VulnerabilityID] | unique[]" $1 | sort; }; echo "== hello:c, Go vulnerability IDs (standard library + modules):"; echo "   Grype on the image:      $(goids reports/final/c-grype.json | wc -l)"; echo "   Grype on the SBOM:       $(goids reports/sbom/c-grype-from-spdx.json | wc -l)"; echo "   Trivy on the image:      $(tgo reports/final/c-trivy.json | wc -l)"; echo "   in both Grype-on-SBOM and Trivy: $(comm -12 <(goids reports/sbom/c-grype-from-spdx.json) <(tgo reports/final/c-trivy.json) | wc -l); only Grype-on-SBOM: $(comm -23 <(goids reports/sbom/c-grype-from-spdx.json) <(tgo reports/final/c-trivy.json) | tr "\n" " "); only Trivy: $(comm -13 <(goids reports/sbom/c-grype-from-spdx.json) <(tgo reports/final/c-trivy.json) | tr "\n" " ")"; echo "   image-scan IDs missing from the SBOM scan: $(comm -23 <(goids reports/final/c-grype.json) <(goids reports/sbom/c-grype-from-spdx.json) | wc -l)"; echo "== does the SBOM carry the binary symbols Grype filters on?"; jq -r "[.packages[] | select(.name == \"golang.org/x/net\")][0] | keys | join(\", \")" sbom/c.spdx.json; grep -c "symbol" sbom/c.spdx.json || true
+# at 14:16:27 in /home/ubuntu/chainguard-technical-challenge
+== hello:c, Go vulnerability IDs (standard library + modules):
+   Grype on the image:      69
+   Grype on the SBOM:       158
+   Trivy on the image:      157
+   in both Grype-on-SBOM and Trivy: 157; only Grype-on-SBOM: CVE-2023-44487 ; only Trivy: 
+   image-scan IDs missing from the SBOM scan: 0
+== does the SBOM carry the binary symbols Grype filters on?
+SPDXID, checksums, copyrightText, downloadLocation, externalRefs, filesAnalyzed, licenseConcluded, licenseDeclared, name, sourceInfo, supplier, versionInfo
+0
+# exit 0
+
+$ sum() { bash tools/count.sh $1 | grep -E "unique IDs|by layer" | sed -E "s/^ +//; s/ +/ /g" | tr "\n" " "; }; echo "Grype, same database, same images: scanning the image vs scanning its SBOM (SPDX, Syft 1.57.1)"; for t in a b c d; do echo "== hello:$t"; echo "   image scan: $(sum reports/final/$t-grype.json)"; echo "   from SBOM:  $(sum reports/sbom/$t-grype-from-spdx.json)"; done; echo "== hello:c from the CycloneDX SBOM: $(sum reports/sbom/c-grype-from-cyclonedx.json)"
+# at 14:16:39 in /home/ubuntu/chainguard-technical-challenge
+Grype, same database, same images: scanning the image vs scanning its SBOM (SPDX, Syft 1.57.1)
+== hello:a
+   image scan: unique IDs: 734 by layer: go-module=17 go-stdlib=87 os-binary=118 os-deb=603 
+   from SBOM:  unique IDs: 780 by layer: go-module=65 go-stdlib=104 os-UnknownPackage=118 os-deb=603 
+== hello:b
+   image scan: unique IDs: 161 by layer: go-module=17 go-stdlib=60 os-deb=92 
+   from SBOM:  unique IDs: 250 by layer: go-module=65 go-stdlib=104 os-deb=92 
+== hello:c
+   image scan: unique IDs: 69 by layer: go-module=17 go-stdlib=60 
+   from SBOM:  unique IDs: 158 by layer: go-module=65 go-stdlib=104 
+== hello:d
+   image scan: unique IDs: 0 by layer:  
+   from SBOM:  unique IDs: 0 by layer:  
+== hello:c from the CycloneDX SBOM: unique IDs: 158 by layer: go-module=65 go-stdlib=104 
+# exit 0
+
+$ SD=$(grep -o "static:latest@sha256:[0-9a-f]*" dockerfiles/Dockerfile.c-chainguard | cut -d@ -f2); A64=$(crane manifest cgr.dev/chainguard/static@$SD | jq -r ".manifests[] | select(.platform.architecture == \"arm64\") | .digest"); echo "static index (in Dockerfiles C and D): $SD"; echo "its arm64 image:                       $A64"; cosign verify-attestation --type https://spdx.dev/Document --certificate-oidc-issuer=https://token.actions.githubusercontent.com --certificate-identity=https://github.com/chainguard-images/images/.github/workflows/release.yaml@refs/heads/main cgr.dev/chainguard/static@$A64 2>/tmp/att.err > /tmp/att.json; echo "cosign exit code: $?"; grep -v "^$" /tmp/att.err | head -6; echo "attestations returned: $(wc -l < /tmp/att.json)"; head -1 /tmp/att.json | jq -r .payload | base64 -d > /tmp/att-statement.json; jq -r "\"statement: \" + .predicateType + \", about \" + (.subject | map(.name + \"@sha256:\" + .digest.sha256[0:12]) | join(\", \"))" /tmp/att-statement.json; jq ".predicate" /tmp/att-statement.json > sbom/chainguard-static-arm64.spdx.json; jq -r "\"Chainguard SBOM: \" + .spdxVersion + \", creators: \" + (.creationInfo.creators | join(\", \")) + \", packages: \" + (.packages | length | tostring)" sbom/chainguard-static-arm64.spdx.json
+# at 14:17:07 in /home/ubuntu/chainguard-technical-challenge
+static index (in Dockerfiles C and D): sha256:fc42af33e643f20d08baf03cddcc1c02ba57052dfb02edb0d79f3fc47bcea8d9
+its arm64 image:                       sha256:8f9c7533c7709270342660bca209e5fc593483c27f95283e1082424c1e0da967
+cosign exit code: 0
+Verification for cgr.dev/chainguard/static@sha256:8f9c7533c7709270342660bca209e5fc593483c27f95283e1082424c1e0da967 --
+The following checks were performed on each of these signatures:
+  - The cosign claims were validated
+  - Existence of the claims in the transparency log was verified offline
+  - The code-signing certificate was verified using trusted certificate authority certificates
+Certificate subject: https://github.com/chainguard-images/images/.github/workflows/release.yaml@refs/heads/main
+attestations returned: 1
+statement: https://spdx.dev/Document, about cgr.dev/chainguard/static@sha256:8f9c7533c770
+Chainguard SBOM: SPDX-2.3, creators: Tool: apko (v1.2.28), Organization: Chainguard, Inc, packages: 17
+# exit 0
+
+$ purl() { jq -r ".packages[] | .name + \"  \" + (.versionInfo // \"-\") + \"  \" + ([.externalRefs[]? | select(.referenceType == \"purl\") | .referenceLocator | sub(\"\\\\?.*\"; \"\")][0] // \"(no purl)\")" $1; }; echo "== 1. Chainguard published SBOM for static arm64 (signed attestation): 17 packages"; purl sbom/chainguard-static-arm64.spdx.json | column -t; cid=$(docker create hello:d); rm -rf /tmp/d-sbom; mkdir /tmp/d-sbom; docker cp -q $cid:/var/lib/db/sbom/. /tmp/d-sbom/; docker rm $cid >/dev/null; echo "== 2. SBOMs inside image D, /var/lib/db/sbom: $(ls /tmp/d-sbom | wc -l) files"; for f in /tmp/d-sbom/*.json; do purl $f; done | sort -u | column -t; echo "== 3. our Syft SBOM of hello:d: apk packages"; jq -r ".packages[] | select(any(.externalRefs[]?; .referenceLocator | startswith(\"pkg:apk/\"))) | .name + \"  \" + .versionInfo" sbom/d.spdx.json | sort | column -t
+# at 14:17:25 in /home/ubuntu/chainguard-technical-challenge
+== 1. Chainguard published SBOM for static arm64 (signed attestation): 17 packages
+sha256:8f9c7533c7709270342660bca209e5fc593483c27f95283e1082424c1e0da967  sha256:8f9c7533c7709270342660bca209e5fc593483c27f95283e1082424c1e0da967  pkg:oci/image@sha256:8f9c7533c7709270342660bca209e5fc593483c27f95283e1082424c1e0da967            
+sha256:d6ec563ed8c18d733251192dafd2402e72c57485a4d422c260aaefcce27a2991  20230201                                                                 pkg:oci/image@sha256:d6ec563ed8c18d733251192dafd2402e72c57485a4d422c260aaefcce27a2991            
+wolfi                                                                    20230201                                                                 (no                                                                                              purl)
+wolfi-baselayout                                                         20230201-r31                                                             pkg:apk/wolfi/wolfi-baselayout@20230201-r31                                                      
+wolfi-baselayout.yaml                                                    ed415005c84750f03c4a9252137813734a224ae7                                 pkg:github/chainguard-dev/stereo@ed415005c84750f03c4a9252137813734a224ae7#wolfi-baselayout.yaml  
+wolfi-baselayout                                                         20230201-r31                                                             pkg:apk/wolfi/wolfi-baselayout@20230201-r31                                                      
+wolfi-baselayout                                                         20230201-r31                                                             (no                                                                                              purl)
+ca-certificates-bundle                                                   20261020-r0                                                              pkg:apk/wolfi/ca-certificates-bundle@20261020-r0                                                 
+ca-certificates.yaml                                                     8061afafa65af5a9026707a8880e14120dd6f4a0                                 pkg:github/chainguard-dev/stereo@8061afafa65af5a9026707a8880e14120dd6f4a0#ca-certificates.yaml   
+alpine/ca-certificates                                                   20261020                                                                 pkg:generic/alpine%2Fca-certificates@20261020                                                    
+ca-certificates-bundle                                                   20261020-r0                                                              pkg:apk/wolfi/ca-certificates-bundle@20261020-r0                                                 
+ca-certificates-bundle                                                   20261020-r0                                                              (no                                                                                              purl)
+tzdata                                                                   2026f-r0                                                                 pkg:apk/wolfi/tzdata@2026f-r0                                                                    
+tzdata.yaml                                                              b01ceefc114cf44ccb6d35f405795435f98bf0c2                                 pkg:github/chainguard-dev/stereo@b01ceefc114cf44ccb6d35f405795435f98bf0c2#tzdata.yaml            
+tz                                                                       2026f                                                                    pkg:github/eggert/tz@2026f                                                                       
+tzdata                                                                   2026f-r0                                                                 pkg:apk/wolfi/tzdata@2026f-r0                                                                    
+tzdata                                                                   2026f-r0                                                                 (no                                                                                              purl)
+== 2. SBOMs inside image D, /var/lib/db/sbom: 3 files
+alpine/ca-certificates  20261020                                  pkg:generic/alpine%2Fca-certificates@20261020                                                    
+ca-certificates-bundle  20261020-r0                               (no                                                                                              purl)
+ca-certificates-bundle  20261020-r0                               pkg:apk/wolfi/ca-certificates-bundle@20261020-r0                                                 
+ca-certificates.yaml    8061afafa65af5a9026707a8880e14120dd6f4a0  pkg:github/chainguard-dev/stereo@8061afafa65af5a9026707a8880e14120dd6f4a0#ca-certificates.yaml   
+tz                      2026f                                     pkg:github/eggert/tz@2026f                                                                       
+tzdata                  2026f-r0                                  (no                                                                                              purl)
+tzdata                  2026f-r0                                  pkg:apk/wolfi/tzdata@2026f-r0                                                                    
+tzdata.yaml             b01ceefc114cf44ccb6d35f405795435f98bf0c2  pkg:github/chainguard-dev/stereo@b01ceefc114cf44ccb6d35f405795435f98bf0c2#tzdata.yaml            
+wolfi                   -                                         (no                                                                                              purl)
+wolfi-baselayout        20230201-r31                              (no                                                                                              purl)
+wolfi-baselayout        20230201-r31                              pkg:apk/wolfi/wolfi-baselayout@20230201-r31                                                      
+wolfi-baselayout.yaml   ed415005c84750f03c4a9252137813734a224ae7  pkg:github/chainguard-dev/stereo@ed415005c84750f03c4a9252137813734a224ae7#wolfi-baselayout.yaml  
+== 3. our Syft SBOM of hello:d: apk packages
+ca-certificates-bundle  20261020-r0
+tzdata                  2026f-r0
+wolfi-baselayout        20230201-r31
+# exit 0
+
+$ purls() { jq -r ".packages[].externalRefs[]? | select(.referenceType == \"purl\") | .referenceLocator | sub(\"\\\\?.*\"; \"\")" "$@" | sed -E "s/([0-9a-f]{12})[0-9a-f]{28,52}/\1…/g" | sort -u; }; echo "== 1. Chainguard published SBOM, static arm64 (signed attestation, by apko v1.2.28): distinct package URLs"; purls sbom/chainguard-static-arm64.spdx.json | sed "s/^/   /"; echo "== 2. the 3 SBOMs inside image D (/var/lib/db/sbom):"; purls /tmp/d-sbom/*.json | sed "s/^/   /"; echo "== 3. our Syft SBOM of hello:d: $(jq ".packages | length" sbom/d.spdx.json) packages:"; purls sbom/d.spdx.json | grep -c "^pkg:golang" | sed "s/^/   Go packages in the app binary: /"; purls sbom/d.spdx.json | grep -E "^pkg:(apk|oci)" | sed "s/^/   /"
+# at 14:17:56 in /home/ubuntu/chainguard-technical-challenge
+== 1. Chainguard published SBOM, static arm64 (signed attestation, by apko v1.2.28): distinct package URLs
+   pkg:apk/wolfi/ca-certificates-bundle@20261020-r0
+   pkg:apk/wolfi/tzdata@2026f-r0
+   pkg:apk/wolfi/wolfi-baselayout@20230201-r31
+   pkg:generic/alpine%2Fca-certificates@20261020
+   pkg:github/chainguard-dev/stereo@8061afafa65a…#ca-certificates.yaml
+   pkg:github/chainguard-dev/stereo@b01ceefc114c…#tzdata.yaml
+   pkg:github/chainguard-dev/stereo@ed415005c847…#wolfi-baselayout.yaml
+   pkg:github/eggert/tz@2026f
+   pkg:oci/image@sha256:8f9c7533c770…
+   pkg:oci/image@sha256:d6ec563ed8c1…
+== 2. the 3 SBOMs inside image D (/var/lib/db/sbom):
+   pkg:apk/wolfi/ca-certificates-bundle@20261020-r0
+   pkg:apk/wolfi/tzdata@2026f-r0
+   pkg:apk/wolfi/wolfi-baselayout@20230201-r31
+   pkg:generic/alpine%2Fca-certificates@20261020
+   pkg:github/chainguard-dev/stereo@8061afafa65a…#ca-certificates.yaml
+   pkg:github/chainguard-dev/stereo@b01ceefc114c…#tzdata.yaml
+   pkg:github/chainguard-dev/stereo@ed415005c847…#wolfi-baselayout.yaml
+   pkg:github/eggert/tz@2026f
+== 3. our Syft SBOM of hello:d: 25 packages:
+   Go packages in the app binary: 21
+   pkg:apk/wolfi/ca-certificates-bundle@20261020-r0
+   pkg:apk/wolfi/tzdata@2026f-r0
+   pkg:apk/wolfi/wolfi-baselayout@20230201-r31
+   pkg:oci/hello@sha256%3A2dbf7dda7216…
+# exit 0
+
+$ mkdir -p sbom/inside-image-d && cp /tmp/d-sbom/*.json sbom/inside-image-d/ && ls sbom/inside-image-d; gzip -9 -k -f reports/sbom/a-grype-from-spdx.json; echo "reports/sbom/a-grype-from-spdx.json" >> .gitignore; tail -4 .gitignore; git check-ignore -v reports/sbom/a-grype-from-spdx.json; ls -l reports/sbom/*.gz; git status --short
+# at 14:18:10 in /home/ubuntu/chainguard-technical-challenge
+ca-certificates-bundle-20261020-r0.spdx.json
+tzdata-2026f-r0.spdx.json
+wolfi-baselayout-20230201-r31.spdx.json
+reports/*/a-grype.json
+reports/*/a-trivy.json
+reports/*/a-trivy.sarif
+reports/sbom/a-grype-from-spdx.json
+.gitignore:28:reports/sbom/a-grype-from-spdx.json	reports/sbom/a-grype-from-spdx.json
+-rw-r--r-- 1 ubuntu ubuntu 6297449 Nov 16 18:15 reports/sbom/a-grype-from-spdx.json.gz
+ M .gitignore
+ M logs/14-final.log
+?? logs/15-sbom.log
+?? reports/sbom/
+?? sbom/
+# exit 0
+
+$ git add -A && git status --short | wc -l && git commit -q -m "step 15: SBOMs for A to D in SPDX and CycloneDX; SBOM scans vs image scans; Chainguard signed SBOM verified and compared" && git push -q origin main && git log --oneline -1 && git status -sb | head -1
+# at 14:19:30 in /home/ubuntu/chainguard-technical-challenge
+31
+5d95cb0 step 15: SBOMs for A to D in SPDX and CycloneDX; SBOM scans vs image scans; Chainguard signed SBOM verified and compared
+## main...origin/main
+# exit 0

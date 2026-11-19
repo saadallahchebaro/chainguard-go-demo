@@ -1,0 +1,15 @@
+$ multipass transfer tools/labrc.sh (fixed), tools/labsend.sh, tools/sync-to-mac.sh -> repo/tools
+transferred OK
+$ multipass exec chainguard -- tmux kill-server   (restart the shared session from a fresh login, so its shell gets the docker group)
+exit 0
+$ multipass exec chainguard -- bash ~/chainguard-technical-challenge/tools/bootstrap-vm.sh
+tmux 3.4
+lab: 1 windows (created Mon Nov 16 12:42:50 2026)
+Ready. On the big screen run: multipass shell chainguard   then: tmux attach -t lab
+$ multipass transfer JOURNAL.md RUNBOOK.md REPORT.md, tools/shot.sh, demo/screenshots/02-*.png, logs/02-docker-mac.log -> repo
+$ multipass transfer tools/sync-to-mac.sh (archive + checksums) and JOURNAL.md -> repo
+transferred OK
+$ multipass transfer tools/sync-to-mac.sh (the archive version; 5924dcf missed it) -> repo
+transferred OK
+$ multipass transfer JOURNAL.md RUNBOOK.md, tools/tmux.conf tools/bootstrap-vm.sh tools/labrc.sh -> repo (reworded)
+transferred OK

@@ -1,0 +1,10 @@
+{
+  // Terminal > Run Task… : the same shells as the workspace's terminal profiles, for when profiles are not offered.
+  "version": "2.0.0",
+  "tasks": [
+    { "label": "Image A: a shell inside", "type": "shell", "command": "docker run --rm -it --entrypoint bash hello:a", "presentation": { "panel": "dedicated", "focus": true }, "problemMatcher": [] },
+    { "label": "Image B: a shell inside", "type": "shell", "command": "docker run --rm -it --entrypoint bash hello:b", "presentation": { "panel": "dedicated", "focus": true }, "problemMatcher": [] },
+    { "label": "Image C: no shell, a sidecar", "type": "shell", "command": "docker run -d --rm --name vsc-c hello:c >/dev/null; docker run --rm -it --cap-add SYS_PTRACE --pid=container:vsc-c --network=container:vsc-c cgr.dev/chainguard/wolfi-base sh; docker stop vsc-c >/dev/null", "presentation": { "panel": "dedicated", "focus": true }, "problemMatcher": [] },
+    { "label": "Image D: no shell, a sidecar", "type": "shell", "command": "docker run -d --rm --name vsc-d hello:d >/dev/null; docker run --rm -it --cap-add SYS_PTRACE --pid=container:vsc-d --network=container:vsc-d cgr.dev/chainguard/wolfi-base sh; docker stop vsc-d >/dev/null", "presentation": { "panel": "dedicated", "focus": true }, "problemMatcher": [] }
+  ]
+}

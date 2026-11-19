@@ -1,0 +1,57 @@
+
+===== STEP 26-live-commands · 2026-11-17T08:32:30Z · chainguard
+
+$ docker build -q -t hello-live:d -f dockerfiles/Dockerfile.d-patched ./go-patched && docker build -q --no-cache -t hello-live:d -f dockerfiles/Dockerfile.d-patched ./go-patched && for i in hello:d hello-live:d; do docker create --name q-bin $i >/dev/null && docker cp q-bin:/usr/local/bin/hello-server /tmp/q-bin && docker rm q-bin >/dev/null && echo "$i  binary sha256 $(sha256sum < /tmp/q-bin | cut -c1-16)"; done
+# at 08:32:30 in /home/ubuntu/chainguard-technical-challenge
+sha256:2b830c0159fa5246edaab8063ebf2efc9bda309b6f2ce08161a816cd4e289992
+sha256:89f19d996431ddfebe54c8988cde4ee58875e9bc7ab73d86ccd684345be0a8c6
+hello:d  binary sha256 00aee67926e69ea5
+hello-live:d  binary sha256 00aee67926e69ea5
+# exit 0
+
+$ for i in a b c d; do echo "$i: $(GRYPE_DB_AUTO_UPDATE=false grype hello:$i --by-cve -q -o json | jq "[.matches[].vulnerability.id] | unique | length") unique CVEs (Grype, recorded database)"; done
+# at 08:32:54 in /home/ubuntu/chainguard-technical-challenge
+a: 734 unique CVEs (Grype, recorded database)
+b: 161 unique CVEs (Grype, recorded database)
+c: 69 unique CVEs (Grype, recorded database)
+d: 0 unique CVEs (Grype, recorded database)
+# exit 0
+
+$ docker tag hello-live:d localhost:5000/hello-live:d && docker push -q localhost:5000/hello-live:d && D=$(crane digest localhost:5000/hello-live:d) && echo "digest: $D" && (cosign verify --key cosign.pub --insecure-ignore-tlog=true localhost:5000/hello-live@$D >/dev/null 2>&1 && echo "verify: signed" || echo "verify: not signed with the lab key"); kubectl run live-check -n bypass-test --restart=Never --image=192.168.252.2:5000/hello-live@$D --dry-run=server -o name 2>&1; kubectl run unsigned-check -n bypass-test --restart=Never --image=192.168.252.2:5000/hello@$(crane digest localhost:5000/hello:c) --dry-run=server -o name 2>&1; kubectl run signed-check -n bypass-test --restart=Never --image=192.168.252.2:5000/hello@$(crane digest localhost:5000/hello:d) --dry-run=server -o name 2>&1; echo "pods in bypass-test: $(kubectl get pods -n bypass-test --no-headers 2>/dev/null | wc -l)"
+# at 08:33:34 in /home/ubuntu/chainguard-technical-challenge
+localhost:5000/hello-live:d
+digest: sha256:89f19d996431ddfebe54c8988cde4ee58875e9bc7ab73d86ccd684345be0a8c6
+verify: not signed with the lab key
+Error from server: admission webhook "ivpol.validate.kyverno.svc-fail" denied the request: Policy require-lab-signature failed: The image must be signed with the lab key (cosign.pub)
+Error from server: admission webhook "ivpol.validate.kyverno.svc-fail" denied the request: Policy require-lab-signature failed: The image must be signed with the lab key (cosign.pub)
+pod/signed-check
+pods in bypass-test: 0
+# exit 0
+
+$ kubectl run psa-check --restart=Never --image=192.168.252.2:5000/hello@$(crane digest localhost:5000/hello:d) --dry-run=server -o name 2>&1 | sed "s/, /,\n  /g"
+# at 08:33:44 in /home/ubuntu/chainguard-technical-challenge
+Error from server (Forbidden): pods "psa-check" is forbidden: violates PodSecurity "restricted:latest": allowPrivilegeEscalation != false (container "psa-check" must set securityContext.allowPrivilegeEscalation=false),
+  unrestricted capabilities (container "psa-check" must set securityContext.capabilities.drop=["ALL"]),
+  runAsNonRoot != true (pod or container "psa-check" must set securityContext.runAsNonRoot=true),
+  seccompProfile (pod or container "psa-check" must set securityContext.seccompProfile.type to "RuntimeDefault" or "Localhost")
+# exit 0
+
+$ GRYPE_DB_CACHE_DIR=/tmp/grype-today grype hello:d --by-cve; GRYPE_DB_CACHE_DIR=/tmp/grype-today grype db status | grep -E "Built|Schema"; rm -rf /tmp/grype-today
+# at 08:33:44 in /home/ubuntu/chainguard-technical-challenge
+No vulnerabilities found
+Schema:    v6.1.10
+Built:     2026-11-17T06:20:58Z
+# exit 0
+
+$ for t in hello-live:d localhost:5000/hello-live:d; do docker rmi $t >/dev/null && echo "removed $t"; done; df -h / | tail -1
+# at 08:34:46 in /home/ubuntu/chainguard-technical-challenge
+removed hello-live:d
+removed localhost:5000/hello-live:d
+/dev/sda1        29G   24G  5.0G  83% /
+# exit 0
+
+$ git add -A && git commit -q -m "Steps 25 and 26: command deck for the big screen, 106 quick answers with live build, scan and sign and side by side fix checks, CI step 12 Chainguard map, showcase folder and VS Code workspace, console reconnect fix (surprises 51 to 53)" && git push -q origin main && git log --oneline -1 && git status -sb | head -1
+# at 09:02:48 in /home/ubuntu/chainguard-technical-challenge
+e25ba9a Steps 25 and 26: command deck for the big screen, 106 quick answers with live build, scan and sign and side by side fix checks, CI step 12 Chainguard map, showcase folder and VS Code workspace, console reconnect fix (surprises 51 to 53)
+## main...origin/main
+# exit 0

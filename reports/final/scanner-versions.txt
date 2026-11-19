@@ -1,0 +1,23 @@
+Same-day rescan of images A to D, 2026-11-16T13:45:51Z
+
+grype        0.121.3
+syft         1.57.1
+trivy        0.76.2
+govulncheck  v1.9.0
+Path:      /home/ubuntu/.cache/grype/db/6/vulnerability.db
+Schema:    v6.1.10
+Built:     2026-11-16T06:30:54Z
+From:      https://grype.anchore.io/databases/v6/vulnerability-db_v6.1.10_2026-11-15T16:11:12Z_1794810654.tar.zst?checksum=sha256%3Add51add686f29657dd7d71af8dc61d33cbb3e99772e263d2949b7adec4ce4102
+Status:    valid
+Version: 0.76.2
+Vulnerability DB:
+  Version: 2
+  UpdatedAt: 2026-11-16 07:10:39.763774809 +0000 UTC
+  NextUpdate: 2026-11-17 07:10:39.763774549 +0000 UTC
+  DownloadedAt: 2026-11-16 10:00:33.664215685 +0000 UTC
+Go: go1.27.4
+Scanner: govulncheck@v1.9.0
+DB: https://vuln.go.dev
+DB updated: 2026-11-11 02:51:11 +0000 UTC
+
+CISA KEV catalog 2026.11.13

@@ -1,0 +1,1 @@
+../../ci/skills/unvetted/dockerfile-fixer/scripts/setup.sh

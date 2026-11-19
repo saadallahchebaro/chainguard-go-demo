@@ -1,0 +1,729 @@
+
+===== STEP 13-image-d · 2026-11-16T13:22:03Z · chainguard
+
+$ cd go-patched && diff -r ../go . && echo "go-patched/ is an exact copy of go/" && go version && go get -u ./... && go mod tidy && echo "== go get -u and go mod tidy: done"
+# at 13:22:03 in /home/ubuntu/chainguard-technical-challenge
+go-patched/ is an exact copy of go/
+go version go1.27.4 linux/arm64
+go: downloading github.com/gin-gonic/gin v1.12.0
+go: downloading golang.org/x/net v0.62.0
+go: downloading github.com/mattn/go-isatty v0.0.24
+go: downloading github.com/gin-contrib/sse v1.2.1
+go: downloading google.golang.org/protobuf v1.36.12
+go: downloading github.com/pelletier/go-toml/v2 v2.4.3
+go: downloading github.com/go-playground/validator v9.31.0+incompatible
+go: downloading github.com/ugorji/go v1.2.14
+go: downloading github.com/pelletier/go-toml v1.9.5
+go: downloading github.com/go-playground/validator/v10 v10.30.6
+go: downloading github.com/goccy/go-json v0.9.7
+go: downloading github.com/json-iterator/go v1.1.12
+go: downloading golang.org/x/sys v0.50.0
+go: downloading github.com/goccy/go-json v0.12.0
+go: downloading github.com/ugorji/go/codec v1.3.2
+go: downloading golang.org/x/crypto v0.59.0
+go: downloading github.com/go-playground/universal-translator v0.18.2
+go: downloading golang.org/x/text v0.44.0
+go: downloading github.com/leodido/go-urn v1.5.0
+go: downloading github.com/modern-go/concurrent v0.0.0-20180228061459-e0a39a4cb421
+go: downloading github.com/modern-go/reflect2 v1.0.2
+go: downloading github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd
+go: downloading github.com/go-playground/locales v0.14.2
+go: downloading github.com/quic-go/quic-go v0.59.0
+go: downloading github.com/goccy/go-yaml v1.19.2
+go: downloading github.com/quic-go/quic-go v0.65.0
+go: downloading go.mongodb.org/mongo-driver/v2 v2.5.0
+go: downloading github.com/gabriel-vasile/mimetype v1.4.16
+go: downloading go.mongodb.org/mongo-driver v1.17.10
+go: downloading go.mongodb.org/mongo-driver/v2 v2.10.0
+go: downloading github.com/quic-go/qpack v0.6.0
+go: downloading github.com/bytedance/sonic v1.15.0
+go: downloading github.com/bytedance/sonic v1.15.5
+go: downloading github.com/bytedance/gopkg v0.1.3
+go: downloading github.com/bytedance/gopkg v0.1.4
+go: downloading github.com/cloudwego/base64x v0.1.6
+go: downloading golang.org/x/arch v0.22.0
+go: downloading github.com/cloudwego/base64x v0.1.7
+go: downloading golang.org/x/arch v0.33.0
+go: downloading github.com/klauspost/cpuid/v2 v2.3.0
+go: downloading github.com/bytedance/sonic/loader v0.5.0
+go: downloading github.com/klauspost/cpuid/v2 v2.4.2
+go: downloading github.com/klauspost/cpuid v1.3.1
+go: downloading github.com/twitchyliquid64/golang-asm v0.15.1
+go: downloading github.com/bytedance/sonic/loader v0.5.3
+go: downloading github.com/go-playground/assert/v2 v2.2.0
+go: downloading github.com/stretchr/testify v1.12.1
+go: downloading gopkg.in/check.v1 v0.0.0-20161208181325-20d25e280405
+go: downloading gopkg.in/yaml.v3 v3.0.1
+go: upgraded go 1.18 => 1.26.10
+go: added github.com/bytedance/gopkg v0.1.4
+go: added github.com/bytedance/sonic v1.15.5
+go: added github.com/bytedance/sonic/loader v0.5.3
+go: added github.com/cloudwego/base64x v0.1.7
+go: added github.com/gabriel-vasile/mimetype v1.4.16
+go: upgraded github.com/gin-contrib/sse v0.1.0 => v1.2.1
+go: upgraded github.com/gin-gonic/gin v1.8.1 => v1.12.0
+go: upgraded github.com/go-playground/locales v0.14.0 => v0.14.2
+go: upgraded github.com/go-playground/universal-translator v0.18.0 => v0.18.2
+go: upgraded github.com/go-playground/validator/v10 v10.10.0 => v10.30.6
+go: upgraded github.com/goccy/go-json v0.9.7 => v0.12.0
+go: added github.com/goccy/go-yaml v1.19.2
+go: added github.com/klauspost/cpuid/v2 v2.4.2
+go: upgraded github.com/leodido/go-urn v1.2.1 => v1.5.0
+go: upgraded github.com/mattn/go-isatty v0.0.14 => v0.0.24
+go: upgraded github.com/modern-go/concurrent v0.0.0-20180228061459-e0a39a4cb421 => v0.0.0-20180306012644-bacd9c7ef1dd
+go: upgraded github.com/pelletier/go-toml/v2 v2.0.1 => v2.4.3
+go: added github.com/quic-go/qpack v0.6.0
+go: added github.com/quic-go/quic-go v0.65.0
+go: added github.com/twitchyliquid64/golang-asm v0.15.1
+go: upgraded github.com/ugorji/go/codec v1.2.7 => v1.3.2
+go: added go.mongodb.org/mongo-driver/v2 v2.10.0
+go: added golang.org/x/arch v0.33.0
+go: upgraded golang.org/x/crypto v0.0.0-20210711020723-a769d52b0f97 => v0.59.0
+go: upgraded golang.org/x/net v0.0.0-20210226172049-e18ecbb05110 => v0.62.0
+go: upgraded golang.org/x/sys v0.0.0-20210806184541-e5e7981a1069 => v0.50.0
+go: upgraded golang.org/x/text v0.3.6 => v0.44.0
+go: upgraded google.golang.org/protobuf v1.28.0 => v1.36.12
+go: downloading github.com/quic-go/go-ossfuzz-seeds v0.1.0
+go: downloading go.uber.org/mock v0.6.0
+go: downloading go.yaml.in/yaml/v3 v3.0.5
+== go get -u and go mod tidy: done
+# exit 0
+
+$ cd go-patched && git diff --no-index ../go/go.mod go.mod; echo "== the highest Go version any module asks for:"; go mod graph | grep " go@" | sort -V -k2 | tail -4; echo "== go.sum: $(wc -l < ../go/go.sum) lines before, $(wc -l < go.sum) after"
+# at 13:22:45 in /home/ubuntu/chainguard-technical-challenge
+diff --git a/../go/go.mod b/go.mod
+index ede08be..feb5875 100644
+--- a/../go/go.mod
++++ b/go.mod
+@@ -1,26 +1,37 @@
+ module hello-server
+ 
+-go 1.18
++go 1.26.10
+ 
+-require github.com/gin-gonic/gin v1.8.1
++require github.com/gin-gonic/gin v1.12.0
+ 
+ require (
+-	github.com/gin-contrib/sse v0.1.0 // indirect
+-	github.com/go-playground/locales v0.14.0 // indirect
+-	github.com/go-playground/universal-translator v0.18.0 // indirect
+-	github.com/go-playground/validator/v10 v10.10.0 // indirect
+-	github.com/goccy/go-json v0.9.7 // indirect
++	github.com/bytedance/gopkg v0.1.4 // indirect
++	github.com/bytedance/sonic v1.15.5 // indirect
++	github.com/bytedance/sonic/loader v0.5.3 // indirect
++	github.com/cloudwego/base64x v0.1.7 // indirect
++	github.com/gabriel-vasile/mimetype v1.4.16 // indirect
++	github.com/gin-contrib/sse v1.2.1 // indirect
++	github.com/go-playground/locales v0.14.2 // indirect
++	github.com/go-playground/universal-translator v0.18.2 // indirect
++	github.com/go-playground/validator/v10 v10.30.6 // indirect
++	github.com/goccy/go-json v0.12.0 // indirect
++	github.com/goccy/go-yaml v1.19.2 // indirect
+ 	github.com/json-iterator/go v1.1.12 // indirect
+-	github.com/leodido/go-urn v1.2.1 // indirect
+-	github.com/mattn/go-isatty v0.0.14 // indirect
+-	github.com/modern-go/concurrent v0.0.0-20180228061459-e0a39a4cb421 // indirect
++	github.com/klauspost/cpuid/v2 v2.4.2 // indirect
++	github.com/leodido/go-urn v1.5.0 // indirect
++	github.com/mattn/go-isatty v0.0.24 // indirect
++	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
+ 	github.com/modern-go/reflect2 v1.0.2 // indirect
+-	github.com/pelletier/go-toml/v2 v2.0.1 // indirect
+-	github.com/ugorji/go/codec v1.2.7 // indirect
+-	golang.org/x/crypto v0.0.0-20210711020723-a769d52b0f97 // indirect
+-	golang.org/x/net v0.0.0-20210226172049-e18ecbb05110 // indirect
+-	golang.org/x/sys v0.0.0-20210806184541-e5e7981a1069 // indirect
+-	golang.org/x/text v0.3.6 // indirect
+-	google.golang.org/protobuf v1.28.0 // indirect
+-	gopkg.in/yaml.v2 v2.4.0 // indirect
++	github.com/pelletier/go-toml/v2 v2.4.3 // indirect
++	github.com/quic-go/qpack v0.6.0 // indirect
++	github.com/quic-go/quic-go v0.65.0 // indirect
++	github.com/twitchyliquid64/golang-asm v0.15.1 // indirect
++	github.com/ugorji/go/codec v1.3.2 // indirect
++	go.mongodb.org/mongo-driver/v2 v2.10.0 // indirect
++	golang.org/x/arch v0.33.0 // indirect
++	golang.org/x/crypto v0.59.0 // indirect
++	golang.org/x/net v0.62.0 // indirect
++	golang.org/x/sys v0.50.0 // indirect
++	golang.org/x/text v0.44.0 // indirect
++	google.golang.org/protobuf v1.36.12 // indirect
+ )
+== the highest Go version any module asks for:
+golang.org/x/sys@v0.50.0 go@1.26.0
+golang.org/x/text@v0.44.0 go@1.26.0
+github.com/gin-contrib/sse@v1.2.1 go@1.26.10
+hello-server go@1.26.10
+== go.sum: 86 lines before, 90 after
+# exit 0
+
+$ cd go-patched && reqs() { go mod edit -json "$1" | jq -r ".Require[] | .Path + \" \" + .Version" | sort; }; echo "go line: $(go mod edit -json ../go/go.mod | jq -r .Go) -> $(go mod edit -json go.mod | jq -r .Go)"; (echo "MODULE BEFORE AFTER"; join -a1 -a2 -e "(none)" -o 0,1.2,2.2 <(reqs ../go/go.mod) <(reqs go.mod)) | column -t; echo "modules required: $(reqs ../go/go.mod | wc -l) before, $(reqs go.mod | wc -l) after"
+# at 13:23:07 in /home/ubuntu/chainguard-technical-challenge
+go line: 1.18 -> 1.26.10
+MODULE                                         BEFORE                              AFTER
+github.com/bytedance/gopkg                     (none)                              v0.1.4
+github.com/bytedance/sonic                     (none)                              v1.15.5
+github.com/bytedance/sonic/loader              (none)                              v0.5.3
+github.com/cloudwego/base64x                   (none)                              v0.1.7
+github.com/gabriel-vasile/mimetype             (none)                              v1.4.16
+github.com/gin-contrib/sse                     v0.1.0                              v1.2.1
+github.com/gin-gonic/gin                       v1.8.1                              v1.12.0
+github.com/go-playground/locales               v0.14.0                             v0.14.2
+github.com/go-playground/universal-translator  v0.18.0                             v0.18.2
+github.com/go-playground/validator/v10         v10.10.0                            v10.30.6
+github.com/goccy/go-json                       v0.9.7                              v0.12.0
+github.com/goccy/go-yaml                       (none)                              v1.19.2
+github.com/json-iterator/go                    v1.1.12                             v1.1.12
+github.com/klauspost/cpuid/v2                  (none)                              v2.4.2
+github.com/leodido/go-urn                      v1.2.1                              v1.5.0
+github.com/mattn/go-isatty                     v0.0.14                             v0.0.24
+github.com/modern-go/concurrent                v0.0.0-20180228061459-e0a39a4cb421  v0.0.0-20180306012644-bacd9c7ef1dd
+github.com/modern-go/reflect2                  v1.0.2                              v1.0.2
+github.com/pelletier/go-toml/v2                v2.0.1                              v2.4.3
+github.com/quic-go/qpack                       (none)                              v0.6.0
+github.com/quic-go/quic-go                     (none)                              v0.65.0
+github.com/twitchyliquid64/golang-asm          (none)                              v0.15.1
+github.com/ugorji/go/codec                     v1.2.7                              v1.3.2
+go.mongodb.org/mongo-driver/v2                 (none)                              v2.10.0
+golang.org/x/arch                              (none)                              v0.33.0
+golang.org/x/crypto                            v0.0.0-20210711020723-a769d52b0f97  v0.59.0
+golang.org/x/net                               v0.0.0-20210226172049-e18ecbb05110  v0.62.0
+golang.org/x/sys                               v0.0.0-20210806184541-e5e7981a1069  v0.50.0
+golang.org/x/text                              v0.3.6                              v0.44.0
+google.golang.org/protobuf                     v1.28.0                             v1.36.12
+gopkg.in/yaml.v2                               v2.4.0                              (none)
+modules required: 19 before, 30 after
+# exit 0
+
+$ cd go-patched && git diff --no-index ../go/main.go main.go; echo "== gofmt -l (files needing formatting):"; gofmt -l .; echo "(none)"; echo "== go vet ./..."; go vet ./... && echo "go vet: no issues"
+# at 13:23:28 in /home/ubuntu/chainguard-technical-challenge
+diff --git a/../go/main.go b/main.go
+index 2a4c9b1..d6905e1 100644
+--- a/../go/main.go
++++ b/main.go
+@@ -1,15 +1,31 @@
+ package main
+ 
+ import (
++	"log"
+ 	"net/http"
++	"time"
+ 
+ 	"github.com/gin-gonic/gin"
+ )
+ 
+ func main() {
+ 	r := gin.Default()
++	// Trust no proxy headers: the client IP comes from the connection itself.
++	if err := r.SetTrustedProxies(nil); err != nil {
++		log.Fatal(err)
++	}
+ 	r.GET("/", func(c *gin.Context) {
+ 		c.String(http.StatusOK, "Hello World!")
+ 	})
+-	r.Run() // listen on 0.0.0.0:8080
++
++	// r.Run() starts a server with no timeouts, so build the server ourselves.
++	srv := &http.Server{
++		Addr:              ":8080",
++		Handler:           r,
++		ReadHeaderTimeout: 5 * time.Second,
++		ReadTimeout:       10 * time.Second,
++		WriteTimeout:      10 * time.Second,
++		IdleTimeout:       60 * time.Second,
++	}
++	log.Fatal(srv.ListenAndServe())
+ }
+== gofmt -l (files needing formatting):
+(none)
+== go vet ./...
+go vet: no issues
+# exit 0
+
+$ cd go-patched && echo "== govulncheck, source mode, on go-patched/ (Go on the PATH: $(go env GOVERSION))" && govulncheck ./... > ../reports/after/govulncheck-source-d.txt 2>&1; cat ../reports/after/govulncheck-source-d.txt; echo "== local build:"; CGO_ENABLED=0 go build -o ../hello-server-d-local . ; echo "build exit code: $?"; ls -l ../hello-server-d-local; git status --short . ; echo "(go-patched/: only go.mod, go.sum and main.go changed vs the commit)"
+# at 13:24:19 in /home/ubuntu/chainguard-technical-challenge
+== govulncheck, source mode, on go-patched/ (Go on the PATH: go1.27.4)
+No vulnerabilities found.
+== local build:
+build exit code: 0
+-rwxrwxr-x 1 ubuntu ubuntu 20222940 Nov 16 17:24 ../hello-server-d-local
+ M go.mod
+ M go.sum
+ M main.go
+(go-patched/: only go.mod, go.sum and main.go changed vs the commit)
+# exit 0
+
+$ echo "== 1. as is (no GIN_MODE):"; (./hello-server-d-local &); sleep 2; curl -s localhost:8080; echo; pkill -f hello-server-d-local; sleep 1; echo; echo "== 2. with GIN_MODE=release (as image D will run):"; (GIN_MODE=release ./hello-server-d-local &); sleep 2; curl -s localhost:8080; echo; pkill -f hello-server-d-local; sleep 1; echo "server stopped"
+# at 13:24:36 in /home/ubuntu/chainguard-technical-challenge
+== 1. as is (no GIN_MODE):
+[GIN-debug] [WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.
+
+[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+ - using env:	export GIN_MODE=release
+ - using code:	gin.SetMode(gin.ReleaseMode)
+
+[GIN-debug] GET    /                         --> main.main.func1 (3 handlers)
+[GIN] 2026/11/16 - 17:24:39 | 200 |  7.709µs |             ::1 | GET      "/"
+Hello World!
+
+== 2. with GIN_MODE=release (as image D will run):
+[GIN] 2026/11/16 - 17:24:42 | 200 | 10.084µs |             ::1 | GET      "/"
+Hello World!
+server stopped
+# exit 0
+
+$ echo "##### 1. Proxy trust: a request with a forged header X-Forwarded-For: 203.0.113.9 (the client IP Gin logs):"; for b in hello-server-b hello-server-d-local; do echo "== $b"; (GIN_MODE=release ./$b &); sleep 2; curl -s -o /dev/null -H "X-Forwarded-For: 203.0.113.9" localhost:8080; sleep 1; pkill -f $b; sleep 1; done; echo; echo "##### 2. Timeouts: open a connection, send half a request header, never finish it (wait up to 15 s):"; for b in hello-server-b hello-server-d-local; do echo "== $b"; (GIN_MODE=release ./$b &); sleep 2; s=$(date +%s); exec 3<>/dev/tcp/127.0.0.1/8080; printf "GET / HTTP/1.1\r\nHost: localhost\r\n" >&3; timeout 15 cat <&3; rc=$?; t=$(( $(date +%s) - s )); if [ $rc = 124 ]; then echo "   connection still open after ${t} s (we gave up)"; else echo "   the server closed the connection after ${t} s"; fi; exec 3>&-; pkill -f $b; sleep 1; done
+# at 13:25:05 in /home/ubuntu/chainguard-technical-challenge
+##### 1. Proxy trust: a request with a forged header X-Forwarded-For: 203.0.113.9 (the client IP Gin logs):
+== hello-server-b
+[GIN] 2026/11/16 - 17:25:07 | 200 |       22.25µs |     203.0.113.9 | GET      "/"
+== hello-server-d-local
+[GIN] 2026/11/16 - 17:25:11 | 200 | 29.625µs |             ::1 | GET      "/"
+
+##### 2. Timeouts: open a connection, send half a request header, never finish it (wait up to 15 s):
+== hello-server-b
+   connection still open after 15 s (we gave up)
+== hello-server-d-local
+   the server closed the connection after 5 s
+# exit 0
+
+# NOTE: GD=sha256:64c93a14feeb5320f251691bab838fd580721f45cb090697a5c1b0a482e503cb
+
+$ echo "cgr.dev/chainguard/go:latest = $GD"; crane manifest cgr.dev/chainguard/go@$GD | jq -c ".mediaType, (.manifests[] | {platform: (.platform.os + \"/\" + .platform.architecture), digest: .digest[0:19]})"
+# at 13:26:29 in /home/ubuntu/chainguard-technical-challenge
+cgr.dev/chainguard/go:latest = sha256:64c93a14feeb5320f251691bab838fd580721f45cb090697a5c1b0a482e503cb
+"application/vnd.oci.image.index.v1+json"
+{"platform":"linux/amd64","digest":"sha256:100360c934b0"}
+{"platform":"linux/arm64","digest":"sha256:6d6af7de6e18"}
+# exit 0
+
+$ cosign verify cgr.dev/chainguard/go@$GD --certificate-oidc-issuer=https://token.actions.githubusercontent.com --certificate-identity=https://github.com/chainguard-images/images/.github/workflows/release.yaml@refs/heads/main 2>&1 >/tmp/cg-go-verify.json | grep -v "^$"; jq -r ".[0] | \"signed digest: \" + .critical.image[\"docker-manifest-digest\"] + \"\nsigner:        \" + .optional.Subject + \"\nissuer:        \" + .optional.Issuer" /tmp/cg-go-verify.json
+# at 13:26:30 in /home/ubuntu/chainguard-technical-challenge
+Verification for cgr.dev/chainguard/go@sha256:64c93a14feeb5320f251691bab838fd580721f45cb090697a5c1b0a482e503cb --
+The following checks were performed on each of these signatures:
+  - The cosign claims were validated
+  - Existence of the claims in the transparency log was verified offline
+  - The code-signing certificate was verified using trusted certificate authority certificates
+signed digest: sha256:64c93a14feeb5320f251691bab838fd580721f45cb090697a5c1b0a482e503cb
+signer:        https://github.com/chainguard-images/images/.github/workflows/release.yaml@refs/heads/main
+issuer:        https://token.actions.githubusercontent.com
+# exit 0
+
+$ echo "== builder config (linux/arm64):"; crane config --platform linux/arm64 cgr.dev/chainguard/go@$GD | jq -r "\"created:    \" + .created, \"user:       \" + (if (.config.User // \"\") == \"\" then \"(not set: root)\" else .config.User end), \"entrypoint: \" + (.config.Entrypoint | join(\" \")), (.config.Env[] | \"env:        \" + .)"; echo "== the Go version inside:"; docker run --rm cgr.dev/chainguard/go@$GD version
+# at 13:26:35 in /home/ubuntu/chainguard-technical-challenge
+== builder config (linux/arm64):
+created:    2026-11-15T22:10:17Z
+user:       0
+entrypoint: /usr/bin/go
+env:        GODEBUG=tarinsecurepath=0,zipinsecurepath=0
+env:        GOTOOLCHAIN=local+auto
+env:        PATH=/usr/local/sbin:/usr/local/bin:/usr/bin:/usr/sbin:/sbin:/bin
+env:        SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt
+== the Go version inside:
+Unable to find image 'cgr.dev/chainguard/go@sha256:64c93a14feeb5320f251691bab838fd580721f45cb090697a5c1b0a482e503cb' locally
+cgr.dev/chainguard/go@sha256:64c93a14feeb5320f251691bab838fd580721f45cb090697a5c1b0a482e503cb: Pulling from chainguard/go
+c454c52f2d1d: Pulling fs layer
+ddcb85904545: Pulling fs layer
+2331bc2896fe: Pulling fs layer
+8ded2f8ee937: Pulling fs layer
+f03ee4ef12c6: Pulling fs layer
+ff7fe1cbe1ad: Pulling fs layer
+3a5678c3c010: Pulling fs layer
+03468f6a11fb: Pulling fs layer
+2d80d0b9d1b9: Pulling fs layer
+d0f35eba0e39: Pulling fs layer
+3ff0ca582864: Pulling fs layer
+2331bc2896fe: Download complete
+f03ee4ef12c6: Download complete
+8ded2f8ee937: Download complete
+3a5678c3c010: Download complete
+03468f6a11fb: Download complete
+ff7fe1cbe1ad: Download complete
+c454c52f2d1d: Download complete
+2d80d0b9d1b9: Download complete
+d0f35eba0e39: Download complete
+3ff0ca582864: Download complete
+ddcb85904545: Download complete
+ddcb85904545: Pull complete
+2331bc2896fe: Pull complete
+8ded2f8ee937: Pull complete
+f03ee4ef12c6: Pull complete
+ff7fe1cbe1ad: Pull complete
+3a5678c3c010: Pull complete
+03468f6a11fb: Pull complete
+2d80d0b9d1b9: Pull complete
+3ff0ca582864: Pull complete
+d0f35eba0e39: Pull complete
+c454c52f2d1d: Pull complete
+Digest: sha256:64c93a14feeb5320f251691bab838fd580721f45cb090697a5c1b0a482e503cb
+Status: Downloaded newer image for cgr.dev/chainguard/go@sha256:64c93a14feeb5320f251691bab838fd580721f45cb090697a5c1b0a482e503cb
+go version go1.27.4 linux/arm64
+# exit 0
+
+$ echo "== Dockerfile C vs D, instructions only (comment lines removed):"; diff <(grep -v "^#" dockerfiles/Dockerfile.c-chainguard) <(grep -v "^#" dockerfiles/Dockerfile.d-patched); echo "diff exit code: $? (1 = files differ)"; echo "== build context go-patched/:"; ls -A go-patched
+# at 13:27:37 in /home/ubuntu/chainguard-technical-challenge
+== Dockerfile C vs D, instructions only (comment lines removed):
+2c2,3
+< FROM golang:1.18 AS build
+---
+> FROM cgr.dev/chainguard/go:latest@sha256:64c93a14feeb5320f251691bab838fd580721f45cb090697a5c1b0a482e503cb AS build
+> ENV GOTOOLCHAIN=local
+11a13
+> ENV GIN_MODE=release
+diff exit code: 1 (1 = files differ)
+== build context go-patched/:
+.gitignore
+README.md
+go.mod
+go.sum
+main.go
+# exit 0
+
+$ docker build --progress=plain -t hello:d -f dockerfiles/Dockerfile.d-patched ./go-patched 2>&1 | grep -v -E "^#[0-9]+ (sha256|extracting)"; echo "== images:"; docker images hello
+# at 13:27:50 in /home/ubuntu/chainguard-technical-challenge
+#0 building with "default" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile.d-patched
+#1 transferring dockerfile: 1.72kB done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for cgr.dev/chainguard/static:latest@sha256:fc42af33e643f20d08baf03cddcc1c02ba57052dfb02edb0d79f3fc47bcea8d9
+#2 DONE 1.8s
+
+#3 [internal] load metadata for cgr.dev/chainguard/go:latest@sha256:64c93a14feeb5320f251691bab838fd580721f45cb090697a5c1b0a482e503cb
+#3 DONE 2.2s
+
+#4 [internal] load .dockerignore
+#4 transferring context: 2B done
+#4 DONE 0.0s
+
+#5 [stage-1 1/2] FROM cgr.dev/chainguard/static:latest@sha256:fc42af33e643f20d08baf03cddcc1c02ba57052dfb02edb0d79f3fc47bcea8d9
+#5 resolve cgr.dev/chainguard/static:latest@sha256:fc42af33e643f20d08baf03cddcc1c02ba57052dfb02edb0d79f3fc47bcea8d9 0.0s done
+#5 DONE 0.0s
+
+#6 [internal] load build context
+#6 transferring context: 10.81kB done
+#6 DONE 0.0s
+
+#7 [build 1/6] FROM cgr.dev/chainguard/go:latest@sha256:64c93a14feeb5320f251691bab838fd580721f45cb090697a5c1b0a482e503cb
+#7 resolve cgr.dev/chainguard/go:latest@sha256:64c93a14feeb5320f251691bab838fd580721f45cb090697a5c1b0a482e503cb 0.0s done
+#7 DONE 0.1s
+
+#7 [build 1/6] FROM cgr.dev/chainguard/go:latest@sha256:64c93a14feeb5320f251691bab838fd580721f45cb090697a5c1b0a482e503cb
+#7 DONE 2.3s
+
+#7 [build 1/6] FROM cgr.dev/chainguard/go:latest@sha256:64c93a14feeb5320f251691bab838fd580721f45cb090697a5c1b0a482e503cb
+#7 DONE 2.4s
+
+#7 [build 1/6] FROM cgr.dev/chainguard/go:latest@sha256:64c93a14feeb5320f251691bab838fd580721f45cb090697a5c1b0a482e503cb
+#7 DONE 2.6s
+
+#7 [build 1/6] FROM cgr.dev/chainguard/go:latest@sha256:64c93a14feeb5320f251691bab838fd580721f45cb090697a5c1b0a482e503cb
+#7 DONE 2.7s
+
+#7 [build 1/6] FROM cgr.dev/chainguard/go:latest@sha256:64c93a14feeb5320f251691bab838fd580721f45cb090697a5c1b0a482e503cb
+#7 DONE 3.0s
+
+#8 [build 2/6] WORKDIR /app
+#8 DONE 0.2s
+
+#9 [build 3/6] COPY go.mod go.sum ./
+#9 DONE 0.0s
+
+#10 [build 4/6] RUN go mod download
+#10 DONE 3.2s
+
+#11 [build 5/6] COPY . .
+#11 DONE 0.0s
+
+#12 [build 6/6] RUN CGO_ENABLED=0 go build -o hello-server .
+#12 DONE 9.6s
+
+#5 [stage-1 1/2] FROM cgr.dev/chainguard/static:latest@sha256:fc42af33e643f20d08baf03cddcc1c02ba57052dfb02edb0d79f3fc47bcea8d9
+#5 CACHED
+
+#13 [stage-1 2/2] COPY --from=build /app/hello-server /usr/local/bin/hello-server
+#13 DONE 0.0s
+
+#14 exporting to image
+#14 exporting layers
+#14 exporting layers 0.3s done
+#14 exporting manifest sha256:712af371a935149f33de890fd48f7de0c1caa6d2c5fbd242acb31843d4158434 done
+#14 exporting config sha256:67d91c78701af6490115f4e5f178428c0bb711ef4ee486983f9e855f0cc5812f done
+#14 exporting attestation manifest sha256:da9c45096d45aff5d18061052fcb790154f33de8a66db3c1abad0e11e89db11e done
+#14 exporting manifest list sha256:c5ce9ddb3a8db38d7ef61bdd6c84905bd1d3e7ef61a3c51bbd0d6d7aa7270a08 done
+#14 naming to docker.io/library/hello:d done
+#14 unpacking to docker.io/library/hello:d 0.1s done
+#14 DONE 0.4s
+== images:
+IMAGE     ID             DISK USAGE   CONTENT SIZE   EXTRA
+hello:a   9457bcf63aa4       1.49GB          374MB        
+hello:b   711ca3631aa1        155MB         35.4MB        
+hello:c   4f75bad2bb90         19MB         5.62MB        
+hello:d   c5ce9ddb3a8d       34.9MB           11MB        
+# exit 0
+
+$ docker run -d -p 8083:8080 --name hello-d hello:d; sleep 2; echo "== curl localhost:8083:"; curl -s localhost:8083; echo; echo "== image config:"; docker image inspect hello:d --format "user={{.Config.User}}  env={{.Config.Env}}"; echo "== id and a shell inside (both should fail):"; docker exec hello-d id; docker exec hello-d sh -c "echo shell"; echo "== the process seen from the VM (real UID and GID):"; ps -o uid,gid,args -p $(docker inspect -f "{{.State.Pid}}" hello-d); echo "== forged X-Forwarded-For: 203.0.113.9, then the container log (release mode: no [GIN-debug] lines):"; curl -s -o /dev/null -H "X-Forwarded-For: 203.0.113.9" localhost:8083; sleep 1; docker logs hello-d; echo "== half-sent request header against image D (wait up to 15 s):"; s=$(date +%s); exec 3<>/dev/tcp/127.0.0.1/8083; printf "GET / HTTP/1.1\r\nHost: localhost\r\n" >&3; timeout 15 cat <&3; rc=$?; t=$(( $(date +%s) - s )); if [ $rc = 124 ]; then echo "connection still open after ${t} s"; else echo "image D closed the connection after ${t} s"; fi; exec 3>&-
+# at 13:28:38 in /home/ubuntu/chainguard-technical-challenge
+68cd34cd99b5f5ebdfe9b5808f13f75693ec96266e33883399ef10df6e6596f8
+== curl localhost:8083:
+Hello World!
+== image config:
+user=65532  env=[PATH=/usr/local/sbin:/usr/local/bin:/usr/bin:/usr/sbin:/sbin:/bin SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt GIN_MODE=release]
+== id and a shell inside (both should fail):
+OCI runtime exec failed: exec failed: unable to start container process: exec: "id": executable file not found in $PATH
+OCI runtime exec failed: exec failed: unable to start container process: exec: "sh": executable file not found in $PATH
+== the process seen from the VM (real UID and GID):
+  UID   GID COMMAND
+65532 65532 /usr/local/bin/hello-server
+== forged X-Forwarded-For: 203.0.113.9, then the container log (release mode: no [GIN-debug] lines):
+[GIN] 2026/11/16 - 13:28:40 | 200 | 11.334µs |      172.17.0.1 | GET      "/"
+[GIN] 2026/11/16 - 13:28:41 | 200 | 27.958µs |      172.17.0.1 | GET      "/"
+== half-sent request header against image D (wait up to 15 s):
+image D closed the connection after 5 s
+# exit 0
+
+$ docker cp -q hello-d:/usr/local/bin/hello-server ./hello-server-d; ls -l hello-server-b hello-server-newgo hello-server-d; go version hello-server-b hello-server-d; deps() { go version -m "$1" | awk "\$1==\"dep\" {print \$2}" | sort; }; echo "== modules compiled in: $(deps hello-server-b | wc -l) in B and C, $(deps hello-server-d | wc -l) in D"; echo "== in D but not in B/C:"; comm -13 <(deps hello-server-b) <(deps hello-server-d) | sed "s/^/   + /"; echo "== in B/C but not in D:"; comm -23 <(deps hello-server-b) <(deps hello-server-d) | sed "s/^/   - /"
+# at 13:29:20 in /home/ubuntu/chainguard-technical-challenge
+-rwxr-xr-x 1 ubuntu ubuntu  9761868 Nov 16 13:47 hello-server-b
+-rwxr-xr-x 1 ubuntu ubuntu 20222796 Nov 16 17:28 hello-server-d
+-rwxrwxr-x 1 ubuntu ubuntu 11734358 Nov 16 14:40 hello-server-newgo
+hello-server-b: go1.18.10
+hello-server-d: go1.27.4
+== modules compiled in: 15 in B and C, 19 in D
+== in D but not in B/C:
+   + github.com/gabriel-vasile/mimetype
+   + github.com/goccy/go-yaml
+   + github.com/quic-go/qpack
+   + github.com/quic-go/quic-go
+   + go.mongodb.org/mongo-driver/v2
+== in B/C but not in D:
+   - gopkg.in/yaml.v2
+# exit 0
+
+$ export GRYPE_DB_AUTO_UPDATE=false; grype hello:d --by-cve -q -o table=reports/after/d-grype.txt -o json=reports/after/d-grype.json -o sarif=reports/after/d-grype.sarif; trivy image -q --skip-db-update --format json --output reports/after/d-trivy.json hello:d; trivy convert -q --format table --output reports/after/d-trivy.txt reports/after/d-trivy.json; trivy convert -q --format sarif --output reports/after/d-trivy.sarif reports/after/d-trivy.json; govulncheck -mode binary ./hello-server-d > reports/after/govulncheck-binary-d.txt 2>&1; { echo; echo "Scan of image D, $(date -u +%FT%TZ) (database updates off: the same databases as image C)"; echo; bash tools/versions.sh | grep -E "grype|trivy|syft"; grype db status | grep -E "Schema|Built"; trivy version | grep -E "UpdatedAt"; } >> reports/after/scanner-versions.txt; tail -8 reports/after/scanner-versions.txt; echo "== counts:"; bash tools/count.sh reports/after/d-grype.json reports/after/d-trivy.json; echo "== govulncheck, binary mode, on D:"; tail -4 reports/after/govulncheck-binary-d.txt
+# at 13:29:46 in /home/ubuntu/chainguard-technical-challenge
+Scan of image D, 2026-11-16T13:29:56Z (database updates off: the same databases as image C)
+
+grype        0.121.3
+syft         1.57.1
+trivy        0.76.2
+Schema:    v6.1.10
+Built:     2026-11-16T06:30:54Z
+  UpdatedAt: 2026-11-16 07:10:39.763774809 +0000 UTC
+== counts:
+== reports/after/d-grype.json
+  findings:    0
+  unique IDs:  0
+  by severity: 
+  by layer:    
+  fixable:     0
+== reports/after/d-trivy.json
+  findings:    0
+  unique IDs:  0
+  by severity: 
+  by layer:    
+  fixable:     0
+== govulncheck, binary mode, on D:
+No vulnerabilities found.
+# exit 0
+
+$ echo "== what Syft (Grype cataloger) finds in hello:d, by type:"; syft hello:d -q -o json | jq -r ".artifacts | group_by(.type)[] | \"   \" + .[0].type + \": \" + (length | tostring) + \"  (\" + (map(.name + \" \" + .version) | if length > 4 then (.[0:4] | join(\", \")) + \", ...\" else join(\", \") end) + \")\""; echo "== Grype: what it scanned"; jq -r "\"   source: \" + .source.target.userInput + \" (\" + .source.type + \"), distro: \" + .distro.name + \" \" + .distro.version + \", matches: \" + (.matches | length | tostring)" reports/after/d-grype.json; echo "== Trivy: targets scanned"; jq -r ".Results[] | \"   \" + .Target + \"  [\" + .Class + \"/\" + .Type + \"]  packages: \" + ((.Packages // []) | length | tostring) + \", vulnerabilities: \" + ((.Vulnerabilities // []) | length | tostring)" reports/after/d-trivy.json
+# at 13:30:14 in /home/ubuntu/chainguard-technical-challenge
+== what Syft (Grype cataloger) finds in hello:d, by type:
+   apk: 3  (ca-certificates-bundle 20261020-r0, tzdata 2026f-r0, wolfi-baselayout 20230201-r31)
+   go-module: 21  (github.com/gabriel-vasile/mimetype v1.4.16, github.com/gin-contrib/sse v1.2.1, github.com/gin-gonic/gin v1.12.0, github.com/go-playground/locales v0.14.2, ...)
+== Grype: what it scanned
+   source: hello:d (image), distro: wolfi 20230201, matches: 0
+== Trivy: targets scanned
+   hello:d (wolfi 20230201)  [os-pkgs/wolfi]  packages: 3, vulnerabilities: 0
+   usr/local/bin/hello-server  [lang-pkgs/gobinary]  packages: 21, vulnerabilities: 0
+# exit 0
+
+$ bash tools/compare.sh hello:a hello:b hello:c hello:d; for s in grype trivy; do echo "== ${s^}, unique CVE IDs:"; for f in reports/before/a-$s.json reports/before/b-$s.json reports/after/c-$s.json reports/after/d-$s.json; do printf "   %-8s" "$(basename $f .json)"; bash tools/count.sh $f | grep -E "unique IDs|by severity|by layer" | sed -E "s/^ +//; s/ +/ /g" | tr "\n" "|" | sed "s/|$//; s/|/  |  /g"; echo; done; done
+# at 13:30:36 in /home/ubuntu/chainguard-technical-challenge
+image     disk      compressed  packages  user uid:gid   shell  tools found (of: go gcc git make curl wget apt-get perl python3 ssh)
+hello:a   1.49GB    374MB       201       0:0            yes    go gcc git make curl wget apt-get perl python3 ssh 
+hello:b   155MB     35.4MB      78        65532:0        yes    apt-get perl 
+hello:c   19MB      5.62MB      (SBOM)    cfg:65532      no     (no shell to check from)
+hello:d   34.9MB    11MB        (SBOM)    cfg:65532      no     (no shell to check from)
+== Grype, unique CVE IDs:
+   a-grype unique IDs: 734  |  by severity: Critical=46 High=225 Medium=230 Low=38 Negligible=194 Unknown=1  |  by layer: go-module=17 go-stdlib=87 os-binary=118 os-deb=603
+   b-grype unique IDs: 161  |  by severity: Critical=5 High=55 Medium=59 Low=9 Negligible=26 Unknown=7  |  by layer: go-module=17 go-stdlib=60 os-deb=92
+   c-grype unique IDs: 69  |  by severity: Critical=5 High=36 Medium=26 Low=1 Unknown=1  |  by layer: go-module=17 go-stdlib=60
+   d-grype unique IDs: 0  |  by severity:   |  by layer: 
+== Trivy, unique CVE IDs:
+   a-trivy unique IDs: 10856  |  by severity: CRITICAL=36 HIGH=1787 MEDIUM=7365 LOW=1646 UNKNOWN=22  |  by layer: go-module=64 go-stdlib=104 os-debian=10700
+   b-trivy unique IDs: 253  |  by severity: CRITICAL=4 HIGH=80 MEDIUM=123 LOW=39 UNKNOWN=7  |  by layer: go-module=64 go-stdlib=104 os-debian=96
+   c-trivy unique IDs: 157  |  by severity: CRITICAL=4 HIGH=67 MEDIUM=78 LOW=4 UNKNOWN=4  |  by layer: go-module=64 go-stdlib=104
+   d-trivy unique IDs: 0  |  by severity:   |  by layer: 
+# exit 0
+
+# NOTE: GL=sha256:fe517acaa580cc7915457080f850c37e618b3c1e750f98b58fc6429b605147a1
+
+$ echo "golang:latest = $GL"; crane manifest golang@$GL | jq -r ".manifests[] | select(.platform.os == \"linux\") | \"   \" + .platform.os + \"/\" + .platform.architecture + (.platform.variant // \"\" | if . != \"\" then \"/\" + . else \"\" end)" | sort | tr "\n" " "; echo; crane config --platform linux/arm64 golang@$GL | jq -r "\"created:    \" + .created, \"user:       \" + (if (.config.User // \"\") == \"\" then \"(not set: root)\" else .config.User end), (.config.Env[] | select(test(\"GOTOOLCHAIN|GOLANG_VERSION\")) | \"env:        \" + .)"; docker pull -q golang@$GL >/dev/null && docker run --rm golang@$GL go version
+# at 13:31:12 in /home/ubuntu/chainguard-technical-challenge
+golang:latest = sha256:fe517acaa580cc7915457080f850c37e618b3c1e750f98b58fc6429b605147a1
+   linux/386    linux/amd64    linux/arm/v7    linux/arm64/v8    linux/ppc64le    linux/riscv64    linux/s390x 
+created:    2026-11-10T18:19:25.87033222Z
+user:       (not set: root)
+env:        GOLANG_VERSION=1.27.4
+env:        GOTOOLCHAIN=local
+go version go1.27.4 linux/arm64
+# exit 0
+
+$ echo "== Dockerfile D vs D-golang, instructions only:"; diff <(grep -v "^#" dockerfiles/Dockerfile.d-patched) <(grep -v "^#" dockerfiles/Dockerfile.d-golang); docker build -q -t hello:d-golang -f dockerfiles/Dockerfile.d-golang ./go-patched && echo "built hello:d-golang"; docker cp -q $(docker create hello:d-golang) /usr/local/bin/hello-server ./hello-server-d-golang 2>/dev/null || { id=$(docker create hello:d-golang); docker cp -q $id:/usr/local/bin/hello-server ./hello-server-d-golang; docker rm -f $id >/dev/null; }; ls -l hello-server-d hello-server-d-golang; sha256sum hello-server-d hello-server-d-golang; echo "== go version -m, D vs D-golang (everything except the path line):"; diff <(go version -m hello-server-d | tail -n +2) <(go version -m hello-server-d-golang | tail -n +2) && echo "identical: same Go, same modules, same build settings"
+# at 13:31:46 in /home/ubuntu/chainguard-technical-challenge
+== Dockerfile D vs D-golang, instructions only:
+2c2
+< FROM cgr.dev/chainguard/go:latest@sha256:64c93a14feeb5320f251691bab838fd580721f45cb090697a5c1b0a482e503cb AS build
+---
+> FROM golang:latest@sha256:fe517acaa580cc7915457080f850c37e618b3c1e750f98b58fc6429b605147a1 AS build
+sha256:726179c1807bd18ae0bf4980a7acc128f9851639ea049a85a5e3cc0f86b4687e
+built hello:d-golang
+-rwxr-xr-x 1 ubuntu ubuntu 20222796 Nov 16 17:28 hello-server-d
+-rwxr-xr-x 1 ubuntu ubuntu 20222668 Nov 16 17:32 hello-server-d-golang
+00aee67926e69ea5dbf24a7edeca63950b0cbd52956d9a37f44d59048f7ea001  hello-server-d
+19bad7c4009c8a3ee8355bab7c59abf5510b414dd13ec3a5bf66ec54221fd313  hello-server-d-golang
+== go version -m, D vs D-golang (everything except the path line):
+22d21
+< 	build	chainguard_go_package=go-1.27-1.27.4-r0
+# exit 1
+
+$ export GRYPE_DB_AUTO_UPDATE=false; docker ps -aq --filter status=created --filter ancestor=hello:d-golang | xargs -r docker rm >/dev/null && echo "(removed the unused container left by the first docker cp form)"; docker tag golang@$GL builder:golang; docker tag cgr.dev/chainguard/go@$GD builder:cg-go; grype hello:d-golang --by-cve -q -o json=reports/after/d-golang-grype.json; grype builder:golang --by-cve -q -o json=reports/after/builder-golang-grype.json; grype builder:cg-go --by-cve -q -o json=reports/after/builder-cg-go-grype.json; echo "== Grype, unique CVE IDs:"; for f in d-grype d-golang-grype builder-cg-go-grype builder-golang-grype; do printf "   %-21s" $f; bash tools/count.sh reports/after/$f.json | grep -E "unique IDs|by severity|by layer" | sed -E "s/^ +//; s/ +/ /g" | tr "\n" "|" | sed "s/|$//; s/|/  |  /g"; echo; done; echo "== the two builders (packages column = Debian dpkg only):"; bash tools/compare.sh builder:cg-go builder:golang; echo "== packages by type (Syft):"; for i in builder:cg-go builder:golang; do echo "   $i: $(syft $i -q -o json | jq -r "[.artifacts[].type] | group_by(.) | map(.[0] + \"=\" + (length | tostring)) | join(\" \")")"; done
+# at 13:32:38 in /home/ubuntu/chainguard-technical-challenge
+(removed the unused container left by the first docker cp form)
+== Grype, unique CVE IDs:
+   d-grype              unique IDs: 0  |  by severity:   |  by layer: 
+   d-golang-grype       unique IDs: 0  |  by severity:   |  by layer: 
+   builder-cg-go-grype  unique IDs: 0  |  by severity:   |  by layer: 
+   builder-golang-grype unique IDs: 325  |  by severity: Critical=10 High=68 Medium=73 Low=21 Negligible=140 Unknown=13  |  by layer: os-deb=325
+== the two builders (packages column = Debian dpkg only):
+image     disk      compressed  packages  user uid:gid   shell  tools found (of: go gcc git make curl wget apt-get perl python3 ssh)
+builder:cg-go 1.08GB    253MB       0         0:0            yes    go gcc git make ssh 
+builder:golang 1.32GB    320MB       208       0:0            yes    go gcc git make curl wget apt-get perl python3 ssh 
+== packages by type (Syft):
+   builder:cg-go: apk=66 go-module=20
+   builder:golang: binary=1 deb=208 go-module=20 python=1
+# exit 0
+
+$ docker rm -f hello-d >/dev/null && echo "hello-d stopped and removed"; echo "Scans of hello:d-golang, builder:golang (golang@$GL) and builder:cg-go (cgr.dev/chainguard/go@$GD), $(date -u +%FT%TZ): same tools and databases as image D" >> reports/after/scanner-versions.txt; tail -1 reports/after/scanner-versions.txt; ls -l reports/after/ | grep -E " (d-|builder-|govulncheck-(source|binary)-d)"; docker ps --format "{{.Names}} {{.Ports}}"; echo "(running containers listed above, if any)"
+# at 13:33:55 in /home/ubuntu/chainguard-technical-challenge
+hello-d stopped and removed
+Scans of hello:d-golang, builder:golang (golang@sha256:fe517acaa580cc7915457080f850c37e618b3c1e750f98b58fc6429b605147a1) and builder:cg-go (cgr.dev/chainguard/go@sha256:64c93a14feeb5320f251691bab838fd580721f45cb090697a5c1b0a482e503cb), 2026-11-16T13:33:55Z: same tools and databases as image D
+-rw-r--r-- 1 ubuntu ubuntu   15145 Nov 16 17:33 builder-cg-go-grype.json
+-rw-r--r-- 1 ubuntu ubuntu 8030603 Nov 16 17:32 builder-golang-grype.json
+-rw-r--r-- 1 ubuntu ubuntu   10389 Nov 16 17:32 d-golang-grype.json
+-rw-r--r-- 1 ubuntu ubuntu   10438 Nov 16 17:29 d-grype.json
+-rw-r--r-- 1 ubuntu ubuntu     357 Nov 16 17:29 d-grype.sarif
+-rw-r--r-- 1 ubuntu ubuntu      25 Nov 16 17:29 d-grype.txt
+-rw-rw-r-- 1 ubuntu ubuntu   83598 Nov 16 17:29 d-trivy.json
+-rw-rw-r-- 1 ubuntu ubuntu     820 Nov 16 17:29 d-trivy.sarif
+-rw-rw-r-- 1 ubuntu ubuntu       0 Nov 16 17:29 d-trivy.txt
+-rw-rw-r-- 1 ubuntu ubuntu      26 Nov 16 17:29 govulncheck-binary-d.txt
+-rw-rw-r-- 1 ubuntu ubuntu      26 Nov 16 17:24 govulncheck-source-d.txt
+(running containers listed above, if any)
+# exit 0
+
+$ trivy convert --format table --output reports/after/d-trivy.txt reports/after/d-trivy.json; echo "size: $(wc -c < reports/after/d-trivy.txt) bytes"; cat reports/after/d-trivy.txt; echo "== d-grype.txt:"; cat reports/after/d-grype.txt
+# at 13:34:06 in /home/ubuntu/chainguard-technical-challenge
+2026-11-16T17:34:06+04:00	WARN	[report] No enabled scanners found. Summary table will not be displayed.
+size: 0 bytes
+== d-grype.txt:
+No vulnerabilities found
+# exit 0
+
+$ trivy image -q --skip-db-update --format table --output reports/after/d-trivy.txt hello:d; echo "size: $(wc -c < reports/after/d-trivy.txt) bytes"; cat reports/after/d-trivy.txt
+# at 13:34:15 in /home/ubuntu/chainguard-technical-challenge
+size: 1162 bytes
+
+Report Summary
+
+┌────────────────────────────┬──────────┬─────────────────┬─────────┐
+│           Target           │   Type   │ Vulnerabilities │ Secrets │
+├────────────────────────────┼──────────┼─────────────────┼─────────┤
+│ hello:d (wolfi 20230201)   │  wolfi   │        0        │    -    │
+├────────────────────────────┼──────────┼─────────────────┼─────────┤
+│ usr/local/bin/hello-server │ gobinary │        0        │    -    │
+└────────────────────────────┴──────────┴─────────────────┴─────────┘
+Legend:
+- '-': Not scanned
+- '0': Clean (no security findings detected)
+
+# exit 0
+
+$ echo "== builder:golang (golang:latest), top 8 by KEV, then EPSS (KEV catalog $(jq -r .catalogVersion reports/before/cisa-kev.json)):"; bash tools/triage.sh reports/after/builder-golang-grype.json reports/before/cisa-kev.json "" "" 8 | cut -c1-170; echo "KEV-listed IDs in builder:golang: $(jq -r ".matches[].vulnerability.id" reports/after/builder-golang-grype.json | sort -u | grep -cxF -f <(jq -r ".vulnerabilities[].cveID" reports/before/cisa-kev.json))"
+# at 13:34:29 in /home/ubuntu/chainguard-technical-challenge
+== builder:golang (golang:latest), top 8 by KEV, then EPSS (KEV catalog 2026.11.13):
+ID              SEVERITY CVSS EPSS           KEV IN BINARY CALLED PACKAGE                                  FIXED IN
+CVE-2026-123158 Negligible -    18.9% p97      KEV n/a (OS)  -      openssh-client 1:10.0p1-7+deb13u4        no fix
+CVE-2011-3389   Negligible -    73.33% p99     -   n/a (OS)  -      libgnutls30t64 3.8.9-3+deb13u4           no fix
+CVE-2019-6110   Negligible -    24.9% p97      -   n/a (OS)  -      openssh-client 1:10.0p1-7+deb13u4        no fix
+CVE-2020-15778  Negligible -    13.68% p96     -   n/a (OS)  -      openssh-client 1:10.0p1-7+deb13u4        no fix
+CVE-2007-2768   Negligible -    8.62% p95      -   n/a (OS)  -      openssh-client 1:10.0p1-7+deb13u4        no fix
+CVE-2017-17740  Negligible -    7.02% p94      -   n/a (OS)  -      libldap2 2.6.10+dfsg-1                   no fix
+CVE-2018-20796  Negligible -    5.8% p93       -   n/a (OS)  -      libc-bin 2.41-12+deb13u4; libc-dev-bin 2 no fix
+CVE-2008-3234   Negligible -    5.77% p93      -   n/a (OS)  -      openssh-client 1:10.0p1-7+deb13u4        no fix
+IN BINARY: govulncheck binary mode found the vulnerable function in the shipped binary. CALLED: source mode found a call path from our code (modules only; '-' = not a mod
+KEV-listed IDs in builder:golang: 1
+# exit 0
+
+$ echo "== CVE-2026-123158 in builder:golang, as Grype recorded it:"; jq -r "[.matches[] | select(.vulnerability.id == \"CVE-2026-123158\")][0] | \"   package:   \" + .artifact.name + \" \" + .artifact.version, \"   Debian:    severity \" + .vulnerability.severity + \", fix \" + .vulnerability.fix.state + \" (\" + .vulnerability.namespace + \")\", (.relatedVulnerabilities[]? | \"   related:   \" + .id + \" severity \" + (.severity // \"-\") + \", CVSS \" + ([.cvss[]?.metrics.baseScore | tostring] | join(\"/\")) + \" (\" + .namespace + \")\"), \"   KEV (Grype data): \" + ((.vulnerability.knownExploited // []) | length | tostring) + \" entries\"" reports/after/builder-golang-grype.json; jq -r ".vulnerabilities[] | select(.cveID == \"CVE-2026-123158\") | \"   CISA KEV:  added \" + .dateAdded + \", \" + .vendorProject + \" \" + .product + \": \" + .vulnerabilityName" reports/before/cisa-kev.json; echo "== openssh in each builder (Syft):"; for i in builder:cg-go builder:golang; do echo "   $i: $(syft $i -q -o json | jq -r "[.artifacts[] | select(.name | test(\"^openssh\")) | .name + \" \" + .version] | unique | join(\", \")")"; done
+# at 13:34:46 in /home/ubuntu/chainguard-technical-challenge
+== CVE-2026-123158 in builder:golang, as Grype recorded it:
+   package:   openssh-client 1:10.0p1-7+deb13u4
+   Debian:    severity Negligible, fix not-fixed (debian:distro:debian:13)
+   related:   CVE-2026-123158 severity High, CVSS 8.1 (nvd:cpe)
+   KEV (Grype data): 1 entries
+   CISA KEV:  added 2026-11-09, OpenBSD OpenSSH: OpenBSD OpenSSH Unexpected Status Code or Return Value Vulnerability
+== openssh in each builder (Syft):
+   builder:cg-go: openssh-client 10.6_p2-r0
+   builder:golang: openssh-client 1:10.0p1-7+deb13u4
+# exit 0
+
+$ cd go-patched && go mod why -m github.com/quic-go/quic-go github.com/quic-go/qpack go.mongodb.org/mongo-driver/v2 github.com/goccy/go-yaml github.com/gabriel-vasile/mimetype github.com/bytedance/sonic
+# at 13:36:39 in /home/ubuntu/chainguard-technical-challenge
+# github.com/quic-go/quic-go
+hello-server
+github.com/gin-gonic/gin
+github.com/quic-go/quic-go/http3
+
+# github.com/quic-go/qpack
+hello-server
+github.com/gin-gonic/gin
+github.com/quic-go/quic-go/http3
+github.com/quic-go/qpack
+
+# go.mongodb.org/mongo-driver/v2
+hello-server
+github.com/gin-gonic/gin
+github.com/gin-gonic/gin/binding
+go.mongodb.org/mongo-driver/v2/bson
+
+# github.com/goccy/go-yaml
+hello-server
+github.com/gin-gonic/gin
+github.com/gin-gonic/gin/binding
+github.com/goccy/go-yaml
+
+# github.com/gabriel-vasile/mimetype
+hello-server
+github.com/gin-gonic/gin
+github.com/gin-gonic/gin/binding
+github.com/go-playground/validator/v10
+github.com/gabriel-vasile/mimetype
+
+# github.com/bytedance/sonic
+hello-server
+github.com/gin-gonic/gin
+github.com/gin-gonic/gin/codec/json
+github.com/bytedance/sonic
+# exit 0
+
+$ git add -A && git commit -q -m "step 13: image D, patched app built with chainguard go; Grype, Trivy and govulncheck all 0" && git push -q origin main && git log --oneline -1 && git status -sb | head -1
+# at 13:40:10 in /home/ubuntu/chainguard-technical-challenge
+cac3592 step 13: image D, patched app built with chainguard go; Grype, Trivy and govulncheck all 0
+## main...origin/main
+# exit 0

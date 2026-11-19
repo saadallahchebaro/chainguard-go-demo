@@ -1,0 +1,287 @@
+
+===== STEP 37-image-e · 2026-11-17T16:30:55Z · chainguard
+
+$ echo "== before the split: hello:d everywhere"; echo "   local hello:d        $(docker image inspect hello:d --format {{.Id}})"; echo "   local hello:d-golang $(docker image inspect hello:d-golang --format {{.Id}} | cut -c1-19)…"; echo "   registry hello:d     $(crane digest localhost:5000/hello:d)"; echo "   cluster runs         $(kubectl get deploy hello -o jsonpath={.spec.template.spec.containers[0].image} | grep -o sha256:.*)"
+# at 16:30:56 in /home/ubuntu/chainguard-technical-challenge
+== before the split: hello:d everywhere
+   local hello:d        sha256:c5ce9ddb3a8db38d7ef61bdd6c84905bd1d3e7ef61a3c51bbd0d6d7aa7270a08
+   local hello:d-golang sha256:726179c1807b…
+   registry hello:d     sha256:c5ce9ddb3a8db38d7ef61bdd6c84905bd1d3e7ef61a3c51bbd0d6d7aa7270a08
+   cluster runs         sha256:c5ce9ddb3a8db38d7ef61bdd6c84905bd1d3e7ef61a3c51bbd0d6d7aa7270a08
+# exit 0
+
+$ docker tag hello:d hello:e && docker tag hello:d-golang hello:e-golang && crane tag localhost:5000/hello:d e && echo "== E is the same image, under its new name"; echo "   local hello:e        $(docker image inspect hello:e --format {{.Id}})"; echo "   registry hello:e     $(crane digest localhost:5000/hello:e)"; cosign verify --key cosign.pub --insecure-ignore-tlog=true localhost:5000/hello:e >/dev/null 2>&1; echo "   cosign verify hello:e exit $?"; kubectl diff -f k8s/ >/dev/null; echo "   kubectl diff exit $? (the cluster untouched)"
+# at 16:31:05 in /home/ubuntu/chainguard-technical-challenge
+2026/11/17 20:31:05 localhost:5000/hello:e: digest: sha256:c5ce9ddb3a8db38d7ef61bdd6c84905bd1d3e7ef61a3c51bbd0d6d7aa7270a08 size: 855
+== E is the same image, under its new name
+   local hello:e        sha256:c5ce9ddb3a8db38d7ef61bdd6c84905bd1d3e7ef61a3c51bbd0d6d7aa7270a08
+   registry hello:e     sha256:c5ce9ddb3a8db38d7ef61bdd6c84905bd1d3e7ef61a3c51bbd0d6d7aa7270a08
+   cosign verify hello:e exit 0
+   kubectl diff exit 0 (the cluster untouched)
+# exit 0
+
+$ git mv dockerfiles/Dockerfile.d-patched dockerfiles/Dockerfile.e-patched && git mv dockerfiles/Dockerfile.d-golang dockerfiles/Dockerfile.e-golang && mkdir go-updated && cp go-patched/go.mod go-patched/go.sum go-updated/ && cp go/main.go go/README.md go-updated/ && ls go-updated dockerfiles && cmp go-updated/main.go go/main.go && cmp go-updated/go.mod go-patched/go.mod && cmp go-updated/go.sum go-patched/go.sum && echo "go-updated: the updated go.mod and go.sum, the original main.go"
+# at 16:31:35 in /home/ubuntu/chainguard-technical-challenge
+dockerfiles:
+Dockerfile.a-single
+Dockerfile.b-multi
+Dockerfile.c-chainguard
+Dockerfile.c-distroless
+Dockerfile.e-golang
+Dockerfile.e-patched
+
+go-updated:
+README.md
+go.mod
+go.sum
+main.go
+go-updated: the updated go.mod and go.sum, the original main.go
+# exit 0
+
+$ docker build -q -t hello:d -f dockerfiles/Dockerfile.d-updated ./go-updated && docker tag hello:d localhost:5000/hello:d && docker push -q localhost:5000/hello:d && echo "== the new D"; echo "   local hello:d     $(docker image inspect hello:d --format {{.Id}})"; echo "   registry hello:d  $(crane digest localhost:5000/hello:d)"; echo "   E, for reference  $(crane digest localhost:5000/hello:e)"; docker images --format "   {{.Repository}}:{{.Tag}}  {{.Size}}" | grep -E "^   hello:(c|d|e)\b"
+# at 16:32:11 in /home/ubuntu/chainguard-technical-challenge
+sha256:76eb535bcdcdcaf829c7e5b035201fe1389b8fbfde6d328e3332a7fb16b341dd
+localhost:5000/hello:d
+== the new D
+   local hello:d     sha256:76eb535bcdcdcaf829c7e5b035201fe1389b8fbfde6d328e3332a7fb16b341dd
+   registry hello:d  sha256:76eb535bcdcdcaf829c7e5b035201fe1389b8fbfde6d328e3332a7fb16b341dd
+   E, for reference  sha256:c5ce9ddb3a8db38d7ef61bdd6c84905bd1d3e7ef61a3c51bbd0d6d7aa7270a08
+# exit 1
+
+$ echo "== D and E: the only differences, in main.go and in the Dockerfile (comments left out)"; diff -u go-updated/main.go go-patched/main.go | tail -n +3; diff <(grep -v "^#" dockerfiles/Dockerfile.d-updated) <(grep -v "^#" dockerfiles/Dockerfile.e-patched); echo "== go.mod and go.sum: $(cmp -s go-updated/go.mod go-patched/go.mod && cmp -s go-updated/go.sum go-patched/go.sum && echo identical || echo DIFFERENT)"
+# at 16:33:14 in /home/ubuntu/chainguard-technical-challenge
+== D and E: the only differences, in main.go and in the Dockerfile (comments left out)
+@@ -1,15 +1,31 @@
+ package main
+ 
+ import (
++	"log"
+ 	"net/http"
++	"time"
+ 
+ 	"github.com/gin-gonic/gin"
+ )
+ 
+ func main() {
+ 	r := gin.Default()
++	// Trust no proxy headers: the client IP comes from the connection itself.
++	if err := r.SetTrustedProxies(nil); err != nil {
++		log.Fatal(err)
++	}
+ 	r.GET("/", func(c *gin.Context) {
+ 		c.String(http.StatusOK, "Hello World!")
+ 	})
+-	r.Run() // listen on 0.0.0.0:8080
++
++	// r.Run() starts a server with no timeouts, so build the server ourselves.
++	srv := &http.Server{
++		Addr:              ":8080",
++		Handler:           r,
++		ReadHeaderTimeout: 5 * time.Second,
++		ReadTimeout:       10 * time.Second,
++		WriteTimeout:      10 * time.Second,
++		IdleTimeout:       60 * time.Second,
++	}
++	log.Fatal(srv.ListenAndServe())
+ }
+11a12
+> ENV GIN_MODE=release
+== go.mod and go.sum: identical
+# exit 0
+
+$ bash tools/show-fixes.sh log
+# at 16:33:26 in /home/ubuntu/chainguard-technical-challenge
+Each app gets one request claiming, in X-Forwarded-For, to come from 203.0.113.9.
+
+===== D, the app as delivered (its modules updated): its log
+[GIN-debug] [WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.
+
+[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+ - using env:	export GIN_MODE=release
+ - using code:	gin.SetMode(gin.ReleaseMode)
+
+[GIN-debug] GET    /                         --> main.main.func1 (3 handlers)
+[GIN-debug] [WARNING] You trusted all proxies, this is NOT safe. We recommend you to set a value.
+Please check https://github.com/gin-gonic/gin/blob/master/docs/doc.md#dont-trust-all-proxies for details.
+[GIN-debug] Environment variable PORT is undefined. Using port :8080 by default
+[GIN-debug] Listening and serving HTTP on :8080
+[GIN] 2026/11/17 - 16:33:28 | 200 |  5.666µs |     203.0.113.9 | GET      "/"
+
+===== E, the fixed app: its log
+[GIN] 2026/11/17 - 16:33:28 | 200 |  3.042µs |      172.17.0.1 | GET      "/"
+# exit 0
+
+$ bash tools/show-fixes.sh timeout
+# at 16:33:41 in /home/ubuntu/chainguard-technical-challenge
+Each app gets half a request header, then nothing. A server with no timeouts keeps the connection open.
+D: still open after 10 s, so no timeout
+E: the server closed the connection after 5 s
+# exit 0
+
+$ bash tools/show-fixes.sh versions
+# at 16:34:01 in /home/ubuntu/chainguard-technical-challenge
+===== C to D: the dependency update
+COMPONENT                                      C:ORIGINAL                          D:UPDATED        CHANGE
+Go(standard-library)                           go1.18.10                           go1.27.4         updated
+github.com/gabriel-vasile/mimetype             -                                   v1.4.16          added
+github.com/gin-contrib/sse                     v0.1.0                              v1.2.1           updated
+github.com/gin-gonic/gin                       v1.8.1                              v1.12.0          updated
+github.com/go-playground/locales               v0.14.0                             v0.14.2          updated
+github.com/go-playground/universal-translator  v0.18.0                             v0.18.2          updated
+github.com/go-playground/validator/v10         v10.10.0                            v10.30.6         updated
+github.com/goccy/go-yaml                       -                                   v1.19.2          added
+github.com/leodido/go-urn                      v1.2.1                              v1.5.0           updated
+github.com/mattn/go-isatty                     v0.0.14                             v0.0.24          updated
+github.com/pelletier/go-toml/v2                v2.0.1                              v2.4.3           updated
+github.com/quic-go/qpack                       -                                   v0.6.0           added
+github.com/quic-go/quic-go                     -                                   v0.65.0          added
+github.com/ugorji/go/codec                     v1.2.7                              v1.3.2           updated
+go.mongodb.org/mongo-driver/v2                 -                                   v2.10.0          added
+golang.org/x/crypto                            v0.0.0-20210711020723-a769d52b0f97  v0.59.0          updated
+golang.org/x/net                               v0.0.0-20210226172049-e18ecbb05110  v0.62.0          updated
+golang.org/x/sys                               v0.0.0-20210806184541-e5e7981a1069  v0.50.0          updated
+golang.org/x/text                              v0.3.6                              v0.44.0          updated
+google.golang.org/protobuf                     v1.28.0                             v1.36.12         updated
+gopkg.in/yaml.v2                               v2.4.0                              -                removed
+Build-image                                    golang:1.18                         go@64c93a14      changed
+Runtime-image                                  static@fc42af33                     static@fc42af33  same
+Binary-size                                    9.4M                                20M              grew
+
+===== D to E: the app's own code and settings
+COMPONENT             D                E                CHANGE
+Go(standard-library)  go1.27.4         go1.27.4         same
+Modules               19               19               same
+Build-image           go@64c93a14      go@64c93a14      same
+Runtime-image         static@fc42af33  static@fc42af33  same
+GIN_MODE              unset            release          set
+In main.go (diff -u go-updated/main.go go-patched/main.go): SetTrustedProxies(nil), and an http.Server with timeouts.
+# exit 0
+
+$ D=$(crane digest localhost:5000/hello:d); echo "== D, ${D:0:19}…: never signed"; cosign verify --key cosign.pub --insecure-ignore-tlog=true localhost:5000/hello@$D >/dev/null 2>/tmp/q-v.err; echo "   cosign verify exit $?: $(grep -o "no signatures found" /tmp/q-v.err | head -1)"; echo "== would the cluster run D? (a dry run, restricted settings)"; kubectl run d-check --restart=Never --dry-run=server --image=192.168.252.2:5000/hello@$D --overrides="{\"apiVersion\":\"v1\",\"spec\":{\"securityContext\":{\"runAsNonRoot\":true,\"runAsUser\":65532,\"seccompProfile\":{\"type\":\"RuntimeDefault\"}},\"containers\":[{\"name\":\"d-check\",\"image\":\"192.168.252.2:5000/hello@$D\",\"securityContext\":{\"allowPrivilegeEscalation\":false,\"capabilities\":{\"drop\":[\"ALL\"]}}}]}}" 2>&1 | grep -o "The image must be signed[^\"]*" | head -1 | sed "s/^/   refused: /"; rm -f /tmp/q-v.err
+# at 16:34:14 in /home/ubuntu/chainguard-technical-challenge
+== D, sha256:76eb535bcdcd…: never signed
+   cosign verify exit 10: no signatures found
+== would the cluster run D? (a dry run, restricted settings)
+   refused: The image must be signed with the lab key (cosign.pub)
+# exit 0
+
+$ echo "== the databases the final rescan used, against those cached now"; echo "   grype  recorded $(jq -r .grype.db_built reports/final/scanners.json)  now $(grype db status -o json | jq -r .built)"; echo "   trivy  recorded $(jq -r .trivy.db_updated reports/final/scanners.json)  now $(trivy version -f json | jq -r .VulnerabilityDB.UpdatedAt)"
+# at 16:34:32 in /home/ubuntu/chainguard-technical-challenge
+== the databases the final rescan used, against those cached now
+   grype  recorded 2026-11-16T06:30:54Z  now 2026-11-16T06:30:54Z
+   trivy  recorded 2026-11-16T07:10:39.763774809Z  now 2026-11-16T07:10:39.763774809Z
+# exit 0
+
+$ n=0; for f in $(git ls-files sbom reports | grep -E "/(d[-.][^/]*|govulncheck-(binary|source)-d\.txt)$"); do b=$(basename $f); nb=$(echo $b | sed -E "s/^d([-.])/e\1/; s/-d\.txt$/-e.txt/"); git mv $f $(dirname $f)/$nb && n=$((n+1)); done; mv hello-server-d hello-server-e; mv hello-server-d-golang hello-server-e-golang; echo "renamed $n files from d to e; $(git ls-files sbom reports | grep -c -E "/(e[-.][^/]*|govulncheck-(binary|source)-e\.txt)$") now named for e"
+# at 16:35:03 in /home/ubuntu/chainguard-technical-challenge
+renamed 24 files from d to e; 24 now named for e
+# exit 0
+
+$ GRYPE_DB_AUTO_UPDATE=false grype hello:d --by-cve -q -o json=reports/final/d-grype.json -o table=reports/final/d-grype.txt -o sarif=reports/final/d-grype.sarif; trivy image -q --skip-db-update --format json --output reports/final/d-trivy.json hello:d && trivy convert -q --scanners vuln --format table --output reports/final/d-trivy.txt reports/final/d-trivy.json && trivy convert -q --format sarif --output reports/final/d-trivy.sarif reports/final/d-trivy.json; docker create --name q-bin hello:d >/dev/null && docker cp q-bin:/usr/local/bin/hello-server ./hello-server-d >/dev/null && docker rm q-bin >/dev/null; govulncheck -mode binary ./hello-server-d > reports/final/govulncheck-binary-d.txt; (cd go-updated && govulncheck ./... > ../reports/after/govulncheck-source-d.txt); syft hello:d -q -o spdx-json=sbom/d.spdx.json -o cyclonedx-json=sbom/d.cyclonedx.json; GRYPE_DB_AUTO_UPDATE=false grype sbom:./sbom/d.spdx.json --by-cve -q -o json=reports/sbom/d-grype-from-spdx.json; echo scans written
+# at 16:35:12 in /home/ubuntu/chainguard-technical-challenge
+scans written
+# exit 0
+
+$ echo "== D and E, scanned with the same databases (Grype built 16 Nov 06:30, Trivy 16 Nov 07:10)"; printf "   %-34s %-12s %s\n" "" D E; printf "   %-34s %-12s %s\n" "Grype, unique CVE IDs" $(jq "[.matches[].vulnerability.id] | unique | length" reports/final/d-grype.json) $(jq "[.matches[].vulnerability.id] | unique | length" reports/final/e-grype.json); printf "   %-34s %-12s %s\n" "Trivy, unique CVE IDs" $(jq "[.Results[]?.Vulnerabilities[]?.VulnerabilityID] | unique | length" reports/final/d-trivy.json) $(jq "[.Results[]?.Vulnerabilities[]?.VulnerabilityID] | unique | length" reports/final/e-trivy.json); printf "   %-34s %-12s %s\n" "govulncheck, the binary" "$(grep -c "^No vulnerabilities found" reports/final/govulncheck-binary-d.txt) clean" "$(grep -c "^No vulnerabilities found" reports/final/govulncheck-binary-e.txt) clean"; printf "   %-34s %-12s %s\n" "SBOM packages (Syft, SPDX)" $(jq ".packages | length" sbom/d.spdx.json) $(jq ".packages | length" sbom/e.spdx.json); printf "   %-34s %-12s %s\n" "Go modules in the SBOM" $(jq "[.packages[] | select(.externalRefs[]?.referenceLocator | startswith(\"pkg:golang\"))] | length" sbom/d.spdx.json) $(jq "[.packages[] | select(.externalRefs[]?.referenceLocator | startswith(\"pkg:golang\"))] | length" sbom/e.spdx.json); printf "   %-34s %-12s %s\n" "binary, bytes" $(stat -c %s hello-server-d) $(stat -c %s hello-server-e); echo "   the same scan, a different app: D runs in debug mode, trusts every proxy, has no timeouts"
+# at 16:35:50 in /home/ubuntu/chainguard-technical-challenge
+== D and E, scanned with the same databases (Grype built 16 Nov 06:30, Trivy 16 Nov 07:10)
+                                      D            E
+   Grype, unique CVE IDs              0            0
+   Trivy, unique CVE IDs              0            0
+   govulncheck, the binary            1 clean      1 clean
+   SBOM packages (Syft, SPDX)         25           25
+   Go modules in the SBOM             21           21
+   binary, bytes                      20238499     20222796
+   the same scan, a different app: D runs in debug mode, trusts every proxy, has no timeouts
+# exit 0
+
+$ bash tools/results.sh > /tmp/results-tables.md && echo "results.sh: ok"; jq -r ".images | to_entries[] | \"\\(.key) \\(.value.tag) unique=\\(.value.grype.unique) trivy=\\(.value.trivy.unique) code=\\(.value.code) size=\\(.value.size.disk)/\\(.value.size.compressed) user=\\(.value.user.runs_as) shell=\\(.value.shell) hello=\\(.value.hello_world)\"" results.json
+# at 16:37:43 in /home/ubuntu/chainguard-technical-challenge
+results.sh: ok
+a hello:a unique=734 trivy=10856 code=original size=1.49GB/374MB user=0:0 shell=true hello=true
+b hello:b unique=161 trivy=253 code=original size=155MB/35.4MB user=65532:0 shell=true hello=true
+c hello:c unique=69 trivy=157 code=original size=19MB/5.62MB user=65532:65532 shell=false hello=true
+d hello:d unique=0 trivy=0 code=original app, updated modules size=34.9MB/11MB user=65532:65532 shell=false hello=true
+e hello:e unique=0 trivy=0 code=patched app, updated modules size=34.9MB/11MB user=65532:65532 shell=false hello=true
+# exit 0
+
+$ bash tools/make-showcase.sh >/dev/null && ls showcase/01-dockerfiles showcase/04-sbom | tr "\n" " "; echo; find showcase -xtype l | wc -l | sed "s/^/broken links: /"; bash tools/check-manifests.sh | sed -n "1,12p"; bash tools/debug-e.sh docker
+# at 16:38:08 in /home/ubuntu/chainguard-technical-challenge
+showcase/01-dockerfiles: A-single-stage.Dockerfile B-multi-stage-debian.Dockerfile C-chainguard-runtime.Dockerfile C-experiment-on-distroless-static.Dockerfile D-chainguard-builder-updated-modules.Dockerfile E-chainguard-builder-patched-app.Dockerfile E-experiment-on-golang-latest.Dockerfile hello-ai.Dockerfile  showcase/04-sbom: a.spdx.json b.spdx.json c.spdx.json chainguard-static-arm64.spdx.json d.spdx.json e.spdx.json 
+broken links: 0
+== 1. the files, checked by the API server without changing anything:
+deployment.apps/hello unchanged (server dry run)
+service/hello unchanged (server dry run)
+== 2. kubectl diff: the files against what the cluster runs
+   exit 0, 0 lines of difference
+== 3. the digest in the file, in the cluster, and on hello:e in the registry
+   file:     sha256:c5ce9ddb3a8db38d7ef61bdd6c84905bd1d3e7ef61a3c51bbd0d6d7aa7270a08
+   cluster:  sha256:c5ce9ddb3a8db38d7ef61bdd6c84905bd1d3e7ef61a3c51bbd0d6d7aa7270a08
+   registry: sha256:c5ce9ddb3a8db38d7ef61bdd6c84905bd1d3e7ef61a3c51bbd0d6d7aa7270a08
+== 4. that digest, signed with the lab key:
+   cosign verify exit 0
+== not in the files: the namespace label that enforces the restricted level
+===== Docker: image E, no shell
+1. docker exec into E: exec: "sh": executable file not found
+2. Chainguard busybox, sharing its processes and network, no added capabilities:
+   user: uid=65532(nonroot) gid=65532(nonroot) groups=65532(nonroot)
+   processes it shares with E:
+     PID   USER     COMMAND
+         1 nonroot  hello-server
+        17 nonroot  sh
+        24 nonroot  ps
+        25 nonroot  sed
+   files in E, read through /proc/1/root:
+     -rwxr-xr-x    1 root     root      20222796 Nov 16 13:28 hello-server
+   listening:
+     tcp        0      0 :::8080                 :::*                    LISTEN      
+3. docker cp, no shell needed: hello-server copied out, 20222796 bytes
+# exit 0
+
+$ docker image ls hello --format "table {{.Repository}}:{{.Tag}}\t{{.ID}}\t{{.Size}}" | grep -E "TAG|:(a|b|c|d|e)\s"; echo; for t in a b c d e; do printf "hello:%s  configured user: %s\n" $t "$(docker image inspect hello:$t --format "{{if .Config.User}}{{.Config.User}}{{else}}(none: root){{end}}")"; done
+# at 16:42:33 in /home/ubuntu/chainguard-technical-challenge
+REPOSITORY:TAG       IMAGE ID       SIZE
+hello:d              76eb535bcdcd   34.9MB
+hello:e              c5ce9ddb3a8d   34.9MB
+hello:c              4f75bad2bb90   19MB
+hello:b              711ca3631aa1   155MB
+hello:a              9457bcf63aa4   1.49GB
+
+hello:a  configured user: (none: root)
+hello:b  configured user: 65532
+hello:c  configured user: 65532
+hello:d  configured user: 65532
+hello:e  configured user: 65532
+# exit 0
+
+$ jq -r "\"image  size (compressed)    Grype  Trivy  KEV  govulncheck  OS / tools / stdlib / modules\", (.images | to_entries[] | .value as \$v | (.key | ascii_upcase) + \"      \" + (\$v.size.disk + \" (\" + \$v.size.compressed + \")\" | .[0:20] + \"                    \"[0:20-length]) + \"  \" + (\$v.grype.unique | tostring | .+\"      \"[0:6-length]) + \" \" + (\$v.trivy.unique | tostring | .+\"      \"[0:6-length]) + \" \" + (\$v.grype.kev | tostring | .+\"    \"[0:4-length]) + \" \" + (\$v.govulncheck_binary | tostring | .+\"            \"[0:12-length]) + \" \" + ([\"os_packages\",\"go_toolchain\",\"go_stdlib\",\"go_module\"] | map(\$v.grype.by_layer[.] // 0 | tostring) | join(\" / \"))), \"\", \"Grype \" + .scanners.grype.version + \", database built \" + .scanners.grype.db_built + \"; Trivy \" + .scanners.trivy.version + \"; D scanned at step 37 against the same databases\"" results.json
+# at 16:42:45 in /home/ubuntu/chainguard-technical-challenge
+image  size (compressed)    Grype  Trivy  KEV  govulncheck  OS / tools / stdlib / modules
+A      1.49GB (374MB)        734    10856  3    62           603 / 118 / 87 / 17
+B      155MB (35.4MB)        161    253    1    62           92 / 0 / 60 / 17
+C      19MB (5.62MB)         69     157    1    62           0 / 0 / 60 / 17
+D      34.9MB (11MB)         0      0      0    0            0 / 0 / 0 / 0
+E      34.9MB (11MB)         0      0      0    0            0 / 0 / 0 / 0
+
+Grype 0.121.3, database built 2026-11-16T06:30:54Z; Trivy 0.76.2; D scanned at step 37 against the same databases
+# exit 0
+
+$ for t in e d c; do D=$(crane digest localhost:5000/hello:$t); if cosign verify --key cosign.pub --insecure-ignore-tlog=true localhost:5000/hello@$D >/dev/null 2>/tmp/console-v.err; then echo "hello:$t  PASS: signed with our key (${D:0:19}…)"; else echo "hello:$t  FAIL: $(grep -i -m1 -E "error|no " /tmp/console-v.err | cut -c1-90)"; fi; done
+# at 16:42:54 in /home/ubuntu/chainguard-technical-challenge
+hello:e  PASS: signed with our key (sha256:c5ce9ddb3a8d…)
+hello:d  FAIL: Error: no signatures found
+hello:c  FAIL: Error: no signatures found
+# exit 0
+
+$ docker rmi hello:d-golang >/dev/null && echo "untagged hello:d-golang; the image stays as hello:e-golang $(docker image inspect hello:e-golang --format {{.Id}} | cut -c1-19)"
+# at 16:50:51 in /home/ubuntu/chainguard-technical-challenge
+untagged hello:d-golang; the image stays as hello:e-golang sha256:726179c1807b
+# exit 0
+
+$ echo "== Grype cache before: $(grype db status -o json | jq -r .built)"; curl -sSfL -o /tmp/grype-db-16nov.tar.zst "https://grype.anchore.io/databases/v6/vulnerability-db_v6.1.10_2026-11-15T16:11:12Z_1794810654.tar.zst" && echo "dd51add686f29657dd7d71af8dc61d33cbb3e99772e263d2949b7adec4ce4102  /tmp/grype-db-16nov.tar.zst" | sha256sum -c && grype db import /tmp/grype-db-16nov.tar.zst >/dev/null 2>&1; rm -f /tmp/grype-db-16nov.tar.zst; echo "== Grype cache after: $(grype db status -o json | jq -r .built) (recorded: $(jq -r .grype.db_built reports/final/scanners.json))"; echo "== Trivy cache: $(trivy version -f json | jq -r .VulnerabilityDB.UpdatedAt) (recorded: $(jq -r .trivy.db_updated reports/final/scanners.json)); only moving tags are published, so not restorable"
+# at 16:54:34 in /home/ubuntu/chainguard-technical-challenge
+== Grype cache before: 2026-11-17T06:20:58Z
+/tmp/grype-db-16nov.tar.zst: OK
+== Grype cache after: 2026-11-16T06:30:54Z (recorded: 2026-11-16T06:30:54Z)
+== Trivy cache: 2026-11-17T13:00:16.23116094Z (recorded: 2026-11-16T07:10:39.763774809Z); only moving tags are published, so not restorable
+# exit 0

@@ -1,0 +1,85 @@
+# step 20, Mac side: 2026-11-16T15:19:12Z
+$ gh auth switch --user saadallahchebaro
+✓ Switched active account for github.com to saadallahchebaro
+$ gh repo create saadallahchebaro/hello-ai --private --description "..."
+https://github.com/saadallahchebaro/hello-ai
+$ gh repo view saadallahchebaro/hello-ai --json name,visibility,defaultBranchRef,url
+{"name":"hello-ai","url":"https://github.com/saadallahchebaro/hello-ai","visibility":"PRIVATE"}
+{"busy":false,"labels":["self-hosted","Linux","ARM64","lab"],"name":"chainguard-build-vm","os":"Linux","status":"online"}
+(the line above: gh api repos/saadallahchebaro/hello-ai/actions/runners: the runner is online)
+$ gh api repos/actions/checkout/git/ref/tags/v7.0.1   -> lightweight tag on commit 3d3c42e5aac5ba805825da76410c181273ba90b1
+$ gh repo clone saadallahchebaro/hello-ai  (in the project folder, next to lab/); local git identity = GitHub noreply address
+$ wrote app/main.py, app/__init__.py, Dockerfile, gate.sh, deploy.sh, k8s/, policy/require-signature.yaml, .github/workflows/{gate,deploy}.yml, README.md, .gitignore; requirements.txt from ~/ci/requirements.txt (resolve.py on the VM)
+$ tar the working tree -> multipass transfer -> ~/ci/hello-ai.tgz on the VM (to run gate.sh by hand before any push)
+$ gh secret set COSIGN_PASSWORD --repo saadallahchebaro/hello-ai   (in the app's Terminal panel: typed by the user at gh's hidden prompt)
+(the Terminal-panel gh prompt did not receive the input; GitHub listed no secret afterwards. Retrying via the GitHub web page. Checked: no stray input on the VM screen, and no unexpected line in the VM shell history)
+$ gh secret list --repo saadallahchebaro/hello-ai
+COSIGN_PASSWORD	2026-11-16T15:44:31Z   (added by the user on GitHub's settings page)
+$ git add -A && git commit -m "Starting version: FastAPI app, gate, deploy, workflows, signature policy" && git push -u origin main
+33ba9d7 Starting version: FastAPI app, gate, deploy, workflows, signature policy
+To https://github.com/saadallahchebaro/hello-ai.git
+ ! [remote rejected] main -> main (refusing to allow an OAuth App to create or update workflow `.github/workflows/deploy.yml` without `workflow` scope)
+error: failed to push some refs to 'https://github.com/saadallahchebaro/hello-ai.git'
+$ gh repo deploy-key add hello_ai_deploy.pub --repo saadallahchebaro/hello-ai --allow-write --title "chainguard build VM (hello-ai)"   (approved by the user)
+$ gh repo deploy-key list --repo saadallahchebaro/hello-ai
+170080636	chainguard build VM (hello-ai)	read-write	ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJZwNHWtuo9IxhwO6RyDAfRAipl99Oes
+$ git bundle create hello-ai.bundle --all; multipass transfer -> ~/ci/hello-ai.bundle on the VM (the push happens from the VM, with the deploy key)
+$ gh auth refresh -h github.com -s workflow   (run and approved by the user in their own terminal); token scopes now: gist, read:org, repo, workflow
+$ gh run view --job=133415487606 --repo saadallahchebaro/hello-ai --log  (key lines: run 43900507141, deploy on push to main, 39 s)
+deploy	Run ./gate.sh	2026-11-16T15:49:10.3035394Z PASS  base image   all from cgr.dev/chainguard, pinned by digest
+deploy	Run ./gate.sh	2026-11-16T15:49:21.6855691Z PASS  base signed  Chainguard's signature on each base image
+deploy	Run ./gate.sh	2026-11-16T15:49:21.6903382Z PASS  pinned deps  every line is name==version
+deploy	Run ./gate.sh	2026-11-16T15:49:27.5329722Z PASS  cooldown     nothing newer than 7 days
+deploy	Run ./gate.sh	2026-11-16T15:49:27.9697021Z PASS  build        docker build
+deploy	Run ./gate.sh	2026-11-16T15:49:27.9944001Z PASS  user         runs as 65532
+deploy	Run ./gate.sh	2026-11-16T15:49:36.0469247Z PASS  scan         no fixable high or critical finding
+deploy	Run ./gate.sh	2026-11-16T15:49:36.0512820Z GATE PASS for 33ba9d7
+Pushing signature to: localhost:5000/hello-ai
+SIGNED localhost:5000/hello-ai@sha256:e8432af9c5464609e2e4a74fc025793e215f0a6ce7d8783909d7d8d520b388e3
+deployment.apps/hello-ai created
+service/hello-ai created
+Waiting for deployment "hello-ai" rollout to finish: 0 out of 2 new replicas have been updated...
+Waiting for deployment "hello-ai" rollout to finish: 0 of 2 updated replicas are available...
+Waiting for deployment "hello-ai" rollout to finish: 1 of 2 updated replicas are available...
+deployment "hello-ai" successfully rolled out
+DEPLOYED 192.168.252.2:5000/hello-ai@sha256:e8432af9c5464609e2e4a74fc025793e215f0a6ce7d8783909d7d8d520b388e3
+$ gh api -X PUT repos/saadallahchebaro/hello-ai/branches/main/protection (require the gate check) -> HTTP 403 "Upgrade to GitHub Pro or make this repository public to enable this feature."
+$ gh pr create --repo saadallahchebaro/hello-ai --head add-http-client --base main --title "Add an HTTP client dependency"
+https://github.com/saadallahchebaro/hello-ai/pull/1
+$ gh run view (gate on PR #1, run 43900923691) --log: the gate lines
+PASS  base image   all from cgr.dev/chainguard, pinned by digest
+PASS  base signed  Chainguard's signature on each base image
+FAIL  pinned deps  requests>=2.32
+PASS  cooldown     nothing newer than 7 days
+PASS  build        docker build
+PASS  user         runs as 65532
+PASS  scan         no fixable high or critical finding
+GATE FAIL for 83dddcb
+$ gh run view (gate on PR #1 after the fix, run 43901351577) --log: the gate lines
+PASS  base image   all from cgr.dev/chainguard, pinned by digest
+PASS  base signed  Chainguard's signature on each base image
+PASS  pinned deps  every line is name==version
+PASS  cooldown     nothing newer than 7 days
+PASS  build        docker build
+PASS  user         runs as 65532
+PASS  scan         no fixable high or critical finding
+GATE PASS for 9c0c6d7
+$ gh pr merge 1 --repo saadallahchebaro/hello-ai --merge   (approved by the user: "Yes, merge it")
+state: MERGED, merged 2026-11-16T15:55:53Z, commit bb04be2
+$ gh run view (deploy after merging PR #1, run 43901822133) --log: key lines
+SIGNED localhost:5000/hello-ai@sha256:3eac2b17d49f65441ac33e6a8c95bf455cd18d4e6008653d0767dd9ec5fed049
+deployment.apps/hello-ai configured
+deployment "hello-ai" successfully rolled out
+DEPLOYED 192.168.252.2:5000/hello-ai@sha256:3eac2b17d49f65441ac33e6a8c95bf455cd18d4e6008653d0767dd9ec5fed049
+(gate lines of that deploy run)
+PASS  base image   all from cgr.dev/chainguard, pinned by digest
+PASS  base signed  Chainguard's signature on each base image
+PASS  pinned deps  every line is name==version
+PASS  cooldown     nothing newer than 7 days
+PASS  build        docker build
+PASS  user         runs as 65532
+PASS  scan         no fixable high or critical finding
+GATE PASS for bb04be2
+
+$ multipass transfer README.md JOURNAL.md RUNBOOK.md REPORT.md, ci/ (tar), demo/screenshots/20-*.png -> repo
+transferred OK

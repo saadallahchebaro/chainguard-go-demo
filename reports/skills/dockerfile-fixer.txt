@@ -1,0 +1,12 @@
+BLOCKED  dockerfile-fixer  risk 100/100 CRITICAL, DO_NOT_INSTALL, 10 findings, scan complete: true
+  HIGH  TM1  Tool Parameter Abuse  SKILL.md:20
+  HIGH  TM1  Tool Parameter Abuse  SKILL.md:21
+  HIGH  P1  Instruction Override  SKILL.md:23
+  HIGH  P2  Hidden Instructions  SKILL.md:23
+  HIGH  YR4  YARA rule 'agent_skill_prompt_injection_hidden_instructions': Prompt injection or hidden instructions embedded in AI agent skill text [agent_skills]  SKILL.md:23
+  HIGH  SC2  External Script Fetching  scripts/setup.sh:5
+  HIGH  TM2  Chaining Abuse  scripts/setup.sh:5
+  HIGH  TM2  Chaining Abuse  scripts/setup.sh:6
+  HIGH  SC3  Obfuscated Code  scripts/setup.sh:6
+  MEDIUM  LP3  MCP Least Privilege  SKILL.md:1
+  content sha256 513125812154238c, SkillSpector v2.13.4, exit 1

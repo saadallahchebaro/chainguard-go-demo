@@ -1,0 +1,81 @@
+
+===== STEP 24-skill-gate · 2026-11-17T06:05:04Z · chainguard
+
+# NOTE: Agent skill gate: NVIDIA SkillSpector v2.13.4 (tag commit 54824463, published 2026-11-04, the newest release at least 7 days old) installed in a venv; dependencies held to the same 7-day cooldown with uv --exclude-newer
+
+$ sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -q python3.12-venv 2>&1 | tail -3
+# at 06:05:05 in /home/ubuntu/chainguard-technical-challenge
+ ubuntu @ user manager service: bash[15491,195967], systemd[1063]
+
+No VM guests are running outdated hypervisor (qemu) binaries on this host.
+# exit 0
+
+$ python3 -m venv ~/skillspector && ~/skillspector/bin/pip install -q uv==0.13.7 && ~/skillspector/bin/uv --version
+# at 06:05:20 in /home/ubuntu/chainguard-technical-challenge
+uv 0.13.7 (aarch64-unknown-linux-gnu)
+# exit 0
+
+$ ~/skillspector/bin/uv pip install --python ~/skillspector/bin/python --exclude-newer 2026-11-10T00:00:00Z "skillspector @ https://github.com/NVIDIA/SkillSpector/archive/54824463814a0be01360792523ec7245a69190fc.tar.gz" 2>&1 | tail -4
+# at 06:05:24 in /home/ubuntu/chainguard-technical-challenge
+ + websockets==17.4
+ + xxhash==4.1.0
+ + yara-python==4.5.4
+ + zstandard==0.25.0
+# exit 0
+
+$ mkdir -p reports/skills && ~/skillspector/bin/skillspector --version; ~/skillspector/bin/uv pip freeze --python ~/skillspector/bin/python > reports/skills/skillspector-freeze.txt; wc -l < reports/skills/skillspector-freeze.txt; grep -iE "^(skillspector|yara-python|semgrep)" reports/skills/skillspector-freeze.txt
+# at 06:05:34 in /home/ubuntu/chainguard-technical-challenge
+SkillSpector v2.13.4
+Using Python 3.12.3 environment at: /home/ubuntu/skillspector
+70
+skillspector @ https://github.com/NVIDIA/SkillSpector/archive/54824463814a0be01360792523ec7245a69190fc.tar.gz
+yara-python==4.5.4
+# exit 0
+
+$ bash ci/skills/skill-gate.sh ci/skills/unvetted/dockerfile-fixer
+# at 06:08:11 in /home/ubuntu/chainguard-technical-challenge
+BLOCKED  dockerfile-fixer  risk 100/100 CRITICAL, DO_NOT_INSTALL, 10 findings, scan complete: true
+  HIGH  TM1  Tool Parameter Abuse  SKILL.md:20
+  HIGH  TM1  Tool Parameter Abuse  SKILL.md:21
+  HIGH  P1  Instruction Override  SKILL.md:23
+  HIGH  P2  Hidden Instructions  SKILL.md:23
+  HIGH  YR4  YARA rule 'agent_skill_prompt_injection_hidden_instructions': Prompt injection or hidden instructions embedded in AI agent skill text [agent_skills]  SKILL.md:23
+  HIGH  SC2  External Script Fetching  scripts/setup.sh:5
+  HIGH  TM2  Chaining Abuse  scripts/setup.sh:5
+  HIGH  TM2  Chaining Abuse  scripts/setup.sh:6
+  HIGH  SC3  Obfuscated Code  scripts/setup.sh:6
+  MEDIUM  LP3  MCP Least Privilege  SKILL.md:1
+  content sha256 513125812154238c, SkillSpector v2.13.4, exit 1
+# exit 1
+
+$ bash ci/skills/skill-gate.sh ci/skills/vetted/chainguard-dockerfile
+# at 06:08:15 in /home/ubuntu/chainguard-technical-challenge
+ALLOWED  chainguard-dockerfile  risk 0/100 LOW, SAFE, 0 findings, scan complete: true
+  content sha256 cab7997880bc75c6, SkillSpector v2.13.4, exit 0
+# exit 0
+
+# NOTE: chainguard-dockerfile updated with the step-21 review notes (user 65532, minimal runtime, crane config, the free registry tags); rescanned below
+
+$ bash ci/skills/skill-gate.sh ci/skills/vetted/chainguard-dockerfile
+# at 06:16:47 in /home/ubuntu/chainguard-technical-challenge
+ALLOWED  chainguard-dockerfile  risk 0/100 LOW, SAFE, 0 findings, scan complete: true
+  content sha256 89744efd3e044c81, SkillSpector v2.13.4, exit 0
+# exit 0
+
+$ git add -A && git commit -q -m "Step 24: agent skill gate with NVIDIA SkillSpector (one compromised skill blocked, one vetted skill allowed), the console skill-gate step, Chainguard products on both pages" && git push -q origin main && git log --oneline -1 && git status -sb | head -1
+# at 06:27:33 in /home/ubuntu/chainguard-technical-challenge
+38e371f Step 24: agent skill gate with NVIDIA SkillSpector (one compromised skill blocked, one vetted skill allowed), the console skill-gate step, Chainguard products on both pages
+## main...origin/main
+# exit 0
+
+$ git add -A && git commit -q -m "Step 24: full live run through the console (pull request 4), surprise 50 on read-only commands, claims about the agent and git corrected" && git push -q origin main && git log --oneline -1 && git status -sb | head -1
+# at 06:39:05 in /home/ubuntu/chainguard-technical-challenge
+a18ae4e Step 24: full live run through the console (pull request 4), surprise 50 on read-only commands, claims about the agent and git corrected
+## main...origin/main
+# exit 0
+
+$ git add -A && git commit -q -m "Deny git to the coding agent outright, read-only commands included (surprise 50)" && git push -q origin main && git log --oneline -1 && git status -sb | head -1
+# at 06:43:26 in /home/ubuntu/chainguard-technical-challenge
+9bc388f Deny git to the coding agent outright, read-only commands included (surprise 50)
+## main...origin/main
+# exit 0

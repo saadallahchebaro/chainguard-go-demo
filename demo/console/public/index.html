@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="console-token" content="__TOKEN__">
+<title>CI demo console</title>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body class="app" data-page="ci">
+<header class="top">
+  <h1>An agent in the pipeline<small>CI demo · hello-ai · every button runs the real step</small></h1>
+  <nav><a href="/ci" aria-current="page">CI demo</a><a href="/present">Full presentation</a><a href="/deck">Command deck</a></nav>
+  <div class="chips" id="chips" aria-label="Checks"></div>
+  <span class="spacer"></span>
+  <button type="button" class="btn small" id="togglesteps" aria-pressed="false" title="Hide the step list so the diagram and the terminal use the full width">Hide steps</button>
+  <div class="play" role="group" aria-label="Play every step">
+    <button type="button" class="btn small primary" id="play" title="Run every step in order, hands-off, in the current mode">▶ Play all</button>
+    <button type="button" class="btn small" id="pause" hidden title="Hold before the next step">Pause</button>
+    <button type="button" class="btn small" id="playstop" hidden title="End Play and stop the step that is running">Stop</button>
+    <span class="playstat" id="playstat" aria-live="polite"></span>
+  </div>
+  <div class="mode" role="group" aria-label="Mode"><button type="button" data-mode="live">Live</button><button type="button" data-mode="replay">Replay</button></div>
+</header>
+
+<dialog id="playdlg" aria-labelledby="playdlg-t">
+  <form method="dialog">
+    <h3 id="playdlg-t">Play the whole CI demo, live</h3>
+    <p>Play runs the checks, then steps 0 to 12 on the lab, one after another: a clean branch, the agent's change, a pull request on GitHub, the gate on the self-hosted runner, the skill gate, the agent's fix with the allowed skill, the gate again, the merge, which signs and deploys to k3s, the three cluster checks, and last the Chainguard view, which runs no commands.</p>
+    <p>Steps 6 and 8, the review and push and the merge, run without stopping for you. Play stops at the first failure, and before the merge if the gate is still red. If the gate passes first time, it skips steps 4 to 7.</p>
+    <p><strong>The agent steps, 1 and 5:</strong></p>
+    <div class="dlgbtns">
+      <button type="submit" value="cancel" class="btn">Cancel</button>
+      <button type="submit" value="recorded" class="btn">Use its recorded change</button>
+      <button type="submit" value="live" class="btn primary">Run the agent live</button>
+    </div>
+  </form>
+</dialog>
+
+<div class="grid ci-grid">
+  <aside class="pane" aria-label="Demo steps">
+    <div class="card fill scroll">
+      <h2>Demo steps</h2>
+      <div class="steps" id="steps"></div>
+      <details class="fold" id="fold-extras" open>
+        <summary>Before the demo, and fallbacks</summary>
+        <div class="tools" id="extras"></div>
+      </details>
+      <details class="fold" id="fold-result" open>
+        <summary>Last result <span class="rtitle" id="rtitle"></span></summary>
+        <div class="result" id="result"><p class="empty">The result of the last step appears here.</p></div>
+      </details>
+      <details class="fold" id="fold-map">
+        <summary>This step, in the lab and beyond</summary>
+        <div class="seg" role="group" aria-label="View"><button type="button" data-view="step" aria-pressed="true">Step</button><button type="button" data-view="big" aria-pressed="false">Big picture</button></div>
+        <div id="mapping"></div>
+      </details>
+    </div>
+  </aside>
+
+  <section class="pane" aria-label="Where each step runs, and the output">
+    <div class="card stage">
+      <div class="diagram" id="diagram"></div>
+    </div>
+    <section class="term fill" aria-label="Command output">
+      <div class="termbar"><span class="live" id="livedot"></span><span class="now" id="now">idle</span><button type="button" id="stop" disabled>Stop</button><button type="button" id="clear">Clear</button></div>
+      <div class="termbody" id="termbody" role="log" aria-live="polite"></div>
+    </section>
+    <section class="card cgpanel fill" id="cgpanel" hidden aria-label="Where Chainguard fits">
+      <div class="cghead"><h2>Where Chainguard fits</h2>
+        <span class="cglegend"><i class="v-replaces"></i>replaces <i class="v-adds"></i>adds <i class="v-in-use"></i>in use <i class="v-works-with"></i>works with <i class="v-stays-yours"></i>stays yours</span>
+        <span class="cgnote">statuses checked on chainguard.dev, <span id="cgchecked"></span></span>
+        <button type="button" class="btn small" id="cgback">Back to the pipeline</button></div>
+      <div class="cgrows" id="cgrows"></div>
+    </section>
+  </section>
+</div>
+<script src="/static/common.js"></script>
+<script src="/static/ci.js"></script>
+</body>
+</html>

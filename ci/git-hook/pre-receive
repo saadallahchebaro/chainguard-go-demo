@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+# pre-receive: run gate.sh on every pushed commit; refuse the push if the gate fails.
+# The fallback when GitHub isn't available: the same gate, with nothing outside the lab.
+while read -r old new ref; do
+  [ "$new" = 0000000000000000000000000000000000000000 ] && continue    # a branch deletion: nothing to check
+  work=$(mktemp -d)
+  git archive "$new" | tar -x -C "$work"
+  echo "== gate for $ref at ${new:0:7}"
+  (cd "$work" && GATE_COMMIT=$new ./gate.sh) || { rm -rf "$work"; echo "== push refused: the gate failed"; exit 1; }
+  rm -rf "$work"
+done

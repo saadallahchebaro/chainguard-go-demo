@@ -1,0 +1,146 @@
+{
+  "spdxVersion": "SPDX-2.3",
+  "dataLicense": "CC0-1.0",
+  "SPDXID": "SPDXRef-DOCUMENT",
+  "name": "apk-tzdata-2026f-r0",
+  "documentNamespace": "https://spdx.org/spdxdocs/chainguard/build/340f591d4d352cd635e5c329158251ba",
+  "creationInfo": {
+    "licenseListVersion": "3.22",
+    "creators": [
+      "Tool: chainguard-build (v0.63.1)",
+      "Organization: Chainguard, Inc"
+    ],
+    "created": "2026-10-28T16:01:14Z"
+  },
+  "packages": [
+    {
+      "name": "wolfi",
+      "SPDXID": "SPDXRef-OperatingSystem",
+      "supplier": "Organization: Wolfi",
+      "originator": "Organization: Wolfi",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "description": "Operating System",
+      "primaryPackagePurpose": "OPERATING-SYSTEM"
+    },
+    {
+      "name": "tzdata",
+      "SPDXID": "SPDXRef-Package-apk-tzdata-2026f-r0",
+      "versionInfo": "2026f-r0",
+      "supplier": "Organization: Wolfi",
+      "originator": "Organization: Wolfi",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "CC-PDDC",
+      "copyrightText": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:apk/wolfi/tzdata@2026f-r0?arch=aarch64\u0026distro=wolfi"
+        }
+      ],
+      "primaryPackagePurpose": "APPLICATION"
+    },
+    {
+      "name": "tzdata.yaml",
+      "SPDXID": "SPDXRef-Package-Melange-tzdata.yaml-b01ceefc114cf44ccb6d35f405795435f98bf0c2",
+      "versionInfo": "b01ceefc114cf44ccb6d35f405795435f98bf0c2",
+      "supplier": "Organization: Wolfi",
+      "originator": "Organization: Wolfi",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "Apache-2.0",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:github/chainguard-dev/stereo@b01ceefc114cf44ccb6d35f405795435f98bf0c2#tzdata.yaml"
+        }
+      ],
+      "primaryPackagePurpose": "INSTALL"
+    },
+    {
+      "name": "tz",
+      "SPDXID": "SPDXRef-Package-Source-github.com-eggert-tz-2026f-a6cb1a1cebcc96269a02b25323c1a9424e3349a8-0",
+      "versionInfo": "2026f",
+      "supplier": "Organization: Eggert",
+      "originator": "Organization: Eggert",
+      "downloadLocation": "https://github.com/eggert/tz/archive/a6cb1a1cebcc96269a02b25323c1a9424e3349a8.tar.gz",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "CC-PDDC",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:github/eggert/tz@2026f"
+        }
+      ],
+      "primaryPackagePurpose": "SOURCE"
+    },
+    {
+      "name": "tzdata",
+      "SPDXID": "SPDXRef-Package-apk-tzdata-c9ffaae8b2257589",
+      "versionInfo": "2026f-r0",
+      "supplier": "Organization: chainguard",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "sourceInfo": "acquired package info from APK DB: /.PKGINFO",
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "CC-PDDC",
+      "copyrightText": "NOASSERTION",
+      "description": "Timezone data provided by IANA",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:apk/wolfi/tzdata@2026f-r0?arch=aarch64\u0026origin=tzdata"
+        }
+      ]
+    },
+    {
+      "name": "tzdata",
+      "SPDXID": "SPDXRef-DocumentRoot-Directory-tzdata",
+      "versionInfo": "2026f-r0",
+      "supplier": "Organization: chainguard",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "copyrightText": "NOASSERTION",
+      "primaryPackagePurpose": "FILE"
+    }
+  ],
+  "relationships": [
+    {
+      "spdxElementId": "SPDXRef-Package-apk-tzdata-2026f-r0",
+      "relatedSpdxElement": "SPDXRef-Package-Melange-tzdata.yaml-b01ceefc114cf44ccb6d35f405795435f98bf0c2",
+      "relationshipType": "DESCRIBED_BY"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-apk-tzdata-2026f-r0",
+      "relatedSpdxElement": "SPDXRef-Package-Source-github.com-eggert-tz-2026f-a6cb1a1cebcc96269a02b25323c1a9424e3349a8-0",
+      "relationshipType": "GENERATED_FROM"
+    },
+    {
+      "spdxElementId": "SPDXRef-DOCUMENT",
+      "relatedSpdxElement": "SPDXRef-Package-apk-tzdata-2026f-r0",
+      "relationshipType": "DESCRIBES"
+    },
+    {
+      "spdxElementId": "SPDXRef-DocumentRoot-Directory-tzdata",
+      "relatedSpdxElement": "SPDXRef-Package-apk-tzdata-c9ffaae8b2257589",
+      "relationshipType": "CONTAINS"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-apk-tzdata-2026f-r0",
+      "relatedSpdxElement": "SPDXRef-DocumentRoot-Directory-tzdata",
+      "relationshipType": "CONTAINS"
+    }
+  ]
+}

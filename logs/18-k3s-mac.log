@@ -1,0 +1,100 @@
+# step 18, Mac side: 2026-11-16T14:53:48Z
+$ curl -s https://update.k3s.io/v1-release/channels  (stable and latest)
+stable v1.37.2+k3s1; latest v1.37.2+k3s1 (kubectl on the build VM: v1.37.2)
+$ multipass launch 24.04 --name k3s --cpus 2 --memory 3G --disk 15G --timeout 900
+[2K[0A[0ECreating k3s in zone1  /-\|/-\|/-\|/-\| [2K[0A[0E[2K[0A[0EConfiguring k3s  / [2K[0A[0E[2K[0A[0EStarting k3s  /-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/- [2K[0A[0E[2K[0A[0EWaiting for initialization to complete  /-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\ [2K[0A[0ELaunched: k3s in zone1
+Launched: k3s in zone1 (took 79 s)
+$ multipass info k3s
+Name:           k3s
+State:          Running
+Zone:           zone1
+Snapshots:      0
+IPv4:           192.168.252.3
+Release:        Ubuntu 24.04.5 LTS
+Image hash:     50e24e1fb79e (Ubuntu 24.04 LTS)
+CPU(s):         2
+Load:           0.22 0.06 0.02
+Disk usage:     2.0GiB out of 14.5GiB
+Memory usage:   407.3MiB out of 2.9GiB
+Mounts:         --
+$ multipass exec k3s -- curl -s http://192.168.252.2:5000/v2/_catalog   (can the k3s VM reach the registry?)
+{"repositories":["hello"]}
+
+$ write /etc/rancher/k3s/registries.yaml in the k3s VM (before installing k3s)
+# k3s: the lab registry on the build VM speaks plain HTTP, so name it explicitly (containerd assumes HTTPS otherwise)
+mirrors:
+  "192.168.252.2:5000":
+    endpoint:
+      - "http://192.168.252.2:5000"
+$ multipass exec k3s -- curl -sfL https://get.k3s.io -o /tmp/k3s-install.sh; sha256sum; how it verifies the binary
+c2a2643dd7c259121a876d16538844c60928de3d38ae98f22f7b95a7ffcfab9d  /tmp/k3s-install.sh
+1218
+300:setup_verify_arch() {
+462:download_hash() {
+468:        HASH_URL=${INSTALL_K3S_ARTIFACT_URL}/${VERSION_URLSAFE}/sha256sum-${ARCH}.txt
+472:    HASH_EXPECTED=$(grep " k3s${SUFFIX}$" ${TMP_HASH})
+473:    HASH_EXPECTED=${HASH_EXPECTED%%[[:blank:]]*}
+549:download_binary() {
+567:verify_binary() {
+569:    HASH_BIN=$(sha256sum ${TMP_BIN})
+570:    HASH_BIN=${HASH_BIN%%[[:blank:]]*}
+$ sed -n 462,476p and 567,576p /tmp/k3s-install.sh  (download_hash, verify_binary)
+download_hash() {
+    if [ -n "${INSTALL_K3S_PR}" ] || [ -n "${INSTALL_K3S_COMMIT}" ]; then
+        info "Downloading hash ${GITHUB_ART_URL}"
+        curl -s -o ${TMP_ZIP} -H "Authorization: Bearer $GITHUB_TOKEN" -L ${GITHUB_ART_URL}
+        unzip -p ${TMP_ZIP} k3s.sha256sum > ${TMP_HASH}
+    else
+        HASH_URL=${INSTALL_K3S_ARTIFACT_URL}/${VERSION_URLSAFE}/sha256sum-${ARCH}.txt
+        info "Downloading hash ${HASH_URL}"
+        download ${TMP_HASH} ${HASH_URL}
+    fi
+    HASH_EXPECTED=$(grep " k3s${SUFFIX}$" ${TMP_HASH})
+    HASH_EXPECTED=${HASH_EXPECTED%%[[:blank:]]*}
+}
+
+# --- check hash against installed version ---
+verify_binary() {
+    info "Verifying binary download"
+    HASH_BIN=$(sha256sum ${TMP_BIN})
+    HASH_BIN=${HASH_BIN%%[[:blank:]]*}
+    if [ "${HASH_EXPECTED}" != "${HASH_BIN}" ]; then
+        fatal "Download sha256 does not match ${HASH_EXPECTED}, got ${HASH_BIN}"
+    fi
+}
+
+# --- setup permissions and move binary to system directory ---
+$ multipass exec k3s -- sudo env INSTALL_K3S_VERSION=v1.37.2+k3s1 sh /tmp/k3s-install.sh
+[INFO]  Using v1.37.2+k3s1 as release
+[INFO]  Downloading hash https://github.com/k3s-io/k3s/releases/download/v1.37.2%2Bk3s1/sha256sum-arm64.txt
+[INFO]  Downloading binary https://github.com/k3s-io/k3s/releases/download/v1.37.2%2Bk3s1/k3s-arm64
+[INFO]  Verifying binary download
+[INFO]  Installing k3s to /usr/local/bin/k3s
+[INFO]  Skipping installation of SELinux RPM
+[INFO]  Creating /usr/local/bin/kubectl symlink to k3s
+[INFO]  Creating /usr/local/bin/crictl symlink to k3s
+[INFO]  Creating /usr/local/bin/ctr symlink to k3s
+[INFO]  Creating killall script /usr/local/bin/k3s-killall.sh
+[INFO]  Creating uninstall script /usr/local/bin/k3s-uninstall.sh
+[INFO]  env: Creating environment file /etc/systemd/system/k3s.service.env
+[INFO]  systemd: Creating service file /etc/systemd/system/k3s.service
+[INFO]  systemd: Enabling k3s unit
+Created symlink /etc/systemd/system/multi-user.target.wants/k3s.service → /etc/systemd/system/k3s.service.
+[INFO]  systemd: Starting k3s
+exit 0 (took 7 s)
+$ wait for the node: multipass exec k3s -- sudo k3s kubectl get nodes
+NAME   STATUS   ROLES           AGE   VERSION
+k3s    Ready    control-plane   10s   v1.37.2+k3s1
+(Ready after about 3 s of polling)
+$ multipass exec k3s -- sudo cat /etc/rancher/k3s/k3s.yaml | sed "s/127.0.0.1/192.168.252.3/" | multipass exec chainguard -- bash -c "mkdir -p ~/.kube && umask 077 && cat > ~/.kube/config && chmod 600 ~/.kube/config"   (the admin credential: not printed)
+-rw------- 1 ubuntu ubuntu 2945 Nov 16 18:56 /home/ubuntu/.kube/config
+    server: https://192.168.252.3:6443
+$ multipass exec k3s -- sudo k3s crictl pull 192.168.252.2:5000/hello@sha256:c5ce9ddb3a8db38d7ef61bdd6c84905bd1d3e7ef61a3c51bbd0d6d7aa7270a08   (registries.yaml at work: plain HTTP)
+Image is up to date for sha256:67d91c78701af6490115f4e5f178428c0bb711ef4ee486983f9e855f0cc5812f
+exit 0
+$ multipass exec k3s -- sudo k3s crictl images | grep hello
+IMAGE                                        TAG                     IMAGE ID            SIZE
+192.168.252.2:5000/hello                     <none>                  67d91c78701af       11MB
+
+$ multipass transfer README.md JOURNAL.md RUNBOOK.md REPORT.md, demo/screenshots/18-*.png -> repo
+transferred OK

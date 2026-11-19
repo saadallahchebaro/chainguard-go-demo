@@ -1,0 +1,45 @@
+# Image E (called D until step 37) on the k3s cluster: two copies, pulled from the lab registry by the digest that
+# was scanned and signed (a tag can move; a digest can't). The settings below meet Kubernetes' "restricted" Pod
+# Security Standard, which the default namespace enforces (kubectl label namespace default pod-security.kubernetes.io/enforce=restricted).
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hello
+  labels:
+    app: hello
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: hello
+  template:
+    metadata:
+      labels:
+        app: hello
+    spec:
+      # The app never calls the Kubernetes API, so its pods get no API token
+      automountServiceAccountToken: false
+      securityContext:
+        runAsNonRoot: true          # works because the image's user is numeric (USER 65532)
+        runAsUser: 65532
+        runAsGroup: 65532
+        seccompProfile:
+          type: RuntimeDefault      # the container runtime's default system-call filter
+      containers:
+        - name: hello
+          image: 192.168.252.2:5000/hello@sha256:c5ce9ddb3a8db38d7ef61bdd6c84905bd1d3e7ef61a3c51bbd0d6d7aa7270a08
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+          resources:
+            requests: { cpu: 50m, memory: 32Mi }
+            limits: { cpu: 200m, memory: 64Mi }
+          readinessProbe:
+            httpGet: { path: /, port: 8080 }
+          livenessProbe:
+            httpGet: { path: /, port: 8080 }

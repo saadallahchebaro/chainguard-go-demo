@@ -1,0 +1,4 @@
+$ multipass transfer JOURNAL.md RUNBOOK.md REPORT.md, demo/screenshots/10-*.png -> repo (tools/gap-analysis.sh and tools/triage.sh copied earlier)
+transferred OK
+$ multipass transfer JOURNAL.md -> repo (checkpoint 2)
+transferred OK

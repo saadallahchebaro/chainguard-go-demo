@@ -1,0 +1,71 @@
+$ brew install --cask multipass
+==> Auto-updating Homebrew...
+Adjust how often this is run with `$HOMEBREW_AUTO_UPDATE_SECS` or disable with
+`$HOMEBREW_NO_AUTO_UPDATE=1`. Hide these hints with `$HOMEBREW_NO_ENV_HINTS=1` (see `man brew`).
+==> Auto-updated Homebrew!
+Updated 4 taps (<a third-party tap>, pulumi/tap, homebrew/core and homebrew/cask).
+==> New Formulae
+curl-impersonate: Curl build that makes HTTP requests look like they came from a real browser
+engram: Persistent memory system for AI coding agents
+globus-cli: Command-line interface to Globus
+goose-lang: Systems programming language with flat, pointer-free data structures
+mdspan: Reference implementation of mdspan targeting C++23
+muvm: Run programs from your system in a microVM
+rea: Reverse engineering CLI and MCP server for agents
+tidemail: TUI email client, supports IMAP, Gmail & Outlook OAuth
+ziggy: Data serialization language for expressing clear API messages, config files, etc
+==> New Casks
+ardia: Chromium-based web browser with a vertical tab sidebar
+devtools: Collection of developer utilities
+dotnet-sdk@10: Developer platform
+fleet-desktop: Self-service portal for devices managed by Fleet
+hora-calendar: Google Calendar client
+hyperframes: Video editor for HTML-based compositions
+kiwidesk: Tiling window manager
+lattice: LaTeX editor
+nod: Personal AI agent
+open-screen-sharing: Remote desktop client for VNC and RDP
+parallels@26: Desktop virtualization software
+plezy: Client for Plex, Jellyfin and Emby media servers
+realtek-rtl815x-ethernet: DriverKit driver for Realtek USB Ethernet adapters
+sable: Client for the Matrix chat network
+sidebarfavorites-manager: Finder sidebar icon customiser
+tab-finder: Searchable list of open browser tabs
+teamwork-graph-cli: Command-line interface for Atlassian Teamwork Graph
+yandex-document: Document and spreadsheet editor
+Warning: Calling `postflight` is deprecated! Use `postflight_steps` instead.
+Please report this issue to the <a third-party tap> tap (not Homebrew/* repositories), or even better, submit a PR to fix it:
+  /opt/homebrew/Library/Taps/<a third-party tap>/Casks/<cask>.rb:36
+
+Warning: Calling `uninstall_preflight` is deprecated! Use `uninstall_preflight_steps` instead.
+Please report this issue to the <a third-party tap> tap (not Homebrew/* repositories), or even better, submit a PR to fix it:
+  /opt/homebrew/Library/Taps/<a third-party tap>/Casks/<cask>.rb:45
+
+
+You have 39 outdated formulae and 2 outdated casks installed.
+
+==> Fetching downloads for: multipass
+✔︎ Cask multipass (1.17.1)
+==> Installing Cask multipass
+==> Running installer for multipass with `sudo` (which may request your password)...
+installer: Package name is multipass
+installer: Installing at base path /
+installer: The install was successful.
+🍺  multipass was successfully installed!
+$ multipass version
+multipass   1.17.1+mac
+multipassd  1.17.1+mac
+$ gh auth switch (personal) / gh repo create --private / gh repo view / gh auth switch (work)
+✓ Switched active account for github.com to saadallahchebaro
+https://github.com/saadallahchebaro/chainguard-technical-challenge
+{"nameWithOwner":"saadallahchebaro/chainguard-technical-challenge","url":"https://github.com/saadallahchebaro/chainguard-technical-challenge","visibility":"PRIVATE"}
+✓ Switched active account for github.com to <work-account>
+active gh account: <work-account>
+$ readiness checks
+macOS 26.7.3 on arm64, 10 CPUs, 16 GB RAM
+System-wide memory free percentage: 42%
+/dev/disk3s5   460Gi   214Gi   224Gi    49%    3.9M  2.3G    0%   /System/Volumes/Data
+Docker Desktop: not running
+multipass driver: qemu
+
+# Redacted for the public copy: the name of a third-party Homebrew tap and of a second GitHub account.

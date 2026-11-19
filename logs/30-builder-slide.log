@@ -1,0 +1,18 @@
+
+===== STEP 30-builder-slide · 2026-11-17T11:22:57Z · chainguard
+
+$ f=reports/after/builder-golang-grype.json; echo "== golang:latest as a builder ($f): unique CVE IDs by severity, then by fix state (fixed if any match has a fix)"; jq -r "[.matches[] | {id: .vulnerability.id, sev: .vulnerability.severity}] | unique_by(.id) | group_by(.sev) | map(\"   \(.[0].sev): \(length)\") | .[]" $f; jq -r "[.matches[] | {id: .vulnerability.id, s: .vulnerability.fix.state}] | group_by(.id) | map(if any(.[]; .s == \"fixed\") then \"fixed\" elif any(.[]; .s == \"wont-fix\") then \"wont-fix\" elif any(.[]; .s == \"not-fixed\") then \"not-fixed\" else \"other\" end) | group_by(.) | map(\"   \(.[0]): \(length)\") | .[]" $f; echo "   total: $(jq "[.matches[].vulnerability.id] | unique | length" $f), database built $(jq -r ".descriptor.db.status.built // .descriptor.db.built" $f)"; echo "== chainguard/go as a builder: $(jq "[.matches[].vulnerability.id] | unique | length" reports/after/builder-cg-go-grype.json) CVE IDs"
+# at 11:22:58 in /home/ubuntu/chainguard-technical-challenge
+== golang:latest as a builder (reports/after/builder-golang-grype.json): unique CVE IDs by severity, then by fix state (fixed if any match has a fix)
+   Critical: 10
+   High: 68
+   Low: 21
+   Medium: 73
+   Negligible: 140
+   Unknown: 13
+   fixed: 3
+   not-fixed: 172
+   wont-fix: 150
+   total: 325, database built 2026-11-16T06:30:54Z
+== chainguard/go as a builder: 0 CVE IDs
+# exit 0

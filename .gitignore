@@ -5,3 +5,24 @@
 sbom_scanner_results/
 scanner_results/
 syft-sboms/
+
+# Added for the lab: secrets, binaries and image tarballs stay out of git
+cosign.key
+*.key
+k3s.yaml
+kubeconfig*
+.env
+
+# Built binaries: rebuilt from source
+go/hello-server
+go-patched/hello-server
+hello-server-*
+
+# Image tarballs: rebuilt from the Dockerfiles
+*.tar
+
+# Large image-A scan reports: the repo keeps gzip copies (*.gz); the uncompressed files stay on the VM
+reports/*/a-grype.json
+reports/*/a-trivy.json
+reports/*/a-trivy.sarif
+reports/sbom/a-grype-from-spdx.json

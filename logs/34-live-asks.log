@@ -1,0 +1,184 @@
+
+===== STEP 34-live-asks · 2026-11-17T15:37:51Z · chainguard
+
+$ echo "Grype database built $(grype db status | sed -n "s/^Built: *//p"), not updated"; for i in nginx:latest cgr.dev/chainguard/nginx:latest; do S=$(date +%s); GRYPE_DB_AUTO_UPDATE=false grype registry:$i --by-cve -q -o json > /tmp/q-cmp.json; echo "$i"; echo "   $(jq "[.matches[].vulnerability.id] | unique | length" /tmp/q-cmp.json) unique CVE IDs, $(jq "[.matches[] | select(.vulnerability.severity == \"Critical\" or .vulnerability.severity == \"High\") | .vulnerability.id] | unique | length" /tmp/q-cmp.json) critical or high; $(jq ".artifacts | length" /tmp/q-cmp.json) packages; $(crane manifest --platform linux/arm64 $i | jq "[.layers[].size] | add / 1048576 | floor") MB compressed (arm64); scanned in $(( $(date +%s) - S )) s"; done; rm -f /tmp/q-cmp.json; df -h / | tail -1
+# at 15:37:52 in /home/ubuntu/chainguard-technical-challenge
+Grype database built 2026-11-16T06:30:54Z, not updated
+nginx:latest
+   220 unique CVE IDs, 73 critical or high; 0 packages; 59 MB compressed (arm64); scanned in 8 s
+cgr.dev/chainguard/nginx:latest
+   0 unique CVE IDs, 0 critical or high; 0 packages; 6 MB compressed (arm64); scanned in 16 s
+/dev/sda1        29G   24G  4.6G  84% /
+# exit 0
+
+$ echo "Grype database built $(grype db status | sed -n "s/^Built: *//p"), not updated"; for i in nginx:latest cgr.dev/chainguard/nginx:latest; do S=$(date +%s); GRYPE_DB_AUTO_UPDATE=false grype registry:$i --by-cve -q -o json > /tmp/q-cmp.json; echo "$i  ($(jq -r ".distro.name + \" \" + .distro.version" /tmp/q-cmp.json))"; echo "   $(jq "[.matches[].vulnerability.id] | unique | length" /tmp/q-cmp.json) unique CVE IDs, $(jq "[.matches[] | select(.vulnerability.severity == \"Critical\" or .vulnerability.severity == \"High\") | .vulnerability.id] | unique | length" /tmp/q-cmp.json) critical or high; $(crane manifest --platform linux/arm64 $i | jq "[.layers[].size] | add / 1048576 | floor") MB compressed (arm64); scanned in $(( $(date +%s) - S )) s"; done; rm -f /tmp/q-cmp.json
+# at 15:38:38 in /home/ubuntu/chainguard-technical-challenge
+Grype database built 2026-11-16T06:30:54Z, not updated
+nginx:latest  (debian 13.7)
+   220 unique CVE IDs, 73 critical or high; 59 MB compressed (arm64); scanned in 8 s
+cgr.dev/chainguard/nginx:latest  (wolfi 20230201)
+   0 unique CVE IDs, 0 critical or high; 6 MB compressed (arm64); scanned in 17 s
+# exit 0
+
+$ kubectl logs -l app=hello --prefix --timestamps --tail=6
+# at 15:39:18 in /home/ubuntu/chainguard-technical-challenge
+[pod/hello-57b4b797b-mjvbg/hello] 2026-11-17T19:38:52.699187199+04:00 [GIN] 2026/11/17 - 15:38:52 | 200 | 126.417µs |       10.42.0.1 | GET      "/"
+[pod/hello-57b4b797b-mjvbg/hello] 2026-11-17T19:38:52.848386523+04:00 [GIN] 2026/11/17 - 15:38:52 | 200 | 79.625µs |       10.42.0.1 | GET      "/"
+[pod/hello-57b4b797b-mjvbg/hello] 2026-11-17T19:39:02.700139052+04:00 [GIN] 2026/11/17 - 15:39:02 | 200 | 26.833µs |       10.42.0.1 | GET      "/"
+[pod/hello-57b4b797b-mjvbg/hello] 2026-11-17T19:39:02.847479341+04:00 [GIN] 2026/11/17 - 15:39:02 | 200 | 18.083µs |       10.42.0.1 | GET      "/"
+[pod/hello-57b4b797b-mjvbg/hello] 2026-11-17T19:39:12.701509921+04:00 [GIN] 2026/11/17 - 15:39:12 | 200 | 34.083µs |       10.42.0.1 | GET      "/"
+[pod/hello-57b4b797b-mjvbg/hello] 2026-11-17T19:39:12.849789886+04:00 [GIN] 2026/11/17 - 15:39:12 | 200 | 44.833µs |       10.42.0.1 | GET      "/"
+[pod/hello-57b4b797b-s86gd/hello] 2026-11-17T19:38:57.856681684+04:00 [GIN] 2026/11/17 - 15:38:57 | 200 | 434.667µs |       10.42.0.1 | GET      "/"
+[pod/hello-57b4b797b-s86gd/hello] 2026-11-17T19:38:58.702265549+04:00 [GIN] 2026/11/17 - 15:38:58 | 200 | 870.167µs |       10.42.0.1 | GET      "/"
+[pod/hello-57b4b797b-s86gd/hello] 2026-11-17T19:39:07.854315345+04:00 [GIN] 2026/11/17 - 15:39:07 | 200 | 121.708µs |       10.42.0.1 | GET      "/"
+[pod/hello-57b4b797b-s86gd/hello] 2026-11-17T19:39:08.701682838+04:00 [GIN] 2026/11/17 - 15:39:08 | 200 | 31.292µs |       10.42.0.1 | GET      "/"
+[pod/hello-57b4b797b-s86gd/hello] 2026-11-17T19:39:17.854095184+04:00 [GIN] 2026/11/17 - 15:39:17 | 200 | 85.541µs |       10.42.0.1 | GET      "/"
+[pod/hello-57b4b797b-s86gd/hello] 2026-11-17T19:39:18.700659136+04:00 [GIN] 2026/11/17 - 15:39:18 | 200 | 16.208µs |       10.42.0.1 | GET      "/"
+# exit 0
+
+$ for p in $(kubectl get pods -l app=hello -o name); do echo "$p: $(kubectl logs $p | wc -l) lines since it started, $(kubectl logs $p | grep -c GIN-debug) from Gin debug mode; first line: $(kubectl logs $p | head -1 | cut -c1-60)"; done
+# at 15:39:30 in /home/ubuntu/chainguard-technical-challenge
+pod/hello-57b4b797b-mjvbg: 2861 lines since it started, 0 from Gin debug mode; first line: [GIN] 2026/11/17 - 11:41:02 | 200 |  3.042µs |       10.42.
+pod/hello-57b4b797b-s86gd: 2883 lines since it started, 0 from Gin debug mode; first line: [GIN] 2026/11/17 - 11:39:18 | 200 |  3.167µs |       10.42.
+# exit 0
+
+$ kubectl get pods -l app=hello; P=$(kubectl get pods -l app=hello -o jsonpath="{.items[0].metadata.name}"); echo "== delete $P"; S=$(date +%s); kubectl delete pod "$P" --wait=false; sleep 2; kubectl get pods -l app=hello; for i in $(seq 1 45); do [ "$(kubectl get deploy hello -o jsonpath={.status.readyReplicas})" = 2 ] && [ $(kubectl get pods -l app=hello --no-headers | wc -l) = 2 ] && break; sleep 2; done; echo "== two ready pods again, and the old one gone, after $(( $(date +%s) - S )) s"; kubectl get pods -l app=hello -o custom-columns=POD:.metadata.name,READY:.status.containerStatuses[0].ready,AGE:.metadata.creationTimestamp,IMAGE:.status.containerStatuses[0].imageID | cut -c1-120
+# at 15:39:40 in /home/ubuntu/chainguard-technical-challenge
+NAME                    READY   STATUS    RESTARTS   AGE
+hello-57b4b797b-mjvbg   1/1     Running   0          3h58m
+hello-57b4b797b-s86gd   1/1     Running   0          4h
+== delete hello-57b4b797b-mjvbg
+pod "hello-57b4b797b-mjvbg" deleted from default namespace
+NAME                    READY   STATUS    RESTARTS   AGE
+hello-57b4b797b-mdgzd   1/1     Running   0          2s
+hello-57b4b797b-s86gd   1/1     Running   0          4h
+== two ready pods again, and the old one gone, after 2 s
+POD                     READY   AGE                    IMAGE
+hello-57b4b797b-mdgzd   true    2026-11-17T15:39:40Z   192.168.252.2:5000/hello@sha256:c5ce9ddb3a8db38d7ef61bdd6c84905bd
+hello-57b4b797b-s86gd   true    2026-11-17T11:39:17Z   192.168.252.2:5000/hello@sha256:c5ce9ddb3a8db38d7ef61bdd6c84905bd
+# exit 0
+
+$ kubectl top node; echo; kubectl top pods; echo; echo "D limits per pod: $(kubectl get deploy hello -o jsonpath="{.spec.template.spec.containers[0].resources.limits}")"; echo; echo "On the build VM (docker stats):"; docker stats --no-stream --format "   {{.Name}}: {{.CPUPerc}} CPU, {{.MemUsage}}"
+# at 15:39:52 in /home/ubuntu/chainguard-technical-challenge
+NAME   CPU(cores)   CPU(%)   MEMORY(bytes)   MEMORY(%)   
+k3s    126m         6%       2077Mi          70%         
+
+NAME                        CPU(cores)   MEMORY(bytes)   
+hello-57b4b797b-s86gd       1m           3Mi             
+hello-ai-7849794858-frzfs   2m           56Mi            
+hello-ai-7849794858-xw9sm   2m           41Mi            
+
+D limits per pod: {"cpu":"200m","memory":"64Mi"}
+
+On the build VM (docker stats):
+registry: 0.00% CPU, 25.6MiB / 3.81GiB
+# exit 0
+
+$ cd go-patched; M=$(go list -deps -f "{{with .Module}}{{.Path}}{{end}}" . | sort -u | grep -v "^hello-server$"); echo "$(echo "$M" | wc -l) modules compiled into D (go-patched); newer versions today:"; go list -m -u -f "{{if .Update}}   {{.Path}} {{.Version}} -> {{.Update.Version}}{{end}}" $M | grep . || echo "   none"; cd ..; docker create --name q-gv hello:d >/dev/null; docker cp q-gv:/usr/local/bin/hello-server /tmp/q-gv >/dev/null; docker rm q-gv >/dev/null; echo "Go that built D: $(go version /tmp/q-gv | cut -d" " -f2); latest stable Go today: $(curl -s "https://go.dev/dl/?mode=json" | jq -r ".[0].version")"; rm -f /tmp/q-gv
+# at 15:40:15 in /home/ubuntu/chainguard-technical-challenge
+19 modules compiled into D (go-patched); newer versions today:
+   none
+Go that built D: go1.27.4; latest stable Go today: go1.27.4
+# exit 0
+
+$ curl -s https://packages.wolfi.dev/os/security.json -o /tmp/q-secdb.json; echo "Wolfi security feed, what Grype and Trivy read for Wolfi-based images: $(jq ".packages | length" /tmp/q-secdb.json) packages"; for id in CVE-2023-44487 CVE-2023-39325; do jq -r --arg id $id ".packages[] | .pkg.name as \$n | .pkg.secfixes | to_entries[] | select(.value | index(\$id)) | \"\\(\$n) \\(.key)\"" /tmp/q-secdb.json | sort -V > /tmp/q-ids.txt; echo "$id: $(awk "\$2 != \"0\"" /tmp/q-ids.txt | wc -l) packages list the version that fixed it, $(awk "\$2 == \"0\"" /tmp/q-ids.txt | wc -l) list 0 (not affected); among them:"; grep -E "^(go-1\.[0-9]+|cosign|grype|helm|k3s|nghttp2) " /tmp/q-ids.txt | sed "s/^/   /"; done; rm -f /tmp/q-secdb.json /tmp/q-ids.txt
+# at 15:41:21 in /home/ubuntu/chainguard-technical-challenge
+Wolfi security feed, what Grype and Trivy read for Wolfi-based images: 1472 packages
+CVE-2023-44487: 82 packages list the version that fixed it, 3 list 0 (not affected); among them:
+   cosign 2.2.0-r6
+   grype 0.72.0-r1
+   helm 3.13.1-r2
+   nghttp2 1.57.0-r0
+CVE-2023-39325: 110 packages list the version that fixed it, 0 list 0 (not affected); among them:
+   cosign 2.2.0-r5
+   go-1.20 1.20.10-r0
+   go-1.21 1.21.3-r0
+   helm 3.13.1-r1
+   k3s 1.28.2-r1
+# exit 0
+
+$ cd go-patched; M=$(go list -deps -f "{{with .Module}}{{.Path}}{{end}}" . | sort -u | grep -v "^hello-server$"); echo "$(echo "$M" | wc -l) modules compiled into D (go-patched); newer versions today:"; go list -m -u -f "{{if .Update}}   {{.Path}} {{.Version}} -> {{.Update.Version}}{{end}}" $M | grep . || echo "   none"; echo "the same lookup for the Gin in A to C: $(go list -m -u -f "{{.Path}} {{.Version}} -> {{if .Update}}{{.Update.Version}}{{else}}none{{end}}" github.com/gin-gonic/gin@v1.8.1)"; cd ..; docker create --name q-gv hello:d >/dev/null; docker cp q-gv:/usr/local/bin/hello-server /tmp/q-gv >/dev/null; docker rm q-gv >/dev/null; echo "Go that built D: $(go version /tmp/q-gv | cut -d" " -f2); latest stable Go today: $(curl -s "https://go.dev/dl/?mode=json" | jq -r ".[0].version")"; rm -f /tmp/q-gv
+# at 15:41:43 in /home/ubuntu/chainguard-technical-challenge
+19 modules compiled into D (go-patched); newer versions today:
+   none
+the same lookup for the Gin in A to C: github.com/gin-gonic/gin v1.8.1 -> v1.12.0
+Go that built D: go1.27.4; latest stable Go today: go1.27.4
+# exit 0
+
+$ echo "Grype database built $(grype db status | sed -n "s/^Built: *//p"), not updated"; for i in nginx:latest cgr.dev/chainguard/nginx:latest; do S=$(date +%s); GRYPE_DB_AUTO_UPDATE=false grype registry:$i --by-cve -q -o json > /tmp/q-cmp.json; echo "$i  ($(jq -r ".distro.name + \" \" + .distro.version" /tmp/q-cmp.json))"; echo "   $(jq "[.matches[].vulnerability.id] | unique | length" /tmp/q-cmp.json) unique CVE IDs, $(jq "[.matches[] | select(.vulnerability.severity == \"Critical\" or .vulnerability.severity == \"High\") | .vulnerability.id] | unique | length" /tmp/q-cmp.json) critical or high; $(crane manifest --platform linux/arm64 $i | jq "[.layers[].size] | add / 1048576 | floor") MB compressed (arm64); scanned in $(( $(date +%s) - S )) s"; done; rm -f /tmp/q-cmp.json
+# at 15:46:41 in /home/ubuntu/chainguard-technical-challenge
+Grype database built 2026-11-16T06:30:54Z, not updated
+nginx:latest  (debian 13.7)
+   220 unique CVE IDs, 73 critical or high; 59 MB compressed (arm64); scanned in 8 s
+cgr.dev/chainguard/nginx:latest  (wolfi 20230201)
+   0 unique CVE IDs, 0 critical or high; 6 MB compressed (arm64); scanned in 16 s
+# exit 0
+
+$ curl -s https://packages.wolfi.dev/os/security.json -o /tmp/q-secdb.json; echo "Wolfi security feed, what Grype and Trivy read for Wolfi-based images: $(jq ".packages | length" /tmp/q-secdb.json) packages"; for id in CVE-2023-44487 CVE-2023-39325; do jq -r --arg id $id ".packages[] | .pkg.name as \$n | .pkg.secfixes | to_entries[] | select(.value | index(\$id)) | \"\\(\$n) \\(.key)\"" /tmp/q-secdb.json | sort -V > /tmp/q-ids.txt; echo "$id: $(awk "\$2 != \"0\"" /tmp/q-ids.txt | wc -l) packages list the version that fixed it, $(awk "\$2 == \"0\"" /tmp/q-ids.txt | wc -l) list 0 (not affected); among them:"; grep -E "^(go-1\.[0-9]+|cosign|grype|helm|k3s|nghttp2) " /tmp/q-ids.txt | sed "s/^/   /"; done; rm -f /tmp/q-secdb.json /tmp/q-ids.txt
+# at 15:47:29 in /home/ubuntu/chainguard-technical-challenge
+Wolfi security feed, what Grype and Trivy read for Wolfi-based images: 1472 packages
+CVE-2023-44487: 82 packages list the version that fixed it, 3 list 0 (not affected); among them:
+   cosign 2.2.0-r6
+   grype 0.72.0-r1
+   helm 3.13.1-r2
+   nghttp2 1.57.0-r0
+CVE-2023-39325: 110 packages list the version that fixed it, 0 list 0 (not affected); among them:
+   cosign 2.2.0-r5
+   go-1.20 1.20.10-r0
+   go-1.21 1.21.3-r0
+   helm 3.13.1-r1
+   k3s 1.28.2-r1
+# exit 0
+
+$ cd go-patched; M=$(go list -deps -f "{{with .Module}}{{.Path}}{{end}}" . | sort -u | grep -v "^hello-server$"); echo "$(echo "$M" | wc -l) modules compiled into D (go-patched); newer versions today:"; go list -m -u -f "{{if .Update}}   {{.Path}} {{.Version}} -> {{.Update.Version}}{{end}}" $M | grep . || echo "   none"; echo "the same lookup for the Gin in A to C: $(go list -m -u -f "{{.Path}} {{.Version}} -> {{if .Update}}{{.Update.Version}}{{else}}none{{end}}" github.com/gin-gonic/gin@v1.8.1)"; cd ..; docker create --name q-gv hello:d >/dev/null; docker cp q-gv:/usr/local/bin/hello-server /tmp/q-gv >/dev/null; docker rm q-gv >/dev/null; echo "Go that built D: $(go version /tmp/q-gv | cut -d" " -f2); latest stable Go today: $(curl -s "https://go.dev/dl/?mode=json" | jq -r ".[0].version")"; rm -f /tmp/q-gv
+# at 15:47:33 in /home/ubuntu/chainguard-technical-challenge
+19 modules compiled into D (go-patched); newer versions today:
+   none
+the same lookup for the Gin in A to C: github.com/gin-gonic/gin v1.8.1 -> v1.12.0
+Go that built D: go1.27.4; latest stable Go today: go1.27.4
+# exit 0
+
+$ kubectl get pods -l app=hello; P=$(kubectl get pods -l app=hello -o jsonpath="{.items[0].metadata.name}"); echo "== delete $P"; S=$(date +%s); kubectl delete pod "$P" --wait=false; sleep 2; kubectl get pods -l app=hello; for i in $(seq 1 45); do [ "$(kubectl get deploy hello -o jsonpath={.status.readyReplicas})" = 2 ] && [ $(kubectl get pods -l app=hello --no-headers | wc -l) = 2 ] && break; sleep 2; done; echo "== two ready pods again, and the old one gone, after $(( $(date +%s) - S )) s"; kubectl get pods -l app=hello -o custom-columns=POD:.metadata.name,READY:.status.containerStatuses[0].ready,CREATED:.metadata.creationTimestamp,IMAGE:.status.containerStatuses[0].imageID | cut -c1-120
+# at 15:47:58 in /home/ubuntu/chainguard-technical-challenge
+NAME                    READY   STATUS    RESTARTS   AGE
+hello-57b4b797b-s86gd   1/1     Running   0          4h8m
+hello-57b4b797b-xqnn9   1/1     Running   0          2m3s
+== delete hello-57b4b797b-s86gd
+pod "hello-57b4b797b-s86gd" deleted from default namespace
+NAME                    READY   STATUS    RESTARTS   AGE
+hello-57b4b797b-skqst   1/1     Running   0          2s
+hello-57b4b797b-xqnn9   1/1     Running   0          2m5s
+== two ready pods again, and the old one gone, after 2 s
+POD                     READY   CREATED                IMAGE
+hello-57b4b797b-skqst   true    2026-11-17T15:47:58Z   192.168.252.2:5000/hello@sha256:c5ce9ddb3a8db38d7ef61bdd6c84905bd
+hello-57b4b797b-xqnn9   true    2026-11-17T15:45:55Z   192.168.252.2:5000/hello@sha256:c5ce9ddb3a8db38d7ef61bdd6c84905bd
+# exit 0
+
+$ kubectl top node; echo; kubectl top pods; echo; echo "D limits per pod: $(kubectl get deploy hello -o jsonpath="{.spec.template.spec.containers[0].resources.limits}")"; echo "(a pod started in the last minute may not be listed yet)"; echo; echo "On the build VM (docker stats):"; docker stats --no-stream --format "   {{.Name}}: {{.CPUPerc}} CPU, {{.MemUsage}}"
+# at 15:48:02 in /home/ubuntu/chainguard-technical-challenge
+NAME   CPU(cores)   CPU(%)   MEMORY(bytes)   MEMORY(%)   
+k3s    112m         5%       2173Mi          73%         
+
+NAME                        CPU(cores)   MEMORY(bytes)   
+hello-57b4b797b-xqnn9       1m           1Mi             
+hello-ai-7849794858-frzfs   2m           56Mi            
+hello-ai-7849794858-xw9sm   3m           41Mi            
+
+D limits per pod: {"cpu":"200m","memory":"64Mi"}
+(a pod started in the last minute may not be listed yet)
+
+On the build VM (docker stats):
+registry: 0.03% CPU, 24.04MiB / 3.81GiB
+# exit 0
+
+$ git add -A && git commit -q -m "Step 34: six more live answers for the console (nginx against Chainguard nginx, Rapid Reset in the Wolfi security feed, whether D modules and Go are current, D logs in the cluster, a pod deleted and replaced, kubectl top), surprise 60, and the step 33 screenshots" && git log --oneline -1 && git show --stat --oneline HEAD | tail -1
+# at 15:49:28 in /home/ubuntu/chainguard-technical-challenge
+976bda8 Step 34: six more live answers for the console (nginx against Chainguard nginx, Rapid Reset in the Wolfi security feed, whether D modules and Go are current, D logs in the cluster, a pod deleted and replaced, kubectl top), surprise 60, and the step 33 screenshots
+ 14 files changed, 333 insertions(+), 12 deletions(-)
+# exit 0
+
+$ git push -q origin main && git log --oneline -1 && git status -sb | head -1
+# at 15:51:01 in /home/ubuntu/chainguard-technical-challenge
+976bda8 Step 34: six more live answers for the console (nginx against Chainguard nginx, Rapid Reset in the Wolfi security feed, whether D modules and Go are current, D logs in the cluster, a pod deleted and replaced, kubectl top), surprise 60, and the step 33 screenshots
+## main...origin/main
+# exit 0

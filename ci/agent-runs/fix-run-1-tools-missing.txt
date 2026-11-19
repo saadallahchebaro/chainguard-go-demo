@@ -1,0 +1,26 @@
+I couldn't make the fix, because neither tool the task depends on is on the build VM. I haven't changed anything in the working tree.
+
+**What the gate reports** (run 43906208662, commit `ae66f6f`):
+- **FAIL base image:** both stages use `FROM python:3.13-slim`. The gate requires `cgr.dev/chainguard/...@sha256:<digest>`.
+- **FAIL base signed:** Chainguard's cosign signature can't be verified on `python:3.13-slim`. This should pass once the first check is fixed.
+- **FAIL scan:** Grype found high or critical vulnerabilities that have fixes. That's probably the Debian slim base, so moving to Chainguard images should fix it, but I can't confirm until the gate runs.
+- **PASS:** pinned deps, cooldown, build and user.
+
+**What blocked me:**
+- `multipass exec chainguard -- dfc --org chainguard - < Dockerfile` failed with `bash: line 1: dfc: command not found` (exit 127).
+- `multipass exec chainguard -- crane digest cgr.dev/chainguard/python:latest` and the same for `:latest-dev` both failed with `crane: command not found`.
+- I tried one command to search the VM for the binaries, and it needed approval that wasn't given.
+
+I didn't write the digests myself or swap in another way of getting them, since you asked for these two tools specifically.
+
+**The planned change, once the tools work:**
+- **Builder stage:** `cgr.dev/chainguard/python:latest-dev@sha256:…`.
+- **Runtime stage:** `cgr.dev/chainguard/python:latest@sha256:…`.
+- **Non-root user:** the runtime image has no shell, so the `RUN groupadd/useradd` line can't run there. I'd drop it and use the image's built-in `nonroot` user, which keeps the user check passing. The `--chown=app:app` on the `COPY` and `USER app` would change to match.
+- **Package path:** I'd check whether dfc changes where the virtualenv lives.
+
+To unblock this, either:
+1. install `dfc` and `crane` on the `chainguard` VM or add them to its `PATH`, or
+2. approve searching the VM for them, e.g. `multipass exec chainguard -- bash -lc 'which crane dfc; ls ~/go/bin /usr/local/bin'`.
+
+Then I'll apply the change and leave it uncommitted.

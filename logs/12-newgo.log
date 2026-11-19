@@ -1,0 +1,63 @@
+
+===== STEP 12-newgo · 2026-11-16T10:40:09Z · chainguard
+
+$ go version && (cd go && CGO_ENABLED=0 go build -o ../hello-server-newgo .); echo "build exit code: $?"; ls -l hello-server-newgo hello-server-b; echo "== go/ untouched?"; git status --short go/ && echo "(no changes in go/)"
+# at 10:40:09 in /home/ubuntu/chainguard-technical-challenge
+go version go1.27.4 linux/arm64
+build exit code: 0
+-rwxr-xr-x 1 ubuntu ubuntu  9761868 Nov 16 13:47 hello-server-b
+-rwxrwxr-x 1 ubuntu ubuntu 11734358 Nov 16 14:40 hello-server-newgo
+== go/ untouched?
+(no changes in go/)
+# exit 0
+
+$ (./hello-server-newgo &) ; sleep 2; echo "== curl:"; curl -s localhost:8080; echo; pkill -f hello-server-newgo; sleep 1; echo "server stopped"
+# at 10:40:12 in /home/ubuntu/chainguard-technical-challenge
+[GIN-debug] [WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.
+
+[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+ - using env:	export GIN_MODE=release
+ - using code:	gin.SetMode(gin.ReleaseMode)
+
+[GIN-debug] GET    /                         --> main.main.func1 (3 handlers)
+[GIN-debug] [WARNING] You trusted all proxies, this is NOT safe. We recommend you to set a value.
+Please check https://pkg.go.dev/github.com/gin-gonic/gin#readme-don-t-trust-all-proxies for details.
+[GIN-debug] Environment variable PORT is undefined. Using port :8080 by default
+[GIN-debug] Listening and serving HTTP on :8080
+== curl:
+[GIN] 2026/11/16 - 14:40:14 | 200 |       15.75µs |             ::1 | GET      "/"
+Hello World!
+server stopped
+# exit 0
+
+$ echo "== which Go built each binary:"; go version hello-server-b hello-server-newgo; echo "== modules compiled in: identical? (dep lines)"; diff <(go version -m hello-server-b | grep -P "^\tdep") <(go version -m hello-server-newgo | grep -P "^\tdep") && echo "identical: same 15 modules, same versions"; grype file:./hello-server-newgo --by-cve -q -o json=reports/after/newgo-binary-grype.json -o table=reports/after/newgo-binary-grype.txt; govulncheck -mode binary ./hello-server-newgo > reports/after/govulncheck-binary-newgo.txt 2>&1; echo "== Grype, unique CVE IDs: Go 1.18 binary (image C) vs Go 1.27.4 binary, same modules"; printf "   go1.18.10: "; bash tools/count.sh reports/after/c-grype.json | grep -E "by layer" ; printf "   go1.27.4:  "; bash tools/count.sh reports/after/newgo-binary-grype.json | grep -E "unique IDs|by layer" | tr -s " " | tr "\n" " "; echo; echo "== govulncheck, binary mode:"; printf "   go1.18.10: "; grep "^Your code is affected" reports/before/govulncheck-binary-b.txt; printf "   go1.27.4:  "; grep "^Your code is affected" reports/after/govulncheck-binary-newgo.txt
+# at 10:40:30 in /home/ubuntu/chainguard-technical-challenge
+== which Go built each binary:
+hello-server-b: go1.18.10
+hello-server-newgo: go1.27.4
+== modules compiled in: identical? (dep lines)
+identical: same 15 modules, same versions
+== Grype, unique CVE IDs: Go 1.18 binary (image C) vs Go 1.27.4 binary, same modules
+   go1.18.10:   by layer:    go-module=17  go-stdlib=60
+   go1.27.4:   unique IDs: 16  by layer: go-module=16 
+== govulncheck, binary mode:
+   go1.18.10: Your code is affected by 62 vulnerabilities from 2 modules and the Go standard library.
+   go1.27.4:  Your code is affected by 11 vulnerabilities from 1 module.
+# exit 0
+
+$ git add -A && git status --short && git commit -q -m "step 12: untouched code builds with Go 1.27.4; compiler alone takes stdlib CVEs 60 to 0" && git push -q origin main && git log --oneline -1 && git status -sb | head -1
+# at 10:41:48 in /home/ubuntu/chainguard-technical-challenge
+M  JOURNAL.md
+M  REPORT.md
+M  RUNBOOK.md
+A  demo/screenshots/12-newgo-build-run.png
+A  demo/screenshots/12-newgo-compare.png
+M  logs/11-image-c.log
+A  logs/12-newgo-mac.log
+A  logs/12-newgo.log
+A  reports/after/govulncheck-binary-newgo.txt
+A  reports/after/newgo-binary-grype.json
+A  reports/after/newgo-binary-grype.txt
+ca39930 step 12: untouched code builds with Go 1.27.4; compiler alone takes stdlib CVEs 60 to 0
+## main...origin/main
+# exit 0

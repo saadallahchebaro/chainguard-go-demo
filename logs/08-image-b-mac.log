@@ -1,0 +1,2 @@
+$ multipass transfer JOURNAL.md RUNBOOK.md REPORT.md, demo/screenshots/08-*.png -> repo (Dockerfile.b-multi and tools/compare.sh copied earlier)
+transferred OK

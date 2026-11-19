@@ -1,0 +1,22 @@
+
+===== STEP 05-versions · 2026-11-16T09:15:46Z · chainguard
+
+$ cat tools/versions.sh | head -3 && bash tools/versions.sh
+# at 09:15:46 in /home/ubuntu/chainguard-technical-challenge
+#!/bin/bash
+# tools/versions.sh: one line per tool with its version, for REPORT.md section 2 and the scan method.
+# Run on the build VM:  bash tools/versions.sh
+ubuntu       24.04.5 LTS (Noble Numbat)
+kernel       6.8.0-147-generic (aarch64)
+docker       29.9.3
+containerd   v2.4.2
+buildx       v0.39.0
+go           go1.27.4
+grype        0.121.3
+syft         1.57.1
+trivy        0.76.2
+govulncheck  v1.9.0
+cosign       v3.1.4
+crane        v0.22.1
+kubectl      v1.37.2
+# exit 0

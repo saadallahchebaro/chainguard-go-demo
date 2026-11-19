@@ -1,0 +1,5 @@
+📦 Supply Chain Security Related artifacts for an image: localhost:5000/hello@sha256:c5ce9ddb3a8db38d7ef61bdd6c84905bd1d3e7ef61a3c51bbd0d6d7aa7270a08
+└── 🔗 https://spdx.dev/Document artifacts via OCI referrer: localhost:5000/hello@sha256:db87215bd550c9171ed04514fa85af4c219b9521f33828292d2f47b7d58c563e
+   └── 🍒 sha256:d38b00e9019ad37a04e7a7f58129e4920b902d7b6b5e7b0bddad4b7a9fe4d5f9
+└── 🔗 https://sigstore.dev/cosign/sign/v1 artifacts via OCI referrer: localhost:5000/hello@sha256:b413e1c99dcfcd313a009ecb8d6a15ac6ad98489a81d91b80c246438861f5db3
+   └── 🍒 sha256:989ca571f43a706668adf58f24cb297d47eb3488379f6209f26b0e130578d227

@@ -1,0 +1,127 @@
+
+===== STEP 19-deploy · 2026-11-16T14:59:07Z · chainguard
+
+$ echo "== 1. the cluster validates the manifests (server-side dry run, nothing created):"; kubectl apply --dry-run=server -f k8s/ | sed "s/^/   /"; echo "== 2. enforce the restricted Pod Security level on the default namespace:"; kubectl label namespace default pod-security.kubernetes.io/enforce=restricted pod-security.kubernetes.io/warn=restricted | sed "s/^/   /"; kubectl get ns default -L pod-security.kubernetes.io/enforce | sed "s/^/   /"; echo "== 3. negative test: the same image, with none of the security settings:"; kubectl run bad --image=192.168.252.2:5000/hello@sha256:c5ce9ddb3a8db38d7ef61bdd6c84905bd1d3e7ef61a3c51bbd0d6d7aa7270a08 --restart=Never 2>&1 | fold -s -w 150 | sed "s/^/   /"; echo "   pods named bad: $(kubectl get pod bad --no-headers 2>/dev/null | wc -l)"
+# at 14:59:07 in /home/ubuntu/chainguard-technical-challenge
+== 1. the cluster validates the manifests (server-side dry run, nothing created):
+   deployment.apps/hello created (server dry run)
+   service/hello created (server dry run)
+== 2. enforce the restricted Pod Security level on the default namespace:
+   namespace/default labeled
+   NAME      STATUS   AGE     ENFORCE
+   default   Active   3m18s   restricted
+== 3. negative test: the same image, with none of the security settings:
+   Error from server (Forbidden): pods "bad" is forbidden: violates PodSecurity "restricted:latest": allowPrivilegeEscalation != false (container "bad" 
+   must set securityContext.allowPrivilegeEscalation=false), unrestricted capabilities (container "bad" must set 
+   securityContext.capabilities.drop=["ALL"]), runAsNonRoot != true (pod or container "bad" must set securityContext.runAsNonRoot=true), seccompProfile 
+   (pod or container "bad" must set securityContext.seccompProfile.type to "RuntimeDefault" or "Localhost")
+   pods named bad: 0
+# exit 0
+
+$ kubectl apply -f k8s/ 2>&1 | sed "s/^/   /"; kubectl rollout status deployment/hello --timeout=120s 2>&1 | sed "s/^/   /"; echo "== deployment and service:"; kubectl get deploy,svc -l app=hello | sed "s/^/   /"; echo "== pods:"; kubectl get pods -l app=hello -o custom-columns=NAME:.metadata.name,PHASE:.status.phase,READY:.status.containerStatuses[0].ready,RESTARTS:.status.containerStatuses[0].restartCount,NODE:.spec.nodeName,POD_IP:.status.podIP | sed "s/^/   /"; echo "== the image each pod runs, as the node resolved it:"; kubectl get pods -l app=hello -o jsonpath="{range .items[*]}   {.metadata.name}  {.status.containerStatuses[0].imageID}{\"\n\"}{end}"; echo "== the digest that was scanned and signed: sha256:c5ce9ddb3a8db38d7ef61bdd6c84905bd1d3e7ef61a3c51bbd0d6d7aa7270a08"
+# at 14:59:27 in /home/ubuntu/chainguard-technical-challenge
+   deployment.apps/hello created
+   service/hello created
+   Waiting for deployment "hello" rollout to finish: 0 of 2 updated replicas are available...
+   Waiting for deployment "hello" rollout to finish: 1 of 2 updated replicas are available...
+   deployment "hello" successfully rolled out
+== deployment and service:
+   NAME                    READY   UP-TO-DATE   AVAILABLE   AGE
+   deployment.apps/hello   2/2     2            2           0s
+   
+   NAME            TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)    AGE
+   service/hello   ClusterIP   10.43.189.153   <none>        8080/TCP   0s
+== pods:
+   NAME                    PHASE     READY   RESTARTS   NODE   POD_IP
+   hello-57b4b797b-gbnvr   Running   true    0          k3s    10.42.0.11
+   hello-57b4b797b-q2qrb   Running   true    0          k3s    10.42.0.10
+== the image each pod runs, as the node resolved it:
+   hello-57b4b797b-gbnvr  192.168.252.2:5000/hello@sha256:c5ce9ddb3a8db38d7ef61bdd6c84905bd1d3e7ef61a3c51bbd0d6d7aa7270a08
+   hello-57b4b797b-q2qrb  192.168.252.2:5000/hello@sha256:c5ce9ddb3a8db38d7ef61bdd6c84905bd1d3e7ef61a3c51bbd0d6d7aa7270a08
+== the digest that was scanned and signed: sha256:c5ce9ddb3a8db38d7ef61bdd6c84905bd1d3e7ef61a3c51bbd0d6d7aa7270a08
+# exit 0
+
+$ (kubectl port-forward svc/hello 8085:8080 > /tmp/pf.log 2>&1 &); sleep 2; echo "== 1. curl through kubectl port-forward to the Service:"; echo "   $(curl -s localhost:8085)"; pkill -f "port-forward svc/hello"; P=$(kubectl get pods -l app=hello -o name | head -1); echo "== 2. a shell inside ${P#pod/}?"; kubectl exec $P -- sh -c "echo shell" 2>&1 | tail -2 | sed "s/^/   /"; echo "== the app log of ${P#pod/}, last 3 lines (release mode: request lines only; kube-probe = the health checks):"; kubectl logs $P --tail=3 | sed "s/^/   /"; echo "== 3. self-healing: delete ${P#pod/}, wait 8 s:"; kubectl delete $P --wait=false | sed "s/^/   /"; sleep 8; kubectl get pods -l app=hello | sed "s/^/   /"
+# at 14:59:45 in /home/ubuntu/chainguard-technical-challenge
+== 1. curl through kubectl port-forward to the Service:
+   Hello World!
+== 2. a shell inside hello-57b4b797b-gbnvr?
+   error: Internal error occurred: Internal error occurred: error executing command in container: failed to exec in container: failed to start exec "0352f52a13854ea9b68429fdcc4d80e3fdcb0f49e54ba8530354249e8ffb288e": OCI runtime exec failed: exec failed: unable to start container process: exec: "sh": executable file not found in $PATH
+== the app log of hello-57b4b797b-gbnvr, last 3 lines (release mode: request lines only; kube-probe = the health checks):
+   [GIN] 2026/11/16 - 14:59:47 | 200 | 27.333µs |       10.42.0.1 | GET      "/"
+   [GIN] 2026/11/16 - 14:59:47 | 200 |   13.5µs |       10.42.0.1 | GET      "/"
+   [GIN] 2026/11/16 - 14:59:47 | 200 | 12.333µs |       127.0.0.1 | GET      "/"
+== 3. self-healing: delete hello-57b4b797b-gbnvr, wait 8 s:
+   pod "hello-57b4b797b-gbnvr" deleted from default namespace
+   NAME                    READY   STATUS    RESTARTS   AGE
+   hello-57b4b797b-mg7q4   1/1     Running   0          8s
+   hello-57b4b797b-q2qrb   1/1     Running   0          28s
+# exit 0
+
+$ (kubectl port-forward svc/hello 8085:8080 > /tmp/pf.log 2>&1 &); sleep 2; echo "== 1. curl through kubectl port-forward to the Service: $(curl -s localhost:8085)"; sleep 1; pkill -f "port-forward svc/hello"; P=$(kubectl get pods -l app=hello -o name | head -1); echo "== 2. a shell inside ${P#pod/}?"; kubectl exec $P -- sh -c "echo shell" 2>&1 | grep -o "exec: \"sh\": executable file not found in \$PATH" | sed "s/^/   /"; echo "== app log, last 3 lines of each pod (release mode: request lines only)"; echo "   source 10.42.0.1 = the node: the kubelet health probes; 127.0.0.1 = the port-forward, which connects inside the pod"; for p in $(kubectl get pods -l app=hello -o name); do kubectl logs $p --tail=3 | sed "s|^|   ${p#pod/}  |"; done; echo "== 3. after deleting one pod, the Deployment replaced it:"; kubectl get pods -l app=hello | sed "s/^/   /"
+# at 15:00:14 in /home/ubuntu/chainguard-technical-challenge
+== 1. curl through kubectl port-forward to the Service: Hello World!
+== 2. a shell inside hello-57b4b797b-mg7q4?
+   exec: "sh": executable file not found in $PATH
+== app log, last 3 lines of each pod (release mode: request lines only)
+   source 10.42.0.1 = the node: the kubelet health probes; 127.0.0.1 = the port-forward, which connects inside the pod
+   hello-57b4b797b-mg7q4  [GIN] 2026/11/16 - 14:59:57 | 200 | 51.374µs |       10.42.0.1 | GET      "/"
+   hello-57b4b797b-mg7q4  [GIN] 2026/11/16 - 15:00:07 | 200 |  64.25µs |       10.42.0.1 | GET      "/"
+   hello-57b4b797b-mg7q4  [GIN] 2026/11/16 - 15:00:07 | 200 | 37.667µs |       10.42.0.1 | GET      "/"
+   hello-57b4b797b-q2qrb  [GIN] 2026/11/16 - 15:00:16 | 200 | 40.416µs |       127.0.0.1 | GET      "/"
+   hello-57b4b797b-q2qrb  [GIN] 2026/11/16 - 15:00:17 | 200 |  32.25µs |       10.42.0.1 | GET      "/"
+   hello-57b4b797b-q2qrb  [GIN] 2026/11/16 - 15:00:17 | 200 | 41.458µs |       10.42.0.1 | GET      "/"
+== 3. after deleting one pod, the Deployment replaced it:
+   NAME                    READY   STATUS    RESTARTS   AGE
+   hello-57b4b797b-mg7q4   1/1     Running   0          30s
+   hello-57b4b797b-q2qrb   1/1     Running   0          50s
+# exit 0
+
+$ echo "== on the k3s node (logs/19-deploy-mac.log): the app processes, and what the container runtime applied to each pod"; grep -A3 "ps -o uid" logs/19-deploy-mac.log | tail -3 | sed "s/^/   /"; grep "^{\"container" logs/19-deploy-mac.log | jq -r "\"   \" + .pod + \": user \" + .user + \", read-only root \" + (.readonly_root|tostring) + \", no_new_privileges \" + (.no_new_privileges|tostring) + \", capabilities \" + (if .capabilities_bounding == null then \"none\" else (.capabilities_bounding|tostring) end) + \", seccomp default \" + .seccomp + \", memory \" + ((.memory_limit/1048576)|tostring) + \" MiB, cpu \" + ((.cpu_quota/100)|tostring) + \"m\""; echo "== declared in k8s/deployment.yaml:"; grep -E "runAs|seccomp|type: Runtime|allowPrivilegeEscalation|readOnlyRootFilesystem|drop:|limits:|automount" k8s/deployment.yaml | sed "s/#.*//; s/^ */   /"
+# at 15:00:45 in /home/ubuntu/chainguard-technical-challenge
+== on the k3s node (logs/19-deploy-mac.log): the app processes, and what the container runtime applied to each pod
+     UID   GID COMMAND
+   65532 65532 /usr/local/bin/hello-server
+   65532 65532 /usr/local/bin/hello-server
+   hello-57b4b797b-mg7q4: user 65532:65532, read-only root true, no_new_privileges true, capabilities none, seccomp default SCMP_ACT_ERRNO, memory 64 MiB, cpu 200m
+   hello-57b4b797b-q2qrb: user 65532:65532, read-only root true, no_new_privileges true, capabilities none, seccomp default SCMP_ACT_ERRNO, memory 64 MiB, cpu 200m
+== declared in k8s/deployment.yaml:
+   automountServiceAccountToken: false
+   runAsNonRoot: true          
+   runAsUser: 65532
+   runAsGroup: 65532
+   seccompProfile:
+   type: RuntimeDefault      
+   allowPrivilegeEscalation: false
+   readOnlyRootFilesystem: true
+   drop: ["ALL"]
+   limits: { cpu: 200m, memory: 64Mi }
+# exit 0
+
+$ C=$(crane digest localhost:5000/hello:c); echo "== image C (never signed): cosign says"; cosign verify --key cosign.pub --insecure-ignore-tlog=true localhost:5000/hello@$C 2>&1 | grep -o "no signatures found" | head -1 | sed "s/^/   /"; echo "== deploy C anyway: the same manifest, renamed hello-c, image C by digest"; sed -e "s/^  name: hello$/  name: hello-c/" -e "s/app: hello$/app: hello-c/" -e "s|hello@sha256:[0-9a-f]*|hello@$C|" k8s/deployment.yaml | kubectl apply -f - | sed "s/^/   /"; kubectl rollout status deployment/hello-c --timeout=90s | tail -1 | sed "s/^/   /"; kubectl get pods -l app=hello-c -o custom-columns=NAME:.metadata.name,PHASE:.status.phase,READY:.status.containerStatuses[0].ready,IMAGE:.status.containerStatuses[0].imageID | sed "s/^/   /"; echo "== nothing in the cluster checked a signature. Removing hello-c:"; kubectl delete deployment hello-c | sed "s/^/   /"
+# at 15:01:04 in /home/ubuntu/chainguard-technical-challenge
+== image C (never signed): cosign says
+   no signatures found
+== deploy C anyway: the same manifest, renamed hello-c, image C by digest
+   deployment.apps/hello-c created
+   deployment "hello-c" successfully rolled out
+   NAME                       PHASE     READY   IMAGE
+   hello-c-5f588b457b-9tpzd   Running   true    192.168.252.2:5000/hello@sha256:4f75bad2bb90574ba25582652a5336cf4b67d9a56353fc2b9f3cc7dc51a23141
+   hello-c-5f588b457b-cbjb7   Running   true    192.168.252.2:5000/hello@sha256:4f75bad2bb90574ba25582652a5336cf4b67d9a56353fc2b9f3cc7dc51a23141
+== nothing in the cluster checked a signature. Removing hello-c:
+   deployment.apps "hello-c" deleted from default namespace
+# exit 0
+
+$ git add -A && git status --short | wc -l && git commit -q -m "step 19: image D on k3s by its signed digest under restricted Pod Security; runtime settings checked on the node; unsigned C shown to run too" && git push -q origin main && git log --oneline -1 && git status -sb | head -1
+# at 15:02:05 in /home/ubuntu/chainguard-technical-challenge
+14
+1bf8218 step 19: image D on k3s by its signed digest under restricted Pod Security; runtime settings checked on the node; unsigned C shown to run too
+## main...origin/main
+# exit 0
+
+$ git add -A && git commit -q -m "checkpoint 5: Kubernetes bonus done; journal records the guide corrections for steps 18 and 19" && git push -q origin main && git log --oneline -2 && git status -sb | head -1
+# at 15:03:12 in /home/ubuntu/chainguard-technical-challenge
+a3187c0 checkpoint 5: Kubernetes bonus done; journal records the guide corrections for steps 18 and 19
+1bf8218 step 19: image D on k3s by its signed digest under restricted Pod Security; runtime settings checked on the node; unsigned C shown to run too
+## main...origin/main
+# exit 0

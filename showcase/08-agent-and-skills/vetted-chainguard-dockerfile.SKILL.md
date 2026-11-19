@@ -1,0 +1,1 @@
+../../ci/skills/vetted/chainguard-dockerfile/SKILL.md

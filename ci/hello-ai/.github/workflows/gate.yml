@@ -1,0 +1,17 @@
+# Runs the gate on every pull request, on the self-hosted runner on the build VM.
+name: gate
+on:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  gate:
+    runs-on: [self-hosted, lab]
+    steps:
+      # Pinned by commit, not by tag: a tag can be moved (the trivy-action lesson). This commit is v7.0.1.
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}   # check the pull request's own commit
+      - run: ./gate.sh
+      - if: always()
+        run: cat verdict.json >> "$GITHUB_STEP_SUMMARY"

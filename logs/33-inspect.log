@@ -1,0 +1,349 @@
+
+===== STEP 33-inspect · 2026-11-17T15:20:52Z · chainguard
+
+$ docker run -d --rm --name q-insp-d hello:d >/dev/null && sleep 1; docker inspect q-insp-d | jq ".[0] | {Image: .Image[0:19], State: .State.Status, User: .Config.User, Privileged: .HostConfig.Privileged, CapAdd: .HostConfig.CapAdd, CapDrop: .HostConfig.CapDrop, ReadonlyRootfs: .HostConfig.ReadonlyRootfs, SecurityOpt: .HostConfig.SecurityOpt}"; PID=$(docker inspect -f "{{.State.Pid}}" q-insp-d); echo "the process, seen from the VM: $(ps -o user=,pid=,comm= -p $PID)"; grep -E "^(Uid|Gid|CapEff|CapBnd|NoNewPrivs|Seccomp):" /proc/$PID/status; docker stop q-insp-d >/dev/null
+# at 15:20:53 in /home/ubuntu/chainguard-technical-challenge
+{
+  "Image": "sha256:c5ce9ddb3a8d",
+  "State": "running",
+  "User": "65532",
+  "Privileged": false,
+  "CapAdd": null,
+  "CapDrop": null,
+  "ReadonlyRootfs": false,
+  "SecurityOpt": null
+}
+the process, seen from the VM: 65532     370967 hello-server
+Uid:	65532	65532	65532	65532
+Gid:	65532	65532	65532	65532
+CapEff:	0000000000000000
+CapBnd:	00000000a80425fb
+NoNewPrivs:	0
+Seccomp:	2
+# exit 0
+
+$ docker image inspect hello:d
+# at 15:21:18 in /home/ubuntu/chainguard-technical-challenge
+[
+    {
+        "Id": "sha256:c5ce9ddb3a8db38d7ef61bdd6c84905bd1d3e7ef61a3c51bbd0d6d7aa7270a08",
+        "RepoTags": [
+            "hello:d",
+            "localhost:5000/hello:d",
+            "localhost:5000/hello@sha256:c5ce9ddb3a8db38d7ef61bdd6c84905bd1d3e7ef61a3c51bbd0d6d7aa7270a08"
+        ],
+        "RepoDigests": [
+            "hello@sha256:c5ce9ddb3a8db38d7ef61bdd6c84905bd1d3e7ef61a3c51bbd0d6d7aa7270a08",
+            "localhost:5000/hello@sha256:c5ce9ddb3a8db38d7ef61bdd6c84905bd1d3e7ef61a3c51bbd0d6d7aa7270a08"
+        ],
+        "Comment": "buildkit.dockerfile.v0",
+        "Created": "2026-11-16T17:28:09.386847493+04:00",
+        "Author": "github.com/chainguard-dev/apko",
+        "Config": {
+            "User": "65532",
+            "ExposedPorts": {
+                "8080/tcp": {}
+            },
+            "Env": [
+                "PATH=/usr/local/sbin:/usr/local/bin:/usr/bin:/usr/sbin:/sbin:/bin",
+                "SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt",
+                "GIN_MODE=release"
+            ],
+            "Entrypoint": [
+                "/usr/local/bin/hello-server"
+            ],
+            "Labels": {
+                "dev.chainguard.image.title": "static",
+                "dev.chainguard.package.main": "",
+                "org.opencontainers.image.authors": "Chainguard Team https://www.chainguard.dev/",
+                "org.opencontainers.image.created": "2026-10-28T20:49:35Z",
+                "org.opencontainers.image.source": "https://github.com/chainguard-images/images/tree/main/images/static",
+                "org.opencontainers.image.title": "static",
+                "org.opencontainers.image.url": "https://images.chainguard.dev/directory/image/static/overview",
+                "org.opencontainers.image.vendor": "Chainguard"
+            }
+        },
+        "Architecture": "arm64",
+        "Os": "linux",
+        "Size": 34881576,
+        "RootFS": {
+            "Type": "layers",
+            "Layers": [
+                "sha256:05fb9c1b13dffae09ac8270b0381320b8faddb56a5003097fa4d26045316eadf",
+                "sha256:87b128cd3cfbcc7094cd3dbc6c176145ddf39bcf3a482363806aa4f773237fc6"
+            ]
+        },
+        "Metadata": {
+            "LastTagTime": "2026-11-17T07:37:16.323004996Z"
+        },
+        "Descriptor": {
+            "mediaType": "application/vnd.oci.image.index.v1+json",
+            "digest": "sha256:c5ce9ddb3a8db38d7ef61bdd6c84905bd1d3e7ef61a3c51bbd0d6d7aa7270a08",
+            "size": 855
+        },
+        "Identity": {
+            "Pull": [
+                {
+                    "Repository": "localhost/hello"
+                }
+            ],
+            "Build": [
+                {
+                    "Ref": "mr94eknd24cqfp9uiimgma1ga",
+                    "CreatedAt": "2026-11-16T17:28:09.819582884+04:00"
+                }
+            ]
+        }
+    }
+]
+# exit 0
+
+$ S=$(grep -o "cgr.dev/chainguard/static@sha256:[0-9a-f]*" dockerfiles/Dockerfile.d); echo "== the runtime base in Dockerfile.d: ${S:0:52}…"; crane config --platform linux/arm64 $S | jq -c "{author, title: .config.Labels[\"org.opencontainers.image.title\"], labels: (.config.Labels | length)}"; echo "== image D:"; docker image inspect hello:d | jq -c ".[0] | {author: .Author, title: .Config.Labels[\"org.opencontainers.image.title\"], labels: (.Config.Labels | length)}"; grep -c -i -E "^LABEL|^MAINTAINER" dockerfiles/Dockerfile.d
+# at 15:21:19 in /home/ubuntu/chainguard-technical-challenge
+grep: dockerfiles/Dockerfile.d: No such file or directory
+== the runtime base in Dockerfile.d: …
+Error: accepts 1 arg(s), received 0
+== image D:
+{"author":"github.com/chainguard-dev/apko","title":"static","labels":8}
+grep: dockerfiles/Dockerfile.d: No such file or directory
+# exit 2
+
+$ S=$(grep -o "cgr.dev/chainguard/static[^ ]*@sha256:[0-9a-f]*" dockerfiles/Dockerfile.d-patched); echo "== the runtime base in Dockerfile.d-patched: ${S:0:59}…"; crane config --platform linux/arm64 $S | jq -c "{author, title: .config.Labels[\"org.opencontainers.image.title\"], labels: (.config.Labels | length)}"; echo "== image D:"; docker image inspect hello:d | jq -c ".[0] | {author: .Author, title: .Config.Labels[\"org.opencontainers.image.title\"], labels: (.Config.Labels | length)}"; echo "== LABEL or MAINTAINER lines in Dockerfile.d-patched: $(grep -c -i -E "^(LABEL|MAINTAINER)" dockerfiles/Dockerfile.d-patched)"
+# at 15:21:32 in /home/ubuntu/chainguard-technical-challenge
+== the runtime base in Dockerfile.d-patched: cgr.dev/chainguard/static:latest@sha256:fc42af33e643f20d08b…
+{"author":"github.com/chainguard-dev/apko","title":"static","labels":8}
+== image D:
+{"author":"github.com/chainguard-dev/apko","title":"static","labels":8}
+== LABEL or MAINTAINER lines in Dockerfile.d-patched: 0
+# exit 0
+
+$ P=$(kubectl get pods -l app=hello -o jsonpath="{.items[0].metadata.name}"); kubectl describe pod "$P"
+# at 15:21:46 in /home/ubuntu/chainguard-technical-challenge
+Name:             hello-57b4b797b-mjvbg
+Namespace:        default
+Priority:         0
+Service Account:  default
+Node:             k3s/192.168.252.3
+Start Time:       Tue, 17 Nov 2026 15:41:02 +0400
+Labels:           app=hello
+                  pod-template-hash=57b4b797b
+Annotations:      <none>
+Status:           Running
+SeccompProfile:   RuntimeDefault
+IP:               10.42.0.36
+IPs:
+  IP:           10.42.0.36
+Controlled By:  ReplicaSet/hello-57b4b797b
+Containers:
+  hello:
+    Container ID:   containerd://f72772369f1d53e9331155a0aeb4679c78aab32a48e2f837e62cca950d5fe87d
+    Image:          192.168.252.2:5000/hello@sha256:c5ce9ddb3a8db38d7ef61bdd6c84905bd1d3e7ef61a3c51bbd0d6d7aa7270a08
+    Image ID:       192.168.252.2:5000/hello@sha256:c5ce9ddb3a8db38d7ef61bdd6c84905bd1d3e7ef61a3c51bbd0d6d7aa7270a08
+    Port:           8080/TCP
+    Host Port:      0/TCP
+    State:          Running
+      Started:      Tue, 17 Nov 2026 15:41:02 +0400
+    Ready:          True
+    Restart Count:  0
+    Limits:
+      cpu:     200m
+      memory:  64Mi
+    Requests:
+      cpu:        50m
+      memory:     32Mi
+    Liveness:     http-get http://:8080/ delay=0s timeout=1s period=10s successThreshold=1 failureThreshold=3
+    Readiness:    http-get http://:8080/ delay=0s timeout=1s period=10s successThreshold=1 failureThreshold=3
+    Environment:  <none>
+    Mounts:       <none>
+Conditions:
+  Type                        Status
+  PodReadyToStartContainers   True 
+  Initialized                 True 
+  Ready                       True 
+  ContainersReady             True 
+  PodScheduled                True 
+Volumes:                      <none>
+QoS Class:                    Burstable
+Node-Selectors:               <none>
+Tolerations:                  node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
+                              node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
+Events:                       <none>
+# exit 0
+
+$ kubectl get deploy hello -o yaml | sed -E "/last-applied-configuration/{n;s/^( +).*/\\1(the file as last applied, one line of JSON: left out here)/}"
+# at 15:21:53 in /home/ubuntu/chainguard-technical-challenge
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    deployment.kubernetes.io/revision: "1"
+    kubectl.kubernetes.io/last-applied-configuration: |
+      (the file as last applied, one line of JSON: left out here)
+  creationTimestamp: "2026-11-16T14:59:27Z"
+  generation: 1
+  labels:
+    app: hello
+  name: hello
+  namespace: default
+  resourceVersion: "99018"
+  uid: f3184ad9-c47b-40b1-ab66-a639d0ec1c59
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 2
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: hello
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: hello
+    spec:
+      automountServiceAccountToken: false
+      containers:
+      - image: 192.168.252.2:5000/hello@sha256:c5ce9ddb3a8db38d7ef61bdd6c84905bd1d3e7ef61a3c51bbd0d6d7aa7270a08
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /
+            port: 8080
+            scheme: HTTP
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 1
+        name: hello
+        ports:
+        - containerPort: 8080
+          protocol: TCP
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /
+            port: 8080
+            scheme: HTTP
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 1
+        resources:
+          limits:
+            cpu: 200m
+            memory: 64Mi
+          requests:
+            cpu: 50m
+            memory: 32Mi
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          readOnlyRootFilesystem: true
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext:
+        runAsGroup: 65532
+        runAsNonRoot: true
+        runAsUser: 65532
+        seccompProfile:
+          type: RuntimeDefault
+      terminationGracePeriodSeconds: 30
+status:
+  availableReplicas: 2
+  conditions:
+  - lastTransitionTime: "2026-11-16T14:59:27Z"
+    lastUpdateTime: "2026-11-16T14:59:27Z"
+    message: ReplicaSet "hello-57b4b797b" has successfully progressed.
+    reason: NewReplicaSetAvailable
+    status: "True"
+    type: Progressing
+  - lastTransitionTime: "2026-11-17T11:41:02Z"
+    lastUpdateTime: "2026-11-17T11:41:02Z"
+    message: Deployment has minimum availability.
+    reason: MinimumReplicasAvailable
+    status: "True"
+    type: Available
+  observedGeneration: 1
+  readyReplicas: 2
+  replicas: 2
+  terminatingReplicas: 0
+  updatedReplicas: 2
+# exit 0
+
+$ git add -A && git commit -q -m "Step 33: inspect and describe answers for the console (docker image inspect of D in full, a running D container and its process status, kubectl describe of a D pod, the live Deployment as YAML), Docker defaults against the k3s pods, surprise 59 and finding F33 on labels D inherits from its base" && git log --oneline -1 && git show --stat --oneline HEAD | tail -1
+# at 15:27:42 in /home/ubuntu/chainguard-technical-challenge
+e2b3d65 Step 33: inspect and describe answers for the console (docker image inspect of D in full, a running D container and its process status, kubectl describe of a D pod, the live Deployment as YAML), Docker defaults against the k3s pods, surprise 59 and finding F33 on labels D inherits from its base
+ 8 files changed, 392 insertions(+), 6 deletions(-)
+# exit 0
+
+$ git push -q origin main && git log --oneline -1 && git status -sb | head -1
+# at 15:27:48 in /home/ubuntu/chainguard-technical-challenge
+e2b3d65 Step 33: inspect and describe answers for the console (docker image inspect of D in full, a running D container and its process status, kubectl describe of a D pod, the live Deployment as YAML), Docker defaults against the k3s pods, surprise 59 and finding F33 on labels D inherits from its base
+## main...origin/main
+# exit 0
+
+$ docker run -d --rm --name q-insp-d hello:d >/dev/null && sleep 1; docker inspect q-insp-d | jq ".[0] | {Image: .Image[0:19], State: .State.Status, User: .Config.User, Privileged: .HostConfig.Privileged, CapAdd: .HostConfig.CapAdd, CapDrop: .HostConfig.CapDrop, ReadonlyRootfs: .HostConfig.ReadonlyRootfs, SecurityOpt: .HostConfig.SecurityOpt}"; PID=$(docker inspect -f "{{.State.Pid}}" q-insp-d); echo "the process, seen from the VM: $(ps -o user=,pid=,comm= -p $PID)"; grep -E "^(Uid|Gid|CapEff|CapBnd|NoNewPrivs|Seccomp):" /proc/$PID/status; docker stop q-insp-d >/dev/null
+# at 15:33:31 in /home/ubuntu/chainguard-technical-challenge
+{
+  "Image": "sha256:c5ce9ddb3a8d",
+  "State": "running",
+  "User": "65532",
+  "Privileged": false,
+  "CapAdd": null,
+  "CapDrop": null,
+  "ReadonlyRootfs": false,
+  "SecurityOpt": null
+}
+the process, seen from the VM: 65532     378013 hello-server
+Uid:	65532	65532	65532	65532
+Gid:	65532	65532	65532	65532
+CapEff:	0000000000000000
+CapBnd:	00000000a80425fb
+NoNewPrivs:	0
+Seccomp:	2
+# exit 0
+
+$ S=$(grep -o "cgr.dev/chainguard/static[^ ]*@sha256:[0-9a-f]*" dockerfiles/Dockerfile.d-patched); echo "== the runtime base in Dockerfile.d-patched: ${S:0:59}…"; crane config --platform linux/arm64 $S | jq -c "{author, title: .config.Labels[\"org.opencontainers.image.title\"], labels: (.config.Labels | length)}"; echo "== image D:"; docker image inspect hello:d | jq -c ".[0] | {author: .Author, title: .Config.Labels[\"org.opencontainers.image.title\"], labels: (.Config.Labels | length)}"; echo "== LABEL or MAINTAINER lines in Dockerfile.d-patched: $(grep -c -i -E "^(LABEL|MAINTAINER)" dockerfiles/Dockerfile.d-patched)"; echo "== D: built, and the created label it carries"; docker image inspect hello:d | jq -r ".[0] | \"   Created: \" + .Created + \"\\n   label org.opencontainers.image.created: \" + .Config.Labels[\"org.opencontainers.image.created\"]"
+# at 15:33:47 in /home/ubuntu/chainguard-technical-challenge
+== the runtime base in Dockerfile.d-patched: cgr.dev/chainguard/static:latest@sha256:fc42af33e643f20d08b…
+{"author":"github.com/chainguard-dev/apko","title":"static","labels":8}
+== image D:
+{"author":"github.com/chainguard-dev/apko","title":"static","labels":8}
+== LABEL or MAINTAINER lines in Dockerfile.d-patched: 0
+== D: built, and the created label it carries
+   Created: 2026-11-16T17:28:09.386847493+04:00
+   label org.opencontainers.image.created: 2026-10-28T20:49:35Z
+# exit 0
+
+$ P=$(kubectl get pods -l app=hello -o jsonpath="{.items[0].metadata.name}"); echo "== kubectl describe pod $P (key lines)"; kubectl describe pod "$P" | grep -E "^(Name|Node|Status|SeccompProfile|QoS Class|Events):|Image ID:|Mounts:|Restart Count:|Liveness:|Readiness:"; echo "== kubectl get deploy hello -o yaml: what the cluster filled in"; kubectl get deploy hello -o yaml | grep -E "revision:|^  generation:|maxSurge|maxUnavailable|progressDeadlineSeconds|revisionHistoryLimit|restartPolicy|terminationGracePeriodSeconds|  type: RollingUpdate"
+# at 15:34:03 in /home/ubuntu/chainguard-technical-challenge
+== kubectl describe pod hello-57b4b797b-mjvbg (key lines)
+Name:             hello-57b4b797b-mjvbg
+Node:             k3s/192.168.252.3
+Status:           Running
+SeccompProfile:   RuntimeDefault
+    Image ID:       192.168.252.2:5000/hello@sha256:c5ce9ddb3a8db38d7ef61bdd6c84905bd1d3e7ef61a3c51bbd0d6d7aa7270a08
+    Restart Count:  0
+    Liveness:     http-get http://:8080/ delay=0s timeout=1s period=10s successThreshold=1 failureThreshold=3
+    Readiness:    http-get http://:8080/ delay=0s timeout=1s period=10s successThreshold=1 failureThreshold=3
+    Mounts:       <none>
+QoS Class:                    Burstable
+Events:                       <none>
+== kubectl get deploy hello -o yaml: what the cluster filled in
+    deployment.kubernetes.io/revision: "1"
+  generation: 1
+  progressDeadlineSeconds: 600
+  revisionHistoryLimit: 10
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+# exit 0

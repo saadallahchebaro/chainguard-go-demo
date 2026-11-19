@@ -1,0 +1,130 @@
+$ multipass launch 24.04 --name chainguard --cpus 4 --memory 4G --disk 30G
+[2K[0A[0ECreating chainguard in zone1  /-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\| [2K[0A[0E
+Retrieving image: 0%
+Retrieving image: 1%
+Retrieving image: 2%
+Retrieving image: 3%
+Retrieving image: 4%
+Retrieving image: 5%
+Retrieving image: 6%
+Retrieving image: 7%
+Retrieving image: 8%
+Retrieving image: 9%
+Retrieving image: 10%
+Retrieving image: 11%
+Retrieving image: 12%
+Retrieving image: 13%
+Retrieving image: 14%
+Retrieving image: 15%
+Retrieving image: 16%
+Retrieving image: 17%
+Retrieving image: 18%
+Retrieving image: 19%
+Retrieving image: 20%
+Retrieving image: 21%
+Retrieving image: 22%
+Retrieving image: 23%
+Retrieving image: 24%
+Retrieving image: 25%
+Retrieving image: 26%
+Retrieving image: 27%
+Retrieving image: 28%
+Retrieving image: 29%
+Retrieving image: 30%
+Retrieving image: 31%
+Retrieving image: 32%
+Retrieving image: 33%
+Retrieving image: 34%
+Retrieving image: 35%
+Retrieving image: 36%
+Retrieving image: 37%
+Retrieving image: 38%
+Retrieving image: 39%
+Retrieving image: 40%
+Retrieving image: 41%
+Retrieving image: 42%
+Retrieving image: 43%
+Retrieving image: 44%
+Retrieving image: 45%
+Retrieving image: 46%
+Retrieving image: 47%
+Retrieving image: 48%
+Retrieving image: 49%
+Retrieving image: 50%
+Retrieving image: 51%
+Retrieving image: 52%
+Retrieving image: 53%
+Retrieving image: 54%
+Retrieving image: 55%
+Retrieving image: 56%
+Retrieving image: 57%
+Retrieving image: 58%
+Retrieving image: 59%
+Retrieving image: 60%
+Retrieving image: 61%
+Retrieving image: 62%
+Retrieving image: 63%
+Retrieving image: 64%
+Retrieving image: 65%
+Retrieving image: 66%
+Retrieving image: 67%
+Retrieving image: 68%
+Retrieving image: 69%
+Retrieving image: 70%
+Retrieving image: 71%
+Retrieving image: 72%
+Retrieving image: 73%
+Retrieving image: 74%
+Retrieving image: 75%
+Retrieving image: 76%
+Retrieving image: 77%
+Retrieving image: 78%
+Retrieving image: 79%
+Retrieving image: 80%
+Retrieving image: 81%
+Retrieving image: 82%
+Retrieving image: 83%
+Retrieving image: 84%
+Retrieving image: 85%
+Retrieving image: 86%
+Retrieving image: 87%
+Retrieving image: 88%
+Retrieving image: 89%
+Retrieving image: 90%
+Retrieving image: 91%
+Retrieving image: 92%
+Retrieving image: 93%
+Retrieving image: 94%
+Retrieving image: 95%
+Retrieving image: 96%
+Retrieving image: 97%
+Retrieving image: 98%
+Retrieving image: 99%
+Retrieving image: 100%[2K[0A[0EVerifying image  /-\| [2K[0A[0E[2K[0A[0EPreparing image for chainguard  /-\|/-\|/-\ [2K[0A[0E[2K[0A[0EConfiguring chainguard  / [2K[0A[0E[2K[0A[0EStarting chainguard  /-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\ [2K[0A[0E[2K[0A[0EWaiting for initialization to complete  /-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\ [2K[0A[0ELaunched: chainguard in zone1
+$ multipass info chainguard
+Name:           chainguard
+State:          Running
+Zone:           zone1
+Snapshots:      0
+IPv4:           192.168.252.2
+Release:        Ubuntu 24.04.5 LTS
+Image hash:     50e24e1fb79e (Ubuntu 24.04 LTS)
+CPU(s):         4
+Load:           0.08 0.02 0.01
+Disk usage:     2.0GiB out of 29.0GiB
+Memory usage:   374.3MiB out of 3.8GiB
+Mounts:         --
+$ multipass transfer labrc.sh, tmux.conf, bootstrap-vm.sh; multipass exec chainguard -- bash ~/bootstrap-vm.sh
+tmux 3.4
+lab: 1 windows (created Mon Nov 16 12:14:35 2026)
+Ready. On the big screen run: multipass shell chainguard   then: tmux attach -t lab
+$ multipass transfer JOURNAL.md RUNBOOK.md REPORT.md -> repo; logs/00-prepare-mac.log -> repo/logs; .gitignore additions -> ~/gitignore-lab
+transferred OK
+$ copy the VM public key to the Mac; gh repo deploy-key add (personal account, write access); gh repo deploy-key list; switch gh back
+✓ Switched active account for github.com to saadallahchebaro
+170031991	chainguard build VM	read-write	ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMMpQofsbeDNy/NpVtGpOm/Yljhb41N+GLgXI0vsTirJ	2026-11-16T08:24:54Z
+✓ Switched active account for github.com to <work-account>
+active gh account: <work-account>
+$ multipass transfer JOURNAL.md RUNBOOK.md REPORT.md logs/01-vm-mac.log -> repo (before the first commit)
+
+# Redacted for the public copy: the name of a third-party Homebrew tap and of a second GitHub account.

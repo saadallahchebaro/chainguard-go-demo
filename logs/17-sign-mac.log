@@ -1,0 +1,5 @@
+$ multipass transfer README.md JOURNAL.md RUNBOOK.md REPORT.md, demo/screenshots/17-*.png -> repo
+transferred OK
+
+$ multipass transfer JOURNAL.md -> repo (checkpoint 4 line)
+transferred OK

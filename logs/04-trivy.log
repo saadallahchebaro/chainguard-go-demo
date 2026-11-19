@@ -1,0 +1,68 @@
+
+===== STEP 04-trivy · 2026-11-16T09:11:29Z · chainguard
+
+# NOTE: TV=0.76.2
+
+$ curl -sSfLO "https://github.com/aquasecurity/trivy/releases/download/v${TV}/trivy_${TV}_Linux-ARM64.deb" -O "https://github.com/aquasecurity/trivy/releases/download/v${TV}/trivy_${TV}_Linux-ARM64.deb.sigstore.json" && ls -l trivy_${TV}_Linux-ARM64.deb*
+# at 09:11:30 in /home/ubuntu/downloads
+-rw-rw-r-- 1 ubuntu ubuntu 47435576 Nov 16 13:11 trivy_0.76.2_Linux-ARM64.deb
+-rw-rw-r-- 1 ubuntu ubuntu    10235 Nov 16 13:11 trivy_0.76.2_Linux-ARM64.deb.sigstore.json
+# exit 0
+
+$ cosign verify-blob trivy_${TV}_Linux-ARM64.deb --bundle trivy_${TV}_Linux-ARM64.deb.sigstore.json --certificate-oidc-issuer=https://token.actions.githubusercontent.com --certificate-identity "https://github.com/aquasecurity/trivy/.github/workflows/reusable-release.yaml@refs/tags/v${TV}"
+# at 09:11:45 in /home/ubuntu/downloads
+Verified OK
+# exit 0
+
+$ cosign verify-blob trivy_${TV}_Linux-ARM64.deb --bundle trivy_${TV}_Linux-ARM64.deb.sigstore.json --certificate-oidc-issuer=https://token.actions.githubusercontent.com --certificate-identity "https://github.com/aquasecurity/trivy/.github/workflows/reusable-release.yaml@refs/tags/v0.76.1"
+# at 09:11:46 in /home/ubuntu/downloads
+Error: failed to verify certificate identity: no matching CertificateIdentity found, last error: expected SAN value "https://github.com/aquasecurity/trivy/.github/workflows/reusable-release.yaml@refs/tags/v0.76.1", got "https://github.com/aquasecurity/trivy/.github/workflows/reusable-release.yaml@refs/tags/v0.76.2"
+error during command execution: failed to verify certificate identity: no matching CertificateIdentity found, last error: expected SAN value "https://github.com/aquasecurity/trivy/.github/workflows/reusable-release.yaml@refs/tags/v0.76.1", got "https://github.com/aquasecurity/trivy/.github/workflows/reusable-release.yaml@refs/tags/v0.76.2"
+# exit 1
+
+$ sudo apt-get install -y ./trivy_${TV}_Linux-ARM64.deb && which trivy && trivy --version && dpkg -s trivy | grep -E "^(Package|Version|Maintainer):"
+# at 09:12:03 in /home/ubuntu/downloads
+Reading package lists...
+Building dependency tree...
+Reading state information...
+The following NEW packages will be installed:
+  trivy
+0 upgraded, 1 newly installed, 0 to remove and 47 not upgraded.
+Need to get 0 B/47.4 MB of archives.
+After this operation, 163 MB of additional disk space will be used.
+Get:1 /home/ubuntu/downloads/trivy_0.76.2_Linux-ARM64.deb trivy arm64 0.76.2 [47.4 MB]
+Selecting previously unselected package trivy.
+(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 77984 files and directories currently installed.)
+Preparing to unpack .../trivy_0.76.2_Linux-ARM64.deb ...
+Unpacking trivy (0.76.2) ...
+Setting up trivy (0.76.2) ...
+
+Running kernel seems to be up-to-date.
+
+No services need to be restarted.
+
+No containers need to be restarted.
+
+No user sessions are running outdated binaries.
+
+No VM guests are running outdated hypervisor (qemu) binaries on this host.
+/usr/bin/trivy
+Version: 0.76.2
+Package: trivy
+Maintainer: Aqua Security <oss@aquasec.com>
+Version: 0.76.2
+# exit 0
+
+$ git add -A && git status --short && git commit -q -m "step 04: Trivy 0.76.2 verified with cosign against the release workflow, then installed" && git push -q origin main && git log --oneline -1 && git status -sb | head -1
+# at 09:12:49 in /home/ubuntu/chainguard-technical-challenge
+M  JOURNAL.md
+M  REPORT.md
+M  RUNBOOK.md
+A  demo/screenshots/04-trivy-installed.png
+A  demo/screenshots/04-trivy-verified.png
+M  logs/03-tools.log
+A  logs/04-trivy-mac.log
+A  logs/04-trivy.log
+b697100 step 04: Trivy 0.76.2 verified with cosign against the release workflow, then installed
+## main...origin/main
+# exit 0

@@ -1,0 +1,169 @@
+
+===== STEP 17-sign · 2026-11-16T14:40:24Z · chainguard
+
+$ cosign version 2>&1 | grep -E "GitVersion|BuildDate"; mkdir -p ~/cosign-lab && chmod 700 ~/cosign-lab && ls -ld ~/cosign-lab; echo "== the repo would refuse a key anyway:"; git check-ignore -v cosign.key x.key; echo "== D, the digest to sign: $(crane digest localhost:5000/hello:d)"; echo "== is COSIGN_PASSWORD set in this shell? ${COSIGN_PASSWORD:+yes}${COSIGN_PASSWORD:-no}"
+# at 14:40:24 in /home/ubuntu/chainguard-technical-challenge
+GitVersion:    v3.1.4
+BuildDate:     2026-10-20T17:33:02Z
+drwx------ 2 ubuntu ubuntu 4096 Nov 16 18:40 /home/ubuntu/cosign-lab
+== the repo would refuse a key anyway:
+.gitignore:11:*.key	cosign.key
+.gitignore:11:*.key	x.key
+== D, the digest to sign: sha256:c5ce9ddb3a8db38d7ef61bdd6c84905bd1d3e7ef61a3c51bbd0d6d7aa7270a08
+== is COSIGN_PASSWORD set in this shell? no
+# exit 0
+
+# NOTE: cosign generate-key-pair in ~/cosign-lab: password typed at the prompt by the user, not logged
+
+$ ls -l ~/cosign-lab; echo "== private key: first line only (shows it is encrypted): $(head -1 ~/cosign-lab/cosign.key)"; cp ~/cosign-lab/cosign.pub cosign.pub; echo "== public key, now in the repo as cosign.pub:"; cat cosign.pub; echo "== its SHA-256 fingerprint (DER): $(openssl pkey -pubin -in cosign.pub -outform DER 2>/dev/null | sha256sum | cut -d" " -f1)"; openssl pkey -pubin -in cosign.pub -noout -text 2>/dev/null | head -2
+# at 14:41:39 in /home/ubuntu/chainguard-technical-challenge
+total 8
+-rw------- 1 ubuntu ubuntu 653 Nov 16 18:41 cosign.key
+-rw-r--r-- 1 ubuntu ubuntu 178 Nov 16 18:41 cosign.pub
+== private key: first line only (shows it is encrypted): -----BEGIN ENCRYPTED SIGSTORE PRIVATE KEY-----
+== public key, now in the repo as cosign.pub:
+-----BEGIN PUBLIC KEY-----
+MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEwLz3+xvNZWny3DYOaugo+IB/Do9w
+xUkzJsg/x3WmsNz5AQcgFnUY4WC6204sspYejcsn6QDoCvOfkJi6TMCN6g==
+-----END PUBLIC KEY-----
+== its SHA-256 fingerprint (DER): a1d685619f0ec2c150dd42245aad282cc5943021ceaa442621403a3d686a620a
+Public-Key: (256 bit)
+pub:
+# exit 0
+
+# NOTE: D=sha256:c5ce9ddb3a8db38d7ef61bdd6c84905bd1d3e7ef61a3c51bbd0d6d7aa7270a08
+
+$ cosign sign --key ~/cosign-lab/cosign.key --use-signing-config=false --tlog-upload=false localhost:5000/hello@$D; echo "cosign sign exit code: $?"
+# at 14:42:04 in /home/ubuntu/chainguard-technical-challenge
+Flag --use-signing-config has been deprecated, an offline signing flag will be added in the future; TUF will continue to provide a signing config by default if one is not provided manually
+Flag --tlog-upload has been deprecated, prefer using a --signing-config file with no transparency log services
+Enter password for private key: 
+Signing artifact...
+Pushing signature to: localhost:5000/hello
+cosign sign exit code: 0
+# exit 0
+
+$ echo "== tags in the repository now: $(crane ls localhost:5000/hello | tr "\n" " ")"; echo "== the registry referrers API for D (OCI 1.1):"; curl -s localhost:5000/v2/hello/referrers/$D | jq -c "{mediaType, manifests: [.manifests[] | {digest: .digest[0:19], artifactType, size}]}"; echo "== cosign tree:"; cosign tree localhost:5000/hello@$D 2>&1 | grep -v "^$"; echo "== did D itself change? digest now: $(crane digest localhost:5000/hello:d)"
+# at 14:42:24 in /home/ubuntu/chainguard-technical-challenge
+== tags in the repository now: c d sha256-c5ce9ddb3a8db38d7ef61bdd6c84905bd1d3e7ef61a3c51bbd0d6d7aa7270a08 
+== the registry referrers API for D (OCI 1.1):
+jq: error (at <stdin>:1): Cannot index number with string "mediaType"
+jq: parse error: Invalid numeric literal at line 1, column 9
+== cosign tree:
+📦 Supply Chain Security Related artifacts for an image: localhost:5000/hello@sha256:c5ce9ddb3a8db38d7ef61bdd6c84905bd1d3e7ef61a3c51bbd0d6d7aa7270a08
+└── 🔗 https://sigstore.dev/cosign/sign/v1 artifacts via OCI referrer: localhost:5000/hello@sha256:b413e1c99dcfcd313a009ecb8d6a15ac6ad98489a81d91b80c246438861f5db3
+   └── 🍒 sha256:989ca571f43a706668adf58f24cb297d47eb3488379f6209f26b0e130578d227
+== did D itself change? digest now: sha256:c5ce9ddb3a8db38d7ef61bdd6c84905bd1d3e7ef61a3c51bbd0d6d7aa7270a08
+# exit 0
+
+$ echo "== referrers API: HTTP $(curl -s -o /tmp/ref.txt -w "%{http_code}" localhost:5000/v2/hello/referrers/$D), body: $(head -c 60 /tmp/ref.txt)"; T=sha256-${D#sha256:}; echo "== the fallback tag ${T:0:19}… holds:"; crane manifest localhost:5000/hello:$T | jq -c "{mediaType, manifests: [.manifests[] | {digest: .digest[0:19], artifactType}]}"; S=$(crane manifest localhost:5000/hello:$T | jq -r ".manifests[0].digest"); echo "== the signature manifest ${S:0:19}…:"; crane manifest localhost:5000/hello@$S | jq -c "{artifactType, subject: (.subject.digest[0:19]), layers: [.layers[] | {mediaType, size}]}"
+# at 14:42:35 in /home/ubuntu/chainguard-technical-challenge
+== referrers API: HTTP 404, body: 404 page not found
+== the fallback tag sha256-c5ce9ddb3a8d… holds:
+{"mediaType":"application/vnd.oci.image.index.v1+json","manifests":[{"digest":"sha256:b413e1c99dcf","artifactType":"application/vnd.dev.sigstore.bundle.v0.3+json"}]}
+== the signature manifest sha256:b413e1c99dcf…:
+{"artifactType":"application/vnd.dev.sigstore.bundle.v0.3+json","subject":"sha256:c5ce9ddb3a8d","layers":[{"mediaType":"application/vnd.dev.sigstore.bundle.v0.3+json","size":667}]}
+# exit 0
+
+$ C=$(crane digest localhost:5000/hello:c); rm -f /tmp/other.key /tmp/other.pub; COSIGN_PASSWORD="" cosign generate-key-pair --output-key-prefix /tmp/other >/dev/null 2>&1 && echo "(throwaway key for test 3: /tmp/other.pub)"; v() { cosign verify --key $1 --insecure-ignore-tlog=true localhost:5000/hello@$2 > /tmp/v.json 2> /tmp/v.err; rc=$?; if [ $rc = 0 ]; then echo "   PASS (exit 0). Signed digest: $(jq -r ".[0].critical.image[\"docker-manifest-digest\"]" /tmp/v.json)"; else echo "   FAIL (exit $rc): $(grep -i -E "error|no " /tmp/v.err | grep -v -i warning | head -2 | tr "\n" " " | cut -c1-140)"; fi; }; echo "== 1. D with our key (cosign.pub):"; v cosign.pub $D; echo "== 2. C with our key (C was never signed):"; v cosign.pub $C; echo "== 3. D with a different key:"; v /tmp/other.pub $D
+# at 14:42:53 in /home/ubuntu/chainguard-technical-challenge
+(throwaway key for test 3: /tmp/other.pub)
+== 1. D with our key (cosign.pub):
+   PASS (exit 0). Signed digest: sha256:c5ce9ddb3a8db38d7ef61bdd6c84905bd1d3e7ef61a3c51bbd0d6d7aa7270a08
+== 2. C with our key (C was never signed):
+   FAIL (exit 10): Error: no signatures found error during command execution: no signatures found 
+== 3. D with a different key:
+   FAIL (exit 1): Error: no matching attestations: failed to verify signature: could not verify envelope: accepted signatures do not match threshold, Found: 0
+# exit 0
+
+$ cosign attest --key ~/cosign-lab/cosign.key --use-signing-config=false --tlog-upload=false --type spdxjson --predicate sbom/d.spdx.json localhost:5000/hello@$D 2>&1 | grep -v -E "^Flag --(use-signing-config|tlog-upload)"; echo "cosign attest exit code: ${PIPESTATUS[0]}"
+# at 14:43:11 in /home/ubuntu/chainguard-technical-challenge
+Using payload from: sbom/d.spdx.json
+Enter password for private key: 
+Error: signing localhost:5000/hello@sha256:c5ce9ddb3a8db38d7ef61bdd6c84905bd1d3e7ef61a3c51bbd0d6d7aa7270a08: creating bundle: getting keypair and token: getting signer: reading key: decrypt: encrypted: decryption failed
+error during command execution: signing localhost:5000/hello@sha256:c5ce9ddb3a8db38d7ef61bdd6c84905bd1d3e7ef61a3c51bbd0d6d7aa7270a08: creating bundle: getting keypair and token: getting signer: reading key: decrypt: encrypted: decryption failed
+cosign attest exit code: 1
+# exit 0
+
+$ cosign attest --key ~/cosign-lab/cosign.key --use-signing-config=false --tlog-upload=false --type spdxjson --predicate sbom/d.spdx.json localhost:5000/hello@$D 2>&1 | grep -v -E "^Flag --(use-signing-config|tlog-upload)"; echo "cosign attest exit code: ${PIPESTATUS[0]}"
+# at 14:47:26 in /home/ubuntu/chainguard-technical-challenge
+Using payload from: sbom/d.spdx.json
+Enter password for private key: 
+Signing artifact...
+cosign attest exit code: 0
+# exit 0
+
+$ cosign verify-attestation --key cosign.pub --insecure-ignore-tlog=true --type spdxjson localhost:5000/hello@$D > /tmp/att-d.json 2> /tmp/att-d.err; echo "== verify-attestation (spdxjson): exit $?"; grep -E "^  - |^The following" /tmp/att-d.err; head -1 /tmp/att-d.json | jq -r .payload | base64 -d > /tmp/att-d-statement.json; jq -r "\"   predicateType: \" + .predicateType, \"   subject: \" + (.subject[0].name) + \"@sha256:\" + .subject[0].digest.sha256, \"   SBOM inside: \" + .predicate.spdxVersion + \", \" + (.predicate.packages | length | tostring) + \" packages\"" /tmp/att-d-statement.json; cmp -s <(jq -S .predicate /tmp/att-d-statement.json) <(jq -S . sbom/d.spdx.json) && echo "   identical to sbom/d.spdx.json"; echo "== cosign tree:"; cosign tree localhost:5000/hello@$D 2>&1 | grep -v "^$" | sed "s/localhost:5000\/hello@//"; echo "== negative: ask for a provenance attestation (none attached):"; cosign verify-attestation --key cosign.pub --insecure-ignore-tlog=true --type slsaprovenance1 localhost:5000/hello@$D > /dev/null 2> /tmp/neg.err; echo "   exit $?: $(grep -i error /tmp/neg.err | head -1 | cut -c1-120)"
+# at 14:47:51 in /home/ubuntu/chainguard-technical-challenge
+== verify-attestation (spdxjson): exit 0
+The following checks were performed on each of these signatures:
+  - The cosign claims were validated
+  - Existence of the claims in the transparency log was verified offline
+  - The signatures were verified against the specified public key
+   predicateType: https://spdx.dev/Document
+   subject: localhost:5000/hello@sha256:c5ce9ddb3a8db38d7ef61bdd6c84905bd1d3e7ef61a3c51bbd0d6d7aa7270a08
+   SBOM inside: SPDX-2.3, 25 packages
+   identical to sbom/d.spdx.json
+== cosign tree:
+📦 Supply Chain Security Related artifacts for an image: sha256:c5ce9ddb3a8db38d7ef61bdd6c84905bd1d3e7ef61a3c51bbd0d6d7aa7270a08
+└── 🔗 https://sigstore.dev/cosign/sign/v1 artifacts via OCI referrer: sha256:b413e1c99dcfcd313a009ecb8d6a15ac6ad98489a81d91b80c246438861f5db3
+   └── 🍒 sha256:989ca571f43a706668adf58f24cb297d47eb3488379f6209f26b0e130578d227
+└── 🔗 https://spdx.dev/Document artifacts via OCI referrer: sha256:db87215bd550c9171ed04514fa85af4c219b9521f33828292d2f47b7d58c563e
+   └── 🍒 sha256:d38b00e9019ad37a04e7a7f58129e4920b902d7b6b5e7b0bddad4b7a9fe4d5f9
+== negative: ask for a provenance attestation (none attached):
+   exit 1: Error: none of the attestations matched the predicate type: slsaprovenance1, found: https://sigstore.dev/cosign/sign/v1,
+# exit 0
+
+$ echo "== everything cosign verify-attestation wrote to stderr:"; grep -v "^$" /tmp/att-d.err; echo "== and for cosign verify on D:"; cosign verify --key cosign.pub --insecure-ignore-tlog=true localhost:5000/hello@$D 2>&1 >/dev/null | grep -v "^$"
+# at 14:48:01 in /home/ubuntu/chainguard-technical-challenge
+== everything cosign verify-attestation wrote to stderr:
+WARNING: Skipping tlog verification is an insecure practice that lacks transparency and auditability verification for the attestation.
+Verification for localhost:5000/hello@sha256:c5ce9ddb3a8db38d7ef61bdd6c84905bd1d3e7ef61a3c51bbd0d6d7aa7270a08 --
+The following checks were performed on each of these signatures:
+  - The cosign claims were validated
+  - Existence of the claims in the transparency log was verified offline
+  - The signatures were verified against the specified public key
+== and for cosign verify on D:
+WARNING: Skipping tlog verification is an insecure practice that lacks transparency and auditability verification for the signature.
+Verification for localhost:5000/hello@sha256:c5ce9ddb3a8db38d7ef61bdd6c84905bd1d3e7ef61a3c51bbd0d6d7aa7270a08 --
+The following checks were performed on each of these signatures:
+  - The cosign claims were validated
+  - Existence of the claims in the transparency log was verified offline
+  - The signatures were verified against the specified public key
+# exit 0
+
+$ mkdir -p reports/signing; cosign verify --key cosign.pub --insecure-ignore-tlog=true localhost:5000/hello@$D 2>/dev/null | jq . > reports/signing/d-verify.json; cp /tmp/att-d-statement.json reports/signing/d-sbom-attestation-statement.json; cosign tree localhost:5000/hello@$D > reports/signing/d-cosign-tree.txt 2>&1; T=sha256-${D#sha256:}; crane manifest localhost:5000/hello:$T | jq . > reports/signing/d-referrers-fallback-index.json; rm -f /tmp/other.key /tmp/other.pub; ls -l reports/signing cosign.pub; echo "== private key outside the repo: $(ls ~/cosign-lab/cosign.key) ; in git? $(git ls-files --error-unmatch ~/cosign-lab/cosign.key >/dev/null 2>&1 && echo yes || echo no)"; git status --short | grep -i -E "\.key" || echo "== no key file anywhere in git status"
+# at 14:48:31 in /home/ubuntu/chainguard-technical-challenge
+-rw-r--r-- 1 ubuntu ubuntu  178 Nov 16 18:41 cosign.pub
+
+reports/signing:
+total 944
+-rw-rw-r-- 1 ubuntu ubuntu    666 Nov 16 18:48 d-cosign-tree.txt
+-rw-rw-r-- 1 ubuntu ubuntu   1090 Nov 16 18:48 d-referrers-fallback-index.json
+-rw-rw-r-- 1 ubuntu ubuntu 953619 Nov 16 18:48 d-sbom-attestation-statement.json
+-rw-rw-r-- 1 ubuntu ubuntu    775 Nov 16 18:48 d-verify.json
+== private key outside the repo: /home/ubuntu/cosign-lab/cosign.key ; in git? no
+== no key file anywhere in git status
+# exit 0
+
+$ echo "== safety: private-key markers in the files to commit: $(git add -A -n | awk "{print \$2}" | sed "s/^.//; s/.$//" | xargs grep -l -E "PRIVATE KEY-----$" 2>/dev/null | grep -v -x logs/17-sign.log | wc -l) files; the log only has the header line: $(grep -c "PRIVATE KEY" logs/17-sign.log)"; echo "== password prompts in the log are followed by nothing:"; grep -A1 "Enter password" logs/17-sign.log | head -6; git add -A && git status --short | wc -l && git commit -q -m "step 17: image D signed by digest with cosign and given a signed SBOM attestation; verify passes for D, fails for C and a wrong key" && git push -q origin main && git log --oneline -1 && git status -sb | head -1
+# at 14:49:43 in /home/ubuntu/chainguard-technical-challenge
+== safety: private-key markers in the files to commit: 0 files; the log only has the header line: 2
+== password prompts in the log are followed by nothing:
+Enter password for private key: 
+Signing artifact...
+--
+Enter password for private key: 
+Error: signing localhost:5000/hello@sha256:c5ce9ddb3a8db38d7ef61bdd6c84905bd1d3e7ef61a3c51bbd0d6d7aa7270a08: creating bundle: getting keypair and token: getting signer: reading key: decrypt: encrypted: decryption failed
+--
+17
+6ded832 step 17: image D signed by digest with cosign and given a signed SBOM attestation; verify passes for D, fails for C and a wrong key
+## main...origin/main
+# exit 0
+
+$ git add -A && git commit -q -m "checkpoint 4: supply chain bonus done; journal records the guide corrections for steps 15 to 17" && git push -q origin main && git log --oneline -2 && git status -sb | head -1
+# at 14:51:21 in /home/ubuntu/chainguard-technical-challenge
+1b4d7e8 checkpoint 4: supply chain bonus done; journal records the guide corrections for steps 15 to 17
+6ded832 step 17: image D signed by digest with cosign and given a signed SBOM attestation; verify passes for D, fails for C and a wrong key
+## main...origin/main
+# exit 0

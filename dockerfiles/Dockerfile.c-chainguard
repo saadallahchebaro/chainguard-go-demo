@@ -1,0 +1,20 @@
+# Image C: one change from B. The runtime base becomes Chainguard's static image, pinned by digest.
+# The build stage stays golang:1.18, so the Go version doesn't change at the same time (that's image D).
+# Build from the repo folder:  docker build -t hello:c -f dockerfiles/Dockerfile.c-chainguard ./go
+
+# Stage 1: build (identical to A and B, so it comes from the cache)
+FROM golang:1.18 AS build
+WORKDIR /app
+COPY go.mod go.sum ./
+RUN go mod download
+COPY . .
+RUN CGO_ENABLED=0 go build -o hello-server .
+
+# Stage 2: runtime. Digest from `crane digest cgr.dev/chainguard/static:latest`, signature verified with
+# cosign (signer: chainguard-images/images release.yaml on main). With a tag and a digest, Docker uses the digest.
+FROM cgr.dev/chainguard/static:latest@sha256:fc42af33e643f20d08baf03cddcc1c02ba57052dfb02edb0d79f3fc47bcea8d9
+COPY --from=build /app/hello-server /usr/local/bin/hello-server
+# Already static's default user (nonroot, 65532:65532); kept so the difference from B is the FROM line only
+USER 65532
+EXPOSE 8080
+ENTRYPOINT ["/usr/local/bin/hello-server"]

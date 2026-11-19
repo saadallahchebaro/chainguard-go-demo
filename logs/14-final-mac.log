@@ -1,0 +1,11 @@
+$ multipass transfer tools/results.sh -> repo (written on the Mac)
+transferred OK
+
+$ multipass transfer tools/results.sh -> repo (layer label clarified)
+transferred OK
+
+$ multipass transfer README.md JOURNAL.md RUNBOOK.md REPORT.md, demo/screenshots/14-*.png -> repo
+transferred OK
+
+$ multipass transfer JOURNAL.md -> repo (checkpoint 3 line)
+transferred OK

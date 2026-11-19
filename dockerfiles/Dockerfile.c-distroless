@@ -1,0 +1,20 @@
+# Image C-distroless: image C with Google's distroless static base in place of Chainguard's, to compare the two bases.
+# One line differs from Dockerfile.c-chainguard: the runtime FROM. The same build stage, so the same binary.
+# Build from the repo folder:  docker build -t hello:c-distroless -f dockerfiles/Dockerfile.c-distroless ./go
+
+# Stage 1: build (identical to A and B, so it comes from the cache)
+FROM golang:1.18 AS build
+WORKDIR /app
+COPY go.mod go.sum ./
+RUN go mod download
+COPY . .
+RUN CGO_ENABLED=0 go build -o hello-server .
+
+# Stage 2: runtime. Digest from `crane digest gcr.io/distroless/static-debian13:nonroot`, signature verified with
+# cosign (keyless: issuer https://accounts.google.com, identity keyless@distroless.iam.gserviceaccount.com).
+FROM gcr.io/distroless/static-debian13:nonroot@sha256:aafe993665bf6200db38a02c11a9351e782a84b6a45e7f33b6695638c88e3931
+COPY --from=build /app/hello-server /usr/local/bin/hello-server
+# Already the nonroot tag's default user (65532); kept so the difference from C is the FROM line only
+USER 65532
+EXPOSE 8080
+ENTRYPOINT ["/usr/local/bin/hello-server"]

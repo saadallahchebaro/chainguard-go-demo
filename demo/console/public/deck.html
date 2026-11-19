@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="console-token" content="__TOKEN__">
+<title>Command deck</title>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body class="app" data-page="deck">
+<header class="top">
+  <h1>Command deck<small>Each button types its command into a real terminal on your other screen</small></h1>
+  <nav><a href="/ci">CI demo</a><a href="/present">Full presentation</a><a href="/deck" aria-current="page">Command deck</a></nav>
+  <span class="spacer"></span>
+  <input type="search" class="qfilter deckfilter" id="filter" placeholder="Filter: dockerfile, run, registry, sign, sbom…" aria-label="Filter the commands">
+</header>
+
+<div class="deckwrap">
+  <section class="card decktarget" aria-label="Where the commands go">
+    <label for="target">Send to</label>
+    <select id="target"></select>
+    <button type="button" class="btn small" id="refresh" title="List the open terminals again">Refresh</button>
+    <button type="button" class="btn small" id="mksession" title="Create the tmux session &quot;show&quot; on the build VM, in the lab folder">Create the "show" session</button>
+    <label class="enter"><input type="checkbox" id="enter" checked> Press Enter for me</label>
+    <span class="attach">On the shared screen: <code id="attach"></code> <button type="button" class="btn small" id="copy">Copy</button></span>
+    <p class="decknotes" id="notes"></p>
+  </section>
+  <section class="card deckstatus" aria-live="polite">
+    <div class="sent" id="sent">Pick a target, then a command.</div>
+    <code class="preview" id="preview">Hover a command to see exactly what it types.</code>
+  </section>
+  <main class="card deckgroups" id="groups"></main>
+</div>
+<script src="/static/deck.js"></script>
+</body>
+</html>

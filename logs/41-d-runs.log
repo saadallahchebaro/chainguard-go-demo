@@ -1,0 +1,25 @@
+
+===== STEP 41-d-runs · 2026-11-18T06:13:59Z · chainguard
+
+$ docker image ls hello:d
+# at 06:14:00 in /home/ubuntu/chainguard-technical-challenge
+IMAGE     ID             DISK USAGE   CONTENT SIZE   EXTRA
+hello:d   76eb535bcdcd       34.9MB           11MB        
+# exit 0
+
+$ docker create --name d-check hello:d >/dev/null && docker cp -q d-check:/usr/local/bin/hello-server /tmp/d-check && docker rm d-check >/dev/null; go version /tmp/d-check; go version -m /tmp/d-check | grep -E "gin-gonic/gin\s"
+# at 06:14:01 in /home/ubuntu/chainguard-technical-challenge
+/tmp/d-check: go1.27.4
+	dep	github.com/gin-gonic/gin	v1.12.0	h1:b3YAbrZtnf8N//yjKeU2+MQsh2mY5htkZidOM7O0wG8=
+# exit 0
+
+$ docker run -d --rm --name d-check -p 18081:8080 hello:d >/dev/null && sleep 1 && curl -si http://localhost:18081/; echo; docker logs d-check 2>&1 | tail -1; docker stop d-check >/dev/null
+# at 06:14:01 in /home/ubuntu/chainguard-technical-challenge
+HTTP/1.1 200 OK
+Content-Type: text/plain; charset=utf-8
+Date: Wed, 18 Nov 2026 06:14:03 GMT
+Content-Length: 12
+
+Hello World!
+[GIN] 2026/11/18 - 06:14:03 | 200 |  4.791µs |      172.17.0.1 | GET      "/"
+# exit 0

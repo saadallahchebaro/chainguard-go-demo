@@ -1,0 +1,22 @@
+
+===== STEP 25-presenter-tools · 2026-11-17T07:16:38Z · chainguard
+
+$ bash tools/make-showcase.sh && ls showcase
+# at 07:16:39 in /home/ubuntu/chainguard-technical-challenge
+showcase/: 57 links in 9 folders; broken links: 0
+01-dockerfiles
+02-app-source
+03-scan-reports
+04-sbom
+05-signing-provenance
+06-kubernetes
+07-pipeline
+08-agent-and-skills
+09-lab-notes
+README.md
+# exit 0
+
+$ echo "showcase links: $(find showcase -type l | wc -l), broken: $(find showcase -xtype l | wc -l)"
+# at 07:42:41 in /home/ubuntu/chainguard-technical-challenge
+showcase links: 57, broken: 0
+# exit 0

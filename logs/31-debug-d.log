@@ -1,0 +1,92 @@
+
+===== STEP 31-debug-d · 2026-11-17T11:40:14Z · chainguard
+
+$ BB=cgr.dev/chainguard/busybox@sha256:63f6bae487adff606359bd82418ffe0564564a6b272cf52107306749a714afb2; echo "== the debug image: Chainguard busybox, pinned by digest"; cosign verify $BB --certificate-oidc-issuer=https://token.actions.githubusercontent.com --certificate-identity=https://github.com/chainguard-images/images/.github/workflows/release.yaml@refs/heads/main 2>&1 >/dev/null | grep -E "^  - "; echo "cosign verify exit: ${PIPESTATUS[0]}"; echo "runs as user: $(crane config --platform linux/arm64 $BB | jq -r .config.User)"; echo "of sh ps ls cat netstat wget curl nc, it has: $(docker run --rm $BB busybox --list | grep -x -E "sh|ps|ls|cat|netstat|wget|curl|nc" | sort | tr "\n" " ")"
+# at 11:40:15 in /home/ubuntu/chainguard-technical-challenge
+== the debug image: Chainguard busybox, pinned by digest
+  - The cosign claims were validated
+  - Existence of the claims in the transparency log was verified offline
+  - The code-signing certificate was verified using trusted certificate authority certificates
+cosign verify exit: 0
+runs as user: 65532
+of sh ps ls cat netstat wget curl nc, it has: cat ls netstat ps sh 
+# exit 0
+
+$ bash tools/debug-d.sh docker
+# at 11:40:37 in /home/ubuntu/chainguard-technical-challenge
+===== Docker: image D, no shell
+1. docker exec into D: exec: "sh": executable file not found
+2. Chainguard busybox, sharing its processes and network, no added capabilities:
+   user: uid=65532(nonroot) gid=65532(nonroot) groups=65532(nonroot)
+   processes it shares with D:
+     PID   USER     COMMAND
+         1 nonroot  hello-server
+        17 nonroot  sh
+        24 nonroot  ps
+        25 nonroot  sed
+   files in D, read through /proc/1/root:
+     -rwxr-xr-x    1 root     root      20222796 Nov 16 13:28 hello-server
+   listening:
+     tcp        0      0 :::8080                 :::*                    LISTEN      
+3. docker cp, no shell needed: hello-server copied out, 20222796 bytes
+# exit 0
+
+$ bash tools/debug-d.sh k3s
+# at 11:40:45 in /home/ubuntu/chainguard-technical-challenge
+===== k3s: image D, no shell
+Pod hello-57b4b797b-q2qrb runs D by its signed digest.
+1. kubectl exec: exec: "sh": executable file not found
+2. kubectl debug --target=hello --profile=restricted (Chainguard busybox):
+   user: uid=65532(nonroot) gid=65532(nonroot) groups=65532(nonroot)
+   processes it shares with D:
+     PID   USER     COMMAND
+         1 nonroot  hello-server
+        23 nonroot  sh
+        31 nonroot  ps
+        32 nonroot  sed
+   files in D, read through /proc/1/root:
+     -rwxr-xr-x    1 root     root      20222796 Nov 16 13:28 hello-server
+   listening:
+     tcp        0      0 :::8080                 :::*                    LISTEN      
+   admitted with: allowPrivilegeEscalation=false drop=ALL runAsNonRoot=true
+3. A debug container stays until the pod goes: delete the pod, the deployment replaces it.
+   now: hello-57b4b797b-572q4 hello-57b4b797b-s86gd ready; debug containers left: 0
+# exit 0
+
+$ bash tools/debug-d.sh gap
+# at 11:41:00 in /home/ubuntu/chainguard-technical-challenge
+===== The side door: an unsigned image as a debug container
+Image C was never signed: 192.168.252.2:5000/hello@sha256:4f75bad2bb90…
+1. As a new pod, with restricted settings so only the signature policy decides:
+   refused: The image must be signed with the lab key (cosign.pub)
+2. As a debug container in pod hello-57b4b797b-572q4:
+   admitted: 192.168.252.2:5000/hello@sha256:4f75bad2bb905…, and it ran:
+     [GIN-debug] Listening and serving HTTP on :8080
+     [GIN-debug] [ERROR] listen tcp :8080: bind: address already in use
+   Why: the policy matches pods on CREATE UPDATE;
+   kubectl debug adds a container through the pods/ephemeralcontainers subresource.
+3. A debug container stays until the pod goes: delete the pod, the deployment replaces it.
+   now: hello-57b4b797b-mjvbg hello-57b4b797b-s86gd ready; debug containers left: 0
+# exit 0
+
+$ echo "== which Chainguard tags exist (free tier), checked with crane digest:"; for i in static:latest static:latest-dev go:latest go:latest-dev busybox:latest; do d=$(crane digest cgr.dev/chainguard/$i 2>&1); case "$d" in sha256:*) echo "   cgr.dev/chainguard/$i  ${d:0:19}…";; *) echo "   cgr.dev/chainguard/$i  no such tag ($(echo "$d" | grep -o "MANIFEST_UNKNOWN[^\"]*" | head -1))";; esac; done
+# at 11:41:58 in /home/ubuntu/chainguard-technical-challenge
+== which Chainguard tags exist (free tier), checked with crane digest:
+   cgr.dev/chainguard/static:latest  sha256:fc42af33e643…
+   cgr.dev/chainguard/static:latest-dev  no such tag (MANIFEST_UNKNOWN: Unknown manifest)
+   cgr.dev/chainguard/go:latest  sha256:504c1ccea69d…
+   cgr.dev/chainguard/go:latest-dev  sha256:b873b09ce9c6…
+   cgr.dev/chainguard/busybox:latest  sha256:63f6bae487ad…
+# exit 0
+
+$ git add -A && git commit -q -m "Steps 30 and 31: golang:latest builder CVEs by fix state for the appendix builder slide, getting into the shell-less D with Docker and kubectl debug (tools/debug-d.sh), console buttons and quick answers, finding F32 on debug containers and the signature policy (surprises 56 to 58)" && git log --oneline -1 && git status -sb | head -1
+# at 11:53:52 in /home/ubuntu/chainguard-technical-challenge
+228df50 Steps 30 and 31: golang:latest builder CVEs by fix state for the appendix builder slide, getting into the shell-less D with Docker and kubectl debug (tools/debug-d.sh), console buttons and quick answers, finding F32 on debug containers and the signature policy (surprises 56 to 58)
+## main...origin/main [ahead 1]
+# exit 0
+
+$ git push -q origin main && git log --oneline -1 && git status -sb | head -1
+# at 11:55:05 in /home/ubuntu/chainguard-technical-challenge
+228df50 Steps 30 and 31: golang:latest builder CVEs by fix state for the appendix builder slide, getting into the shell-less D with Docker and kubectl debug (tools/debug-d.sh), console buttons and quick answers, finding F32 on debug containers and the signature policy (surprises 56 to 58)
+## main...origin/main
+# exit 0

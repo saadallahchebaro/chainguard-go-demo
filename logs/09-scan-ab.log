@@ -1,0 +1,403 @@
+
+===== STEP 09-scan-ab · 2026-11-16T09:59:24Z · chainguard
+
+$ grype db update && grype db status
+# at 09:59:24 in /home/ubuntu/chainguard-technical-challenge
+Vulnerability database updated to latest version!
+Path:      /home/ubuntu/.cache/grype/db/6/vulnerability.db
+Schema:    v6.1.10
+Built:     2026-11-16T06:30:54Z
+From:      https://grype.anchore.io/databases/v6/vulnerability-db_v6.1.10_2026-11-15T16:11:12Z_1794810654.tar.zst?checksum=sha256%3Add51add686f29657dd7d71af8dc61d33cbb3e99772e263d2949b7adec4ce4102
+Status:    valid
+# exit 0
+
+$ trivy image --download-db-only 2>&1 | tail -3 && trivy version
+# at 10:00:22 in /home/ubuntu/chainguard-technical-challenge
+2026-11-16T14:00:23+04:00	INFO	[vulndb] Downloading vulnerability DB...
+2026-11-16T14:00:23+04:00	INFO	[vulndb] Downloading artifact...	repo="mirror.gcr.io/aquasec/trivy-db:2"
+79.25 KiB / 134.12 MiB [>_________________________________________________________________________________________________________________________________________________________________________________________] 0.06% ? p/s ?319.25 KiB / 134.12 MiB [>________________________________________________________________________________________________________________________________________________________________________________________] 0.23% ? p/s ?671.25 KiB / 134.12 MiB [>________________________________________________________________________________________________________________________________________________________________________________________] 0.49% ? p/s ?1.75 MiB / 134.12 MiB [-->___________________________________________________________________________________________________________________________________________________________________________] 1.30% 2.79 MiB p/s ETA 47s4.62 MiB / 134.12 MiB [----->________________________________________________________________________________________________________________________________________________________________________] 3.45% 2.79 MiB p/s ETA 46s9.75 MiB / 134.12 MiB [------------>_________________________________________________________________________________________________________________________________________________________________] 7.27% 2.79 MiB p/s ETA 44s14.50 MiB / 134.12 MiB [------------------>_________________________________________________________________________________________________________________________________________________________] 10.81% 3.98 MiB p/s ETA 30s19.12 MiB / 134.12 MiB [------------------------>___________________________________________________________________________________________________________________________________________________] 14.26% 3.98 MiB p/s ETA 28s23.87 MiB / 134.12 MiB [------------------------------>_____________________________________________________________________________________________________________________________________________] 17.80% 3.98 MiB p/s ETA 27s28.59 MiB / 134.12 MiB [------------------------------------>_______________________________________________________________________________________________________________________________________] 21.32% 5.24 MiB p/s ETA 20s33.31 MiB / 134.12 MiB [------------------------------------------>_________________________________________________________________________________________________________________________________] 24.84% 5.24 MiB p/s ETA 19s38.28 MiB / 134.12 MiB [------------------------------------------------->__________________________________________________________________________________________________________________________] 28.54% 5.24 MiB p/s ETA 18s43.16 MiB / 134.12 MiB [------------------------------------------------------->____________________________________________________________________________________________________________________] 32.18% 6.46 MiB p/s ETA 14s48.06 MiB / 134.12 MiB [------------------------------------------------------------->______________________________________________________________________________________________________________] 35.84% 6.46 MiB p/s ETA 13s52.97 MiB / 134.12 MiB [------------------------------------------------------------------->________________________________________________________________________________________________________] 39.49% 6.46 MiB p/s ETA 12s57.87 MiB / 134.12 MiB [-------------------------------------------------------------------------->__________________________________________________________________________________________________] 43.15% 7.63 MiB p/s ETA 9s62.84 MiB / 134.12 MiB [--------------------------------------------------------------------------------->___________________________________________________________________________________________] 46.86% 7.63 MiB p/s ETA 9s67.75 MiB / 134.12 MiB [--------------------------------------------------------------------------------------->_____________________________________________________________________________________] 50.52% 7.63 MiB p/s ETA 8s72.69 MiB / 134.12 MiB [--------------------------------------------------------------------------------------------->_______________________________________________________________________________] 54.20% 8.73 MiB p/s ETA 7s77.69 MiB / 134.12 MiB [---------------------------------------------------------------------------------------------------->________________________________________________________________________] 57.92% 8.73 MiB p/s ETA 6s82.62 MiB / 134.12 MiB [---------------------------------------------------------------------------------------------------------->__________________________________________________________________] 61.61% 8.73 MiB p/s ETA 5s87.53 MiB / 134.12 MiB [---------------------------------------------------------------------------------------------------------------->____________________________________________________________] 65.26% 9.76 MiB p/s ETA 4s92.47 MiB / 134.12 MiB [----------------------------------------------------------------------------------------------------------------------->_____________________________________________________] 68.95% 9.76 MiB p/s ETA 4s97.41 MiB / 134.12 MiB [----------------------------------------------------------------------------------------------------------------------------->_______________________________________________] 72.63% 9.76 MiB p/s ETA 3s102.34 MiB / 134.12 MiB [---------------------------------------------------------------------------------------------------------------------------------->________________________________________] 76.31% 10.73 MiB p/s ETA 2s107.28 MiB / 134.12 MiB [---------------------------------------------------------------------------------------------------------------------------------------->__________________________________] 79.99% 10.73 MiB p/s ETA 2s112.19 MiB / 134.12 MiB [----------------------------------------------------------------------------------------------------------------------------------------------->___________________________] 83.65% 10.73 MiB p/s ETA 2s117.12 MiB / 134.12 MiB [----------------------------------------------------------------------------------------------------------------------------------------------------->_____________________] 87.33% 11.62 MiB p/s ETA 1s122.03 MiB / 134.12 MiB [----------------------------------------------------------------------------------------------------------------------------------------------------------->_______________] 90.99% 11.62 MiB p/s ETA 1s125.59 MiB / 134.12 MiB [---------------------------------------------------------------------------------------------------------------------------------------------------------------->__________] 93.64% 11.62 MiB p/s ETA 0s127.75 MiB / 134.12 MiB [------------------------------------------------------------------------------------------------------------------------------------------------------------------>________] 95.25% 12.00 MiB p/s ETA 0s132.59 MiB / 134.12 MiB [------------------------------------------------------------------------------------------------------------------------------------------------------------------------->_] 98.86% 12.00 MiB p/s ETA 0s134.12 MiB / 134.12 MiB [------------------------------------------------------------------------------------------------------------------------------------------------------------------------->] 100.00% 12.00 MiB p/s ETA 0s134.12 MiB / 134.12 MiB [------------------------------------------------------------------------------------------------------------------------------------------------------------------------->] 100.00% 11.91 MiB p/s ETA 0s134.12 MiB / 134.12 MiB [------------------------------------------------------------------------------------------------------------------------------------------------------------------------->] 100.00% 11.91 MiB p/s ETA 0s134.12 MiB / 134.12 MiB [------------------------------------------------------------------------------------------------------------------------------------------------------------------------->] 100.00% 11.91 MiB p/s ETA 0s134.12 MiB / 134.12 MiB [------------------------------------------------------------------------------------------------------------------------------------------------------------------------->] 100.00% 11.14 MiB p/s ETA 0s134.12 MiB / 134.12 MiB [------------------------------------------------------------------------------------------------------------------------------------------------------------------------->] 100.00% 11.14 MiB p/s ETA 0s134.12 MiB / 134.12 MiB [------------------------------------------------------------------------------------------------------------------------------------------------------------------------->] 100.00% 11.14 MiB p/s ETA 0s134.12 MiB / 134.12 MiB [------------------------------------------------------------------------------------------------------------------------------------------------------------------------->] 100.00% 10.43 MiB p/s ETA 0s134.12 MiB / 134.12 MiB [------------------------------------------------------------------------------------------------------------------------------------------------------------------------->] 100.00% 10.43 MiB p/s ETA 0s134.12 MiB / 134.12 MiB [------------------------------------------------------------------------------------------------------------------------------------------------------------------------->] 100.00% 10.43 MiB p/s ETA 0s134.12 MiB / 134.12 MiB [-------------------------------------------------------------------------------------------------------------------------------------------------------------------------->] 100.00% 9.75 MiB p/s ETA 0s134.12 MiB / 134.12 MiB [-------------------------------------------------------------------------------------------------------------------------------------------------------------------------->] 100.00% 9.75 MiB p/s ETA 0s134.12 MiB / 134.12 MiB [----------------------------------------------------------------------------------------------------------------------------------------------------------------------------] 100.00% 15.44 MiB p/s 8.9s2026-11-16T14:00:33+04:00	INFO	[vulndb] Artifact successfully downloaded	repo="mirror.gcr.io/aquasec/trivy-db:2"
+Version: 0.76.2
+Vulnerability DB:
+  Version: 2
+  UpdatedAt: 2026-11-16 07:10:39.763774809 +0000 UTC
+  NextUpdate: 2026-11-17 07:10:39.763774549 +0000 UTC
+  DownloadedAt: 2026-11-16 10:00:33.664215685 +0000 UTC
+# exit 0
+
+$ { echo "Scan of images A and B, $(date -u +%FT%TZ)"; echo; bash tools/versions.sh; echo; echo "== Grype database:"; grype db status; echo; echo "== Trivy:"; trivy version; } > reports/before/scanner-versions.txt && cat reports/before/scanner-versions.txt
+# at 10:00:45 in /home/ubuntu/chainguard-technical-challenge
+Scan of images A and B, 2026-11-16T10:00:45Z
+
+ubuntu       24.04.5 LTS (Noble Numbat)
+kernel       6.8.0-147-generic (aarch64)
+docker       29.9.3
+containerd   v2.4.2
+buildx       v0.39.0
+go           go1.27.4
+grype        0.121.3
+syft         1.57.1
+trivy        0.76.2
+govulncheck  v1.9.0
+cosign       v3.1.4
+crane        v0.22.1
+kubectl      v1.37.2
+
+== Grype database:
+Path:      /home/ubuntu/.cache/grype/db/6/vulnerability.db
+Schema:    v6.1.10
+Built:     2026-11-16T06:30:54Z
+From:      https://grype.anchore.io/databases/v6/vulnerability-db_v6.1.10_2026-11-15T16:11:12Z_1794810654.tar.zst?checksum=sha256%3Add51add686f29657dd7d71af8dc61d33cbb3e99772e263d2949b7adec4ce4102
+Status:    valid
+
+== Trivy:
+Version: 0.76.2
+Vulnerability DB:
+  Version: 2
+  UpdatedAt: 2026-11-16 07:10:39.763774809 +0000 UTC
+  NextUpdate: 2026-11-17 07:10:39.763774549 +0000 UTC
+  DownloadedAt: 2026-11-16 10:00:33.664215685 +0000 UTC
+# exit 0
+
+$ grype hello:a --by-cve -o table=reports/before/a-grype.txt -o json=reports/before/a-grype.json -o sarif=reports/before/a-grype.sarif
+# at 10:00:59 in /home/ubuntu/chainguard-technical-challenge
+# exit 0
+
+$ grype hello:b --by-cve -o table=reports/before/b-grype.txt -o json=reports/before/b-grype.json -o sarif=reports/before/b-grype.sarif
+# at 10:01:16 in /home/ubuntu/chainguard-technical-challenge
+# exit 0
+
+$ ls -l reports/before/*-grype.* && bash tools/count.sh reports/before/a-grype.json reports/before/b-grype.json
+# at 10:01:24 in /home/ubuntu/chainguard-technical-challenge
+-rw-r--r-- 1 ubuntu ubuntu 53955873 Nov 16 14:01 reports/before/a-grype.json
+-rw-r--r-- 1 ubuntu ubuntu  8024521 Nov 16 14:01 reports/before/a-grype.sarif
+-rw-r--r-- 1 ubuntu ubuntu   347820 Nov 16 14:01 reports/before/a-grype.txt
+-rw-r--r-- 1 ubuntu ubuntu  1290435 Nov 16 14:01 reports/before/b-grype.json
+-rw-r--r-- 1 ubuntu ubuntu  1017783 Nov 16 14:01 reports/before/b-grype.sarif
+-rw-r--r-- 1 ubuntu ubuntu    46704 Nov 16 14:01 reports/before/b-grype.txt
+== reports/before/a-grype.json
+  findings:    2345
+  unique IDs:  734
+  by severity: Critical=46  High=225  Medium=230  Low=38  Negligible=194  Unknown=1
+  by layer:    go-module=17  go-stdlib=87  os-binary=118  os-deb=603
+  fixable:     374
+== reports/before/b-grype.json
+  findings:    277
+  unique IDs:  161
+  by severity: Critical=5  High=55  Medium=59  Low=9  Negligible=26  Unknown=7
+  by layer:    go-module=17  go-stdlib=60  os-deb=92
+  fixable:     72
+# exit 0
+
+$ echo "== A: artifacts of type binary (count of matches, name, version):"; jq -r "[.matches[] | select(.artifact.type==\"binary\") | \"\(.artifact.name) \(.artifact.version)\"] | group_by(.) | map(\"\(length)  \(.[0])\")[]" reports/before/a-grype.json; echo; echo "== A: stdlib matches by Go version (unique CVE IDs per version):"; jq -r "[.matches[] | select(.artifact.name==\"stdlib\") | {v: .artifact.version, id: .vulnerability.id}] | unique | group_by(.v) | map(\"\(length) unique IDs  stdlib \(.[0].v)\")[]" reports/before/a-grype.json; echo; echo "== B: stdlib matches by Go version:"; jq -r "[.matches[] | select(.artifact.name==\"stdlib\") | {v: .artifact.version, id: .vulnerability.id}] | unique | group_by(.v) | map(\"\(length) unique IDs  stdlib \(.[0].v)\")[]" reports/before/b-grype.json
+# at 10:01:47 in /home/ubuntu/chainguard-technical-challenge
+== A: artifacts of type binary (count of matches, name, version):
+118  go 1.18.10
+
+== A: stdlib matches by Go version (unique CVE IDs per version):
+87 unique IDs  stdlib go1.18.10
+
+== B: stdlib matches by Go version:
+60 unique IDs  stdlib go1.18.10
+# exit 0
+
+$ echo "== A, stdlib CVEs on the app binary /app/hello-server only:"; jq "[.matches[] | select(.artifact.name==\"stdlib\" and (.artifact.locations[0].path==\"/app/hello-server\")) | .vulnerability.id] | unique | length" reports/before/a-grype.json; echo "== same set as B? (IDs in A-app minus B, then B minus A-app):"; diff <(jq -r "[.matches[] | select(.artifact.name==\"stdlib\" and .artifact.locations[0].path==\"/app/hello-server\") | .vulnerability.id] | unique[]" reports/before/a-grype.json) <(jq -r "[.matches[] | select(.artifact.name==\"stdlib\") | .vulnerability.id] | unique[]" reports/before/b-grype.json) && echo "identical"; echo "== where the 27 extra stdlib IDs in A are found (first 6 programs):"; jq -r "([.matches[] | select(.artifact.name==\"stdlib\" and .artifact.locations[0].path==\"/app/hello-server\") | .vulnerability.id] | unique) as \$app | [.matches[] | select(.artifact.name==\"stdlib\" and ((.vulnerability.id) as \$i | \$app | index(\$i) | not)) | .artifact.locations[0].path] | group_by(.) | map(\"\(length)  \(.[0])\")[]" reports/before/a-grype.json | sort -rn | head -6
+# at 10:02:08 in /home/ubuntu/chainguard-technical-challenge
+== A, stdlib CVEs on the app binary /app/hello-server only:
+60
+== same set as B? (IDs in A-app minus B, then B minus A-app):
+identical
+== where the 27 extra stdlib IDs in A are found (first 6 programs):
+21  /usr/local/go/bin/go
+19  /usr/local/go/pkg/tool/linux_arm64/pprof
+13  /usr/local/go/pkg/tool/linux_arm64/trace
+6  /usr/local/go/pkg/tool/linux_arm64/cover
+5  /usr/local/go/pkg/tool/linux_arm64/vet
+4  /usr/local/go/pkg/tool/linux_arm64/fix
+# exit 0
+
+$ trivy image --no-progress --format json --output reports/before/a-trivy.json hello:a 2>&1 | tail -4 && trivy convert --format table --output reports/before/a-trivy.txt reports/before/a-trivy.json && trivy convert --format sarif --output reports/before/a-trivy.sarif reports/before/a-trivy.json
+# at 10:02:31 in /home/ubuntu/chainguard-technical-challenge
+2026-11-16T14:02:36+04:00	INFO	[node-pkg] Detecting vulnerabilities...
+2026-11-16T14:02:36+04:00	WARN	Using severities from other vendors for some vulnerabilities. Read https://trivy.dev/docs/v0.76/guide/scanner/vulnerability#severity-selection for details.
+2026-11-16T14:02:38+04:00	WARN	This OS version is no longer supported by the distribution	family="debian" version="11.6"
+2026-11-16T14:02:38+04:00	WARN	The vulnerability detection may be insufficient because security updates are not provided
+2026-11-16T14:02:39+04:00	WARN	[report] No enabled scanners found. Summary table will not be displayed.
+# exit 0
+
+$ trivy image --no-progress --format json --output reports/before/b-trivy.json hello:b 2>&1 | tail -4 && trivy convert --format table --output reports/before/b-trivy.txt reports/before/b-trivy.json && trivy convert --format sarif --output reports/before/b-trivy.sarif reports/before/b-trivy.json
+# at 10:02:41 in /home/ubuntu/chainguard-technical-challenge
+2026-11-16T14:02:41+04:00	INFO	[debian] Detecting vulnerabilities...	os_version="13" pkg_num=78
+2026-11-16T14:02:41+04:00	INFO	Number of language-specific files	num=1
+2026-11-16T14:02:41+04:00	INFO	[gobinary] Detecting vulnerabilities...
+2026-11-16T14:02:41+04:00	WARN	Using severities from other vendors for some vulnerabilities. Read https://trivy.dev/docs/v0.76/guide/scanner/vulnerability#severity-selection for details.
+2026-11-16T14:02:41+04:00	WARN	[report] No enabled scanners found. Summary table will not be displayed.
+# exit 0
+
+$ ls -l reports/before/*-trivy.* && bash tools/count.sh reports/before/a-trivy.json reports/before/b-trivy.json
+# at 10:02:42 in /home/ubuntu/chainguard-technical-challenge
+-rw-rw-r-- 1 ubuntu ubuntu 80210350 Nov 16 14:02 reports/before/a-trivy.json
+-rw-rw-r-- 1 ubuntu ubuntu 63711431 Nov 16 14:02 reports/before/a-trivy.sarif
+-rw-rw-r-- 1 ubuntu ubuntu 14446704 Nov 16 14:02 reports/before/a-trivy.txt
+-rw-rw-r-- 1 ubuntu ubuntu  1909439 Nov 16 14:02 reports/before/b-trivy.json
+-rw-rw-r-- 1 ubuntu ubuntu   995178 Nov 16 14:02 reports/before/b-trivy.sarif
+-rw-rw-r-- 1 ubuntu ubuntu   422431 Nov 16 14:02 reports/before/b-trivy.txt
+== reports/before/a-trivy.json
+  findings:    14338
+  unique IDs:  10856
+  by severity: CRITICAL=36  HIGH=1787  MEDIUM=7365  LOW=1646  UNKNOWN=22
+  by layer:    go-module=64  go-stdlib=104  os-debian=10700
+  fixable:     4891
+== reports/before/b-trivy.json
+  findings:    373
+  unique IDs:  253
+  by severity: CRITICAL=4  HIGH=80  MEDIUM=123  LOW=39  UNKNOWN=7
+  by layer:    go-module=64  go-stdlib=104  os-debian=96
+  fixable:     160
+# exit 0
+
+$ echo "== Trivy, image A: unique CVE IDs per Debian package (top 5):"; jq -r "[.Results[]? | select(.Type==\"debian\") | .Vulnerabilities[]? | {p: .PkgName, id: .VulnerabilityID}] | unique | group_by(.p) | map(\"\(length)  \(.[0].p)\") | .[]" reports/before/a-trivy.json | sort -rn | head -5; echo; echo "== Grype, image A: unique CVE IDs on linux-libc-dev:"; jq "[.matches[] | select(.artifact.name==\"linux-libc-dev\") | .vulnerability.id] | unique | length" reports/before/a-grype.json; echo "== is linux-libc-dev in Grype inventory of A at all?"; jq -r "[.source.target.userInput] | .[0]" reports/before/a-grype.json; docker run --rm --entrypoint dpkg-query hello:a -W linux-libc-dev; echo "== in B?"; docker run --rm --entrypoint dpkg-query hello:b -W linux-libc-dev 2>&1 | tail -1
+# at 10:03:09 in /home/ubuntu/chainguard-technical-challenge
+== Trivy, image A: unique CVE IDs per Debian package (top 5):
+9928  linux-libc-dev
+107  libctf0
+107  libctf-nobfd0
+107  libbinutils
+107  binutils-common
+
+== Grype, image A: unique CVE IDs on linux-libc-dev:
+0
+== is linux-libc-dev in Grype inventory of A at all?
+hello:a
+linux-libc-dev:arm64	5.10.158-2
+== in B?
+dpkg-query: no packages found matching linux-libc-dev
+# exit 0
+
+$ grype config 2>/dev/null | grep -n -i -B3 -A1 "kernel"
+# at 10:03:19 in /home/ubuntu/chainguard-technical-challenge
+227-# VEX statuses to consider as ignored rules (env: GRYPE_VEX_ADD)
+228-vex-add: []
+229-
+230:# match kernel-header packages with upstream kernel as kernel vulnerabilities (env: GRYPE_MATCH_UPSTREAM_KERNEL_HEADERS)
+231:match-upstream-kernel-headers: false
+232-
+# exit 0
+
+$ grype dir:./go --by-cve -o table=reports/before/src-grype.txt -o json=reports/before/src-grype.json -o sarif=reports/before/src-grype.sarif && bash tools/count.sh reports/before/src-grype.json && echo "== modules with CVEs: source scan vs the binary in B:" && diff <(jq -r "[.matches[] | select(.artifact.type==\"go-module\" and .artifact.name!=\"stdlib\") | .artifact.name] | unique[]" reports/before/src-grype.json) <(jq -r "[.matches[] | select(.artifact.type==\"go-module\" and .artifact.name!=\"stdlib\") | .artifact.name] | unique[]" reports/before/b-grype.json) && echo "same modules"
+# at 10:03:41 in /home/ubuntu/chainguard-technical-challenge
+[0000]  WARN no explicit name and version provided for directory source, deriving artifact ID from the given path (which is not ideal) from=syft
+== reports/before/src-grype.json
+  findings:    66
+  unique IDs:  66
+  by severity: Critical=9  High=28  Medium=27  Low=1  Unknown=1
+  by layer:    go-module=66
+  fixable:     66
+== modules with CVEs: source scan vs the binary in B:
+2d1
+< golang.org/x/crypto
+4d2
+< golang.org/x/sys
+6,7d3
+< google.golang.org/protobuf
+< gopkg.in/yaml.v3
+# exit 1
+
+$ (cd go && govulncheck ./...) > reports/before/govulncheck-source.txt 2>&1; echo "govulncheck source exit code: $?"; grep -E "^(Your code|=== |Vulnerability #)" reports/before/govulncheck-source.txt | head -20; tail -4 reports/before/govulncheck-source.txt
+# at 10:04:46 in /home/ubuntu/chainguard-technical-challenge
+govulncheck source exit code: 3
+=== Symbol Results ===
+Vulnerability #1: GO-2026-6617
+Vulnerability #2: GO-2026-6612
+Vulnerability #3: GO-2026-6611
+Vulnerability #4: GO-2026-6603
+Vulnerability #5: GO-2024-2687
+Vulnerability #6: GO-2023-2102
+Vulnerability #7: GO-2023-1571
+Vulnerability #8: GO-2022-1144
+Vulnerability #9: GO-2022-0969
+Vulnerability #10: GO-2022-0288
+Vulnerability #11: GO-2022-0236
+Your code is affected by 11 vulnerabilities from 1 module.
+This scan also found 8 vulnerabilities in packages you import and 44
+vulnerabilities in modules you require, but your code doesn't appear to call
+these vulnerabilities.
+Use '-show verbose' for more details.
+# exit 0
+
+$ echo "== the 11 reachable: module, found in, fixed in:"; grep -A8 "^Vulnerability #" reports/before/govulncheck-source.txt | grep -E "Found in|Fixed in" | sort | uniq -c | sort -rn | head -6
+# at 10:05:01 in /home/ubuntu/chainguard-technical-challenge
+== the 11 reachable: module, found in, fixed in:
+     11     Found in: golang.org/x/net@v0.0.0-20210226172049-e18ecbb05110
+      4     Fixed in: golang.org/x/net@v0.60.0
+      1     Fixed in: golang.org/x/net@v0.7.0
+      1     Fixed in: golang.org/x/net@v0.4.0
+      1     Fixed in: golang.org/x/net@v0.23.0
+      1     Fixed in: golang.org/x/net@v0.17.0
+# exit 0
+
+$ docker create --name tmp-b hello:b >/dev/null && docker cp tmp-b:/usr/local/bin/hello-server ./hello-server-b && docker rm tmp-b >/dev/null && go version -m ./hello-server-b | head -1 && govulncheck -mode binary ./hello-server-b > reports/before/govulncheck-binary-b.txt 2>&1; echo "govulncheck binary exit code: $?"; tail -5 reports/before/govulncheck-binary-b.txt
+# at 10:05:01 in /home/ubuntu/chainguard-technical-challenge
+./hello-server-b: go1.18.10
+govulncheck binary exit code: 3
+Your code is affected by 62 vulnerabilities from 2 modules and the Go standard library.
+This scan also found 32 vulnerabilities in packages you import and 55
+vulnerabilities in modules you require, but your code doesn't appear to call
+these vulnerabilities.
+Use '-show verbose' for more details.
+# exit 0
+
+$ echo "== binary mode, the 62 reachable, by where they are found:"; awk "/^=== Symbol Results ===/{f=1} /^=== Package Results ===/{f=0} f" reports/before/govulncheck-binary-b.txt | grep "Found in:" | sed -E "s/@.*//" | sort | uniq -c | sort -rn
+# at 10:05:15 in /home/ubuntu/chainguard-technical-challenge
+== binary mode, the 62 reachable, by where they are found:
+     12     Found in: golang.org/x/net
+     11     Found in: net/http
+     11     Found in: html/template
+     10     Found in: crypto/x509
+     10     Found in: crypto/tls
+      3     Found in: net/textproto
+      2     Found in: net/url
+      2     Found in: net/http/internal
+      2     Found in: mime/multipart
+      2     Found in: encoding/asn1
+      1     Found in: runtime
+      1     Found in: os
+      1     Found in: net
+      1     Found in: golang.org/x/text
+      1     Found in: encoding/pem
+# exit 0
+
+$ F=reports/before/govulncheck-binary-b.txt; echo "== govulncheck -mode binary on B (go1.18.10): $(grep "^Your code is affected" $F)"; awk "/^=== Symbol Results ===/{f=1} /^=== Package Results ===/{f=0} f" $F | grep "Found in:" | sed -E "s/ *Found in: //; s/@.*//" | awk "{ if (\$1 ~ /^[a-z0-9-]+\\.[a-z]/) m[\$1]++; else s++ } END { printf \"  Go standard library: %d\n\", s; for (k in m) printf \"  module %s: %d\n\", k, m[k] }"; echo; echo "== source mode on go/ (judged by Go 1.27.4): $(grep "^Your code is affected" reports/before/govulncheck-source.txt)"; echo "  all 11 in: golang.org/x/net@v0.0.0-20210226172049-e18ecbb05110"
+# at 10:05:27 in /home/ubuntu/chainguard-technical-challenge
+== govulncheck -mode binary on B (go1.18.10): Your code is affected by 62 vulnerabilities from 2 modules and the Go standard library.
+  Go standard library: 57
+  module golang.org/x/text: 1
+  module golang.org/x/net: 12
+
+== source mode on go/ (judged by Go 1.27.4): Your code is affected by 11 vulnerabilities from 1 module.
+  all 11 in: golang.org/x/net@v0.0.0-20210226172049-e18ecbb05110
+# exit 0
+
+$ F=reports/before/govulncheck-binary-b.txt; echo "== govulncheck -mode binary on B (go1.18.10): $(grep "^Your code is affected" $F)"; awk "/^=== Symbol Results ===/{f=1} /^=== Package Results ===/{f=0} f" $F | awk "/^Vulnerability #/{n++; seen=0} /Found in:/ && !seen { seen=1; sub(/.*Found in: /,\"\"); sub(/@.*/,\"\"); if (\$1 ~ /^[a-z0-9-]+\\.[a-z]/) m[\$1]++; else s++ } END { printf \"  counted per vulnerability: %d\n  Go standard library: %d\n\", n, s; for (k in m) printf \"  module %s: %d\n\", k, m[k] }"; echo; echo "== source mode on go/ (judged by Go 1.27.4): $(grep "^Your code is affected" reports/before/govulncheck-source.txt)"; echo "  all 11 in: golang.org/x/net@v0.0.0-20210226172049-e18ecbb05110"
+# at 10:05:47 in /home/ubuntu/chainguard-technical-challenge
+== govulncheck -mode binary on B (go1.18.10): Your code is affected by 62 vulnerabilities from 2 modules and the Go standard library.
+  counted per vulnerability: 62
+  Go standard library: 49
+  module golang.org/x/text: 1
+  module golang.org/x/net: 12
+
+== source mode on go/ (judged by Go 1.27.4): Your code is affected by 11 vulnerabilities from 1 module.
+  all 11 in: golang.org/x/net@v0.0.0-20210226172049-e18ecbb05110
+# exit 0
+
+$ bash tools/count.sh reports/before/a-grype.json reports/before/b-grype.json reports/before/a-trivy.json reports/before/b-trivy.json reports/before/src-grype.json
+# at 10:06:01 in /home/ubuntu/chainguard-technical-challenge
+== reports/before/a-grype.json
+  findings:    2345
+  unique IDs:  734
+  by severity: Critical=46  High=225  Medium=230  Low=38  Negligible=194  Unknown=1
+  by layer:    go-module=17  go-stdlib=87  os-binary=118  os-deb=603
+  fixable:     374
+== reports/before/b-grype.json
+  findings:    277
+  unique IDs:  161
+  by severity: Critical=5  High=55  Medium=59  Low=9  Negligible=26  Unknown=7
+  by layer:    go-module=17  go-stdlib=60  os-deb=92
+  fixable:     72
+== reports/before/a-trivy.json
+  findings:    14338
+  unique IDs:  10856
+  by severity: CRITICAL=36  HIGH=1787  MEDIUM=7365  LOW=1646  UNKNOWN=22
+  by layer:    go-module=64  go-stdlib=104  os-debian=10700
+  fixable:     4891
+== reports/before/b-trivy.json
+  findings:    373
+  unique IDs:  253
+  by severity: CRITICAL=4  HIGH=80  MEDIUM=123  LOW=39  UNKNOWN=7
+  by layer:    go-module=64  go-stdlib=104  os-debian=96
+  fixable:     160
+== reports/before/src-grype.json
+  findings:    66
+  unique IDs:  66
+  by severity: Critical=9  High=28  Medium=27  Low=1  Unknown=1
+  by layer:    go-module=66
+  fixable:     66
+# exit 0
+
+$ echo "== image B, Grype, Critical findings (what multi-stage did not remove):"; head -1 reports/before/b-grype.txt; grep -w Critical reports/before/b-grype.txt
+# at 10:06:05 in /home/ubuntu/chainguard-technical-challenge
+== image B, Grype, Critical findings (what multi-stage did not remove):
+NAME                      INSTALLED                           FIXED IN                           TYPE       VULNERABILITY     SEVERITY    EPSS           RISK          
+stdlib                    go1.18.10                           *1.19.8, 1.20.3                    go-module  CVE-2023-24538    Critical    2.3% (83rd)    2.1           
+stdlib                    go1.18.10                           *1.19.9, 1.20.4                    go-module  CVE-2023-24540    Critical    1.6% (75th)    1.5           
+stdlib                    go1.18.10                           *1.24.13, 1.25.7, 1.26.0-rc.3      go-module  CVE-2025-68121    Critical    0.9% (60th)    0.9           
+golang.org/x/net          v0.0.0-20210226172049-e18ecbb05110  0.60.0                             go-module  CVE-2026-78663    Critical    0.9% (59th)    0.8           
+stdlib                    go1.18.10                           1.26.9                             go-module  CVE-2026-78663    Critical    0.9% (59th)    0.8           
+stdlib                    go1.18.10                           *1.23.8, 1.24.2                    go-module  CVE-2025-22871    Critical    0.8% (58th)    0.8           
+# exit 0
+
+$ gzip -k -9 -f reports/before/a-grype.json reports/before/a-trivy.json reports/before/a-trivy.sarif && ls -l reports/before/ && du -sh reports/before
+# at 10:06:43 in /home/ubuntu/chainguard-technical-challenge
+total 244188
+-rw-r--r-- 1 ubuntu ubuntu 53955873 Nov 16 14:01 a-grype.json
+-rw-r--r-- 1 ubuntu ubuntu  6368864 Nov 16 14:01 a-grype.json.gz
+-rw-r--r-- 1 ubuntu ubuntu  8024521 Nov 16 14:01 a-grype.sarif
+-rw-r--r-- 1 ubuntu ubuntu   347820 Nov 16 14:01 a-grype.txt
+-rw-rw-r-- 1 ubuntu ubuntu 80210350 Nov 16 14:02 a-trivy.json
+-rw-rw-r-- 1 ubuntu ubuntu 10940363 Nov 16 14:02 a-trivy.json.gz
+-rw-rw-r-- 1 ubuntu ubuntu 63711431 Nov 16 14:02 a-trivy.sarif
+-rw-rw-r-- 1 ubuntu ubuntu  5785224 Nov 16 14:02 a-trivy.sarif.gz
+-rw-rw-r-- 1 ubuntu ubuntu 14446704 Nov 16 14:02 a-trivy.txt
+-rw-r--r-- 1 ubuntu ubuntu  1290435 Nov 16 14:01 b-grype.json
+-rw-r--r-- 1 ubuntu ubuntu  1017783 Nov 16 14:01 b-grype.sarif
+-rw-r--r-- 1 ubuntu ubuntu    46704 Nov 16 14:01 b-grype.txt
+-rw-rw-r-- 1 ubuntu ubuntu  1909439 Nov 16 14:02 b-trivy.json
+-rw-rw-r-- 1 ubuntu ubuntu   995178 Nov 16 14:02 b-trivy.sarif
+-rw-rw-r-- 1 ubuntu ubuntu   422431 Nov 16 14:02 b-trivy.txt
+-rw-rw-r-- 1 ubuntu ubuntu    25674 Nov 16 14:05 govulncheck-binary-b.txt
+-rw-rw-r-- 1 ubuntu ubuntu    20491 Nov 16 14:04 govulncheck-source.txt
+-rw-rw-r-- 1 ubuntu ubuntu      918 Nov 16 14:00 scanner-versions.txt
+-rw-r--r-- 1 ubuntu ubuntu   313399 Nov 16 14:04 src-grype.json
+-rw-r--r-- 1 ubuntu ubuntu   159342 Nov 16 14:04 src-grype.sarif
+-rw-r--r-- 1 ubuntu ubuntu    11323 Nov 16 14:04 src-grype.txt
+239M	reports/before
+# exit 0
+
+$ git add -A && git status --short && git commit -q -m "step 09: scans of A and B (Grype, Trivy, source, govulncheck) with JSON, SARIF and tables" && git push -q origin main && git log --oneline -1 && git status -sb | head -1 && du -sh .git
+# at 10:08:29 in /home/ubuntu/chainguard-technical-challenge
+M  .gitignore
+M  JOURNAL.md
+M  REPORT.md
+M  RUNBOOK.md
+A  demo/screenshots/09-scan-b-criticals.png
+A  demo/screenshots/09-scan-counts.png
+A  demo/screenshots/09-scan-govulncheck.png
+A  demo/screenshots/09-scan-grype-breakdown.png
+A  demo/screenshots/09-scan-trivy-kernel-headers.png
+A  demo/screenshots/09-scan-versions-db.png
+M  logs/08-image-b.log
+A  logs/09-scan-ab-mac.log
+A  logs/09-scan-ab.log
+A  reports/before/a-grype.json.gz
+A  reports/before/a-grype.sarif
+A  reports/before/a-grype.txt
+A  reports/before/a-trivy.json.gz
+A  reports/before/a-trivy.sarif.gz
+A  reports/before/a-trivy.txt
+A  reports/before/b-grype.json
+A  reports/before/b-grype.sarif
+A  reports/before/b-grype.txt
+A  reports/before/b-trivy.json
+A  reports/before/b-trivy.sarif
+A  reports/before/b-trivy.txt
+A  reports/before/govulncheck-binary-b.txt
+A  reports/before/govulncheck-source.txt
+A  reports/before/scanner-versions.txt
+A  reports/before/src-grype.json
+A  reports/before/src-grype.sarif
+A  reports/before/src-grype.txt
+A  tools/count.sh
+M  tools/sync-to-mac.sh
+e5be6f0 step 09: scans of A and B (Grype, Trivy, source, govulncheck) with JSON, SARIF and tables
+## main...origin/main
+31M	.git
+# exit 0

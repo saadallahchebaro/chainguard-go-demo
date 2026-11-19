@@ -1,0 +1,18 @@
+{
+  "scanned_on": "2026-11-16T13:45:55Z",
+  "grype": {
+    "version": "0.121.3",
+    "db_schema": "v6.1.10",
+    "db_built": "2026-11-16T06:30:54Z"
+  },
+  "trivy": {
+    "version": "0.76.2",
+    "db_updated": "2026-11-16T07:10:39.763774809Z"
+  },
+  "govulncheck": "govulncheck@v1.9.0",
+  "kev_catalog": {
+    "catalogVersion": "2026.11.13",
+    "dateReleased": "2026-11-13T20:24:18.3008Z",
+    "count": 1781
+  }
+}

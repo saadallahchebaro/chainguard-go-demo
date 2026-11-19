@@ -1,0 +1,4 @@
+$ multipass transfer JOURNAL.md RUNBOOK.md REPORT.md, demo/screenshots/05-*.png -> repo (tools/versions.sh copied earlier)
+transferred OK
+$ multipass transfer JOURNAL.md RUNBOOK.md, demo/screenshots/05-sanity-old-toolchain.png -> repo (findings register)
+transferred OK

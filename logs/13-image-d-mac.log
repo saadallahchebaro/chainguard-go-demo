@@ -1,0 +1,11 @@
+$ multipass transfer go-patched/main.go -> repo (the patched main.go, written on the Mac)
+transferred OK
+
+$ multipass transfer dockerfiles/Dockerfile.d-patched -> repo (written on the Mac)
+transferred OK
+
+$ multipass transfer dockerfiles/Dockerfile.d-golang -> repo (written on the Mac)
+transferred OK
+
+$ multipass transfer JOURNAL.md RUNBOOK.md REPORT.md, demo/screenshots/13-*.png -> repo
+transferred OK

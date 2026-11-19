@@ -1,0 +1,28 @@
+# Image E: the app itself is fixed. Built at step 13, when it was called D; renamed E at step 37, same digest.
+# Changes from D, all in the app's own code and settings, which no scanner sees:
+#   - the build context is go-patched/: the same go.mod and go.sum as D, and main.go patched (trust no proxies,
+#     finding F2; an http.Server with timeouts, finding F8)
+#   - the runtime sets GIN_MODE=release (finding F1)
+# Everything else is as in D: Chainguard's go image (Go 1.27.4) builds, C's static image runs, same digests.
+# Build from the repo folder:  docker build -t hello:e -f dockerfiles/Dockerfile.e-patched ./go-patched
+# Stage 1: build. Digest from `crane digest cgr.dev/chainguard/go:latest`, signature verified with cosign
+# (signer: chainguard-images/images release.yaml on main). Runs as root with a shell, so RUN works; none of it ships.
+FROM cgr.dev/chainguard/go:latest@sha256:64c93a14feeb5320f251691bab838fd580721f45cb090697a5c1b0a482e503cb AS build
+# The image sets GOTOOLCHAIN=local+auto, which downloads a newer Go mid-build if go.mod asks for one.
+# local = build with this image's Go, or fail with a clear error (then update the digest on purpose).
+ENV GOTOOLCHAIN=local
+WORKDIR /app
+COPY go.mod go.sum ./
+RUN go mod download
+COPY . .
+RUN CGO_ENABLED=0 go build -o hello-server .
+
+# Stage 2: runtime. Same static digest as image C.
+FROM cgr.dev/chainguard/static:latest@sha256:fc42af33e643f20d08baf03cddcc1c02ba57052dfb02edb0d79f3fc47bcea8d9
+COPY --from=build /app/hello-server /usr/local/bin/hello-server
+# static's default user (nonroot, 65532:65532), kept as in B and C
+USER 65532
+# Gin's release mode: no debug output (finding F1)
+ENV GIN_MODE=release
+EXPOSE 8080
+ENTRYPOINT ["/usr/local/bin/hello-server"]

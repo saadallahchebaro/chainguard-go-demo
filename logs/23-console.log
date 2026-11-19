@@ -1,0 +1,60 @@
+
+===== STEP 23-console · 2026-11-16T18:25:36Z · chainguard
+
+# NOTE: Step 23: speaker notes for all 58 slides (deck kept outside the repo), BUILD-JOURNAL.md, and demo/console/, a local page that runs each demo step; full live run through it: hello-ai pull request #3, gate runs 43925338149 (fail) and 43926022623 (pass), merge 4e49991, deploy run 43926245530.
+
+$ echo "== key or token material among the files to commit: $(git add -A -n | awk "{print \$2}" | sed "s/^.//; s/.$//" | grep -v -x -e logs/22b-provenance.log -e logs/23-console.log | xargs grep -l -E "PRIVATE KEY-----$|ghp_[A-Za-z0-9]{20,}|github_pat_[A-Za-z0-9]{10,}" 2>/dev/null | wc -l) files"; git add -A && git status --short | wc -l && git commit -q -m "step 23: detailed speaker notes, the build journal, and a demo console tested live end to end" && git push -q origin main && git log --oneline -1 && git status -sb | head -1
+# at 18:25:37 in /home/ubuntu/chainguard-technical-challenge
+== key or token material among the files to commit: 0 files
+19
+e33986d step 23: detailed speaker notes, the build journal, and a demo console tested live end to end
+## main...origin/main
+# exit 0
+
+$ git add -A && git commit -q -m "demo console: gh stays on the personal account after a demo" && git push -q origin main && git log --oneline -1 && git status -sb | head -1
+# at 18:33:10 in /home/ubuntu/chainguard-technical-challenge
+368973d demo console: gh stays on the personal account after a demo
+## main...origin/main
+# exit 0
+
+$ git add -A && git commit -q -m "demo console: both pages fit one screen, panels scroll inside instead of the page" && git push -q origin main && git log --oneline -1 && git status -sb | head -1
+# at 18:50:49 in /home/ubuntu/chainguard-technical-challenge
+a0f04c2 demo console: both pages fit one screen, panels scroll inside instead of the page
+## main...origin/main
+# exit 0
+
+$ git add -A && git commit -q -m "demo console: result card shares the diagram panel, step mapping folds away under the fallbacks, each page shows only its own results" && git push -q origin main && git log --oneline -1 && git status -sb | head -1
+# at 19:07:58 in /home/ubuntu/chainguard-technical-challenge
+1bd40f8 demo console: result card shares the diagram panel, step mapping folds away under the fallbacks, each page shows only its own results
+## main...origin/main
+# exit 0
+
+$ git add -A && git commit -q -m "demo console: diagram takes the whole top panel, fallbacks and last result fold away in the step column" && git push -q origin main && git log --oneline -1 && git status -sb | head -1
+# at 19:11:23 in /home/ubuntu/chainguard-technical-challenge
+00ceb4e demo console: diagram takes the whole top panel, fallbacks and last result fold away in the step column
+## main...origin/main
+# exit 0
+
+$ git add -A && git commit -q -m "demo console: pipeline diagram redrawn on white like a real agentic CI, gate checks and deploy steps light up from the output, production-only parts dashed" && git push -q origin main && git log --oneline -1 && git status -sb | head -1
+# at 19:28:38 in /home/ubuntu/chainguard-technical-challenge
+895fd73 demo console: pipeline diagram redrawn on white like a real agentic CI, gate checks and deploy steps light up from the output, production-only parts dashed
+## main...origin/main
+# exit 0
+
+$ git add -A && git commit -q -m "demo console: Play all runs every CI step hands-off with pause and stop, the diagram fills the panel width, and the step list can be hidden" && git push -q origin main && git log --oneline -1 && git status -sb | head -1
+# at 21:37:43 in /home/ubuntu/chainguard-technical-challenge
+d9006aa demo console: Play all runs every CI step hands-off with pause and stop, the diagram fills the panel width, and the step list can be hidden
+## main...origin/main
+# exit 0
+
+$ git add -A && git commit -q -m "demo console: Call the app stops its port-forward by process id, so the step no longer kills its own shell" && git push -q origin main && git log --oneline -1 && git status -sb | head -1
+# at 05:42:40 in /home/ubuntu/chainguard-technical-challenge
+507c192 demo console: Call the app stops its port-forward by process id, so the step no longer kills its own shell
+## main...origin/main
+# exit 0
+
+$ git add -A && git commit -q -m "demo console: 47 read-only quick answers on the presentation page, result beside the section and the terminal at full width, VS Code over SSH" && git push -q origin main && git log --oneline -1 && git status -sb | head -1
+# at 06:01:49 in /home/ubuntu/chainguard-technical-challenge
+a9fff51 demo console: 47 read-only quick answers on the presentation page, result beside the section and the terminal at full width, VS Code over SSH
+## main...origin/main
+# exit 0

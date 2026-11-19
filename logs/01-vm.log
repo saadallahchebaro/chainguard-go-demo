@@ -1,0 +1,190 @@
+
+===== STEP 01-vm · 2026-11-16T08:22:46Z · chainguard
+
+$ git log --oneline --decorate -5 && git branch -a && ls -la
+# at 08:22:55 in /home/ubuntu/chainguard-technical-challenge
+42fd9eb (HEAD -> main, origin/main, origin/HEAD) updated disclaimer in  README.md
+4a982fb fixed formatting in README.md
+0d05a77 Updated README.md
+6fae6ad moved go into repo, created an additional README.md
+ede268e updated, reduced challenge
+* main
+  remotes/origin/HEAD -> origin/main
+  remotes/origin/main
+total 28
+drwxrwxr-x 5 ubuntu ubuntu 4096 Nov 16 12:22 .
+drwxr-x--- 5 ubuntu ubuntu 4096 Nov 16 12:22 ..
+drwxrwxr-x 8 ubuntu ubuntu 4096 Nov 16 12:22 .git
+-rw-rw-r-- 1 ubuntu ubuntu  132 Nov 16 12:22 .gitignore
+-rw-rw-r-- 1 ubuntu ubuntu 3629 Nov 16 12:22 README.md
+drwxrwxr-x 2 ubuntu ubuntu 4096 Nov 16 12:22 go
+drwxrwxr-x 2 ubuntu ubuntu 4096 Nov 16 12:22 logs
+# exit 0
+
+$ cat .gitignore
+# at 08:23:02 in /home/ubuntu/chainguard-technical-challenge
+# Ignore Git internals (in case of nested repos)
+.git/
+
+# Ignore scanner results
+sbom_scanner_results/
+scanner_results/
+syft-sboms/
+# exit 0
+
+$ sudo apt-get update -q && sudo apt-get install -y -q jq && jq --version
+# at 08:23:14 in /home/ubuntu/chainguard-technical-challenge
+Hit:1 http://ports.ubuntu.com/ubuntu-ports noble InRelease
+Hit:2 http://ports.ubuntu.com/ubuntu-ports noble-updates InRelease
+Hit:3 http://ports.ubuntu.com/ubuntu-ports noble-backports InRelease
+Hit:4 http://ports.ubuntu.com/ubuntu-ports noble-security InRelease
+Reading package lists...
+Reading package lists...
+Building dependency tree...
+Reading state information...
+jq is already the newest version (1.7.1-3ubuntu0.24.04.2).
+jq set to manually installed.
+0 upgraded, 0 newly installed, 0 to remove and 48 not upgraded.
+jq-1.7
+# exit 0
+
+$ git remote rename origin upstream && git remote add origin git@github.com:saadallahchebaro/chainguard-technical-challenge.git && git remote -v
+# at 08:23:28 in /home/ubuntu/chainguard-technical-challenge
+origin	git@github.com:saadallahchebaro/chainguard-technical-challenge.git (fetch)
+origin	git@github.com:saadallahchebaro/chainguard-technical-challenge.git (push)
+upstream	https://github.com/maligin/chainguard-technical-challenge (fetch)
+upstream	https://github.com/maligin/chainguard-technical-challenge (push)
+# exit 0
+
+$ mkdir -p dockerfiles reports/before reports/after reports/final sbom k8s demo/screenshots tools && ls -d */
+# at 08:23:28 in /home/ubuntu/chainguard-technical-challenge
+demo/
+dockerfiles/
+go/
+k8s/
+logs/
+reports/
+sbom/
+tools/
+# exit 0
+
+$ mv ~/.labrc.sh tools/labrc.sh && ln -s ~/chainguard-technical-challenge/tools/labrc.sh ~/.labrc.sh && mv ~/bootstrap-vm.sh tools/ && cp ~/.tmux.conf tools/tmux.conf && ls -l ~/.labrc.sh tools/
+# at 08:23:28 in /home/ubuntu/chainguard-technical-challenge
+lrwxrwxrwx 1 ubuntu ubuntu   58 Nov 16 12:23 /home/ubuntu/.labrc.sh -> /home/ubuntu/chainguard-technical-challenge/tools/labrc.sh
+
+tools/:
+total 12
+-rw-r--r-- 1 ubuntu ubuntu  654 Nov 16 12:14 bootstrap-vm.sh
+-rw-r--r-- 1 ubuntu ubuntu 2186 Nov 16 12:14 labrc.sh
+-rw-r--r-- 1 ubuntu ubuntu  385 Nov 16 12:23 tmux.conf
+# exit 0
+
+$ cat ~/gitignore-lab >> .gitignore && rm ~/gitignore-lab && cat .gitignore
+# at 08:24:13 in /home/ubuntu/chainguard-technical-challenge
+# Ignore Git internals (in case of nested repos)
+.git/
+
+# Ignore scanner results
+sbom_scanner_results/
+scanner_results/
+syft-sboms/
+
+# Added for the lab: secrets, binaries and image tarballs stay out of git
+cosign.key
+*.key
+k3s.yaml
+kubeconfig*
+.env
+
+# Built binaries: rebuilt from source
+go/hello-server
+go-patched/hello-server
+hello-server-*
+
+# Image tarballs: rebuilt from the Dockerfiles
+*.tar
+# exit 0
+
+$ ls -la . logs tools
+# at 08:24:13 in /home/ubuntu/chainguard-technical-challenge
+.:
+total 64
+drwxrwxr-x 11 ubuntu ubuntu 4096 Nov 16 12:23 .
+drwxr-x---  5 ubuntu ubuntu 4096 Nov 16 12:24 ..
+drwxrwxr-x  8 ubuntu ubuntu 4096 Nov 16 12:23 .git
+-rw-rw-r--  1 ubuntu ubuntu  398 Nov 16 12:24 .gitignore
+-rw-r--r--  1 ubuntu ubuntu 2240 Nov 16 12:23 JOURNAL.md
+-rw-rw-r--  1 ubuntu ubuntu 3629 Nov 16 12:22 README.md
+-rw-r--r--  1 ubuntu ubuntu 2876 Nov 16 12:23 REPORT.md
+-rw-r--r--  1 ubuntu ubuntu 1644 Nov 16 12:23 RUNBOOK.md
+drwxrwxr-x  3 ubuntu ubuntu 4096 Nov 16 12:23 demo
+drwxrwxr-x  2 ubuntu ubuntu 4096 Nov 16 12:23 dockerfiles
+drwxrwxr-x  2 ubuntu ubuntu 4096 Nov 16 12:22 go
+drwxrwxr-x  2 ubuntu ubuntu 4096 Nov 16 12:23 k8s
+drwxrwxr-x  2 ubuntu ubuntu 4096 Nov 16 12:23 logs
+drwxrwxr-x  5 ubuntu ubuntu 4096 Nov 16 12:23 reports
+drwxrwxr-x  2 ubuntu ubuntu 4096 Nov 16 12:23 sbom
+drwxrwxr-x  2 ubuntu ubuntu 4096 Nov 16 12:23 tools
+
+logs:
+total 16
+drwxrwxr-x  2 ubuntu ubuntu 4096 Nov 16 12:23 .
+drwxrwxr-x 11 ubuntu ubuntu 4096 Nov 16 12:23 ..
+-rw-r--r--  1 ubuntu ubuntu 3653 Nov 16 12:23 00-prepare-mac.log
+-rw-rw-r--  1 ubuntu ubuntu 3731 Nov 16 12:24 01-vm.log
+
+tools:
+total 20
+drwxrwxr-x  2 ubuntu ubuntu 4096 Nov 16 12:23 .
+drwxrwxr-x 11 ubuntu ubuntu 4096 Nov 16 12:23 ..
+-rw-r--r--  1 ubuntu ubuntu  654 Nov 16 12:14 bootstrap-vm.sh
+-rw-r--r--  1 ubuntu ubuntu 2186 Nov 16 12:14 labrc.sh
+-rw-r--r--  1 ubuntu ubuntu  385 Nov 16 12:23 tmux.conf
+# exit 0
+
+$ git config user.name "Saadallah Chebaro" && git config user.email "84092091+saadallahchebaro@users.noreply.github.com" && git config --local --get-regexp "^user\."
+# at 08:24:39 in /home/ubuntu/chainguard-technical-challenge
+user.name Saadallah Chebaro
+user.email 84092091+saadallahchebaro@users.noreply.github.com
+# exit 0
+
+$ ssh-keygen -q -t ed25519 -N "" -C "chainguard build VM deploy key" -f ~/.ssh/chainguard_deploy && ssh-keygen -lf ~/.ssh/chainguard_deploy.pub && cat ~/.ssh/chainguard_deploy.pub
+# at 08:24:39 in /home/ubuntu/chainguard-technical-challenge
+256 SHA256:ND86q3NLWVWsHOCa6kzJdSQKGFVJ7HcJIPhK0GHz+qo chainguard build VM deploy key (ED25519)
+ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMMpQofsbeDNy/NpVtGpOm/Yljhb41N+GLgXI0vsTirJ chainguard build VM deploy key
+# exit 0
+
+$ printf "Host github.com\n  IdentityFile ~/.ssh/chainguard_deploy\n  IdentitiesOnly yes\n" >> ~/.ssh/config && chmod 600 ~/.ssh/config && ssh-keyscan -t ed25519 github.com 2>/dev/null >> ~/.ssh/known_hosts && ssh-keygen -lf ~/.ssh/known_hosts
+# at 08:24:39 in /home/ubuntu/chainguard-technical-challenge
+256 SHA256:+DiY3wvvV6TuJJhbpZisF/zLDA0zPMSvHdkr4UvCOqU github.com (ED25519)
+# exit 0
+
+$ ssh -T git@github.com
+# at 08:25:16 in /home/ubuntu/chainguard-technical-challenge
+Hi saadallahchebaro/chainguard-technical-challenge! You've successfully authenticated, but GitHub does not provide shell access.
+# exit 1
+
+$ git add -A && git status --short && git commit -q -m "step 00-01: lab setup, recorder and documents" -m "Adds tools/ (recorder, tmux settings, VM bootstrap), the lab .gitignore entries, JOURNAL.md, RUNBOOK.md, the REPORT.md skeleton and the logs for steps 00 and 01." -m "Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>" && git log --oneline -3
+# at 08:26:40 in /home/ubuntu/chainguard-technical-challenge
+M  .gitignore
+A  JOURNAL.md
+A  REPORT.md
+A  RUNBOOK.md
+A  logs/00-prepare-mac.log
+A  logs/01-vm-mac.log
+A  logs/01-vm.log
+A  tools/bootstrap-vm.sh
+A  tools/labrc.sh
+A  tools/tmux.conf
+16252ca step 00-01: lab setup, recorder and documents
+42fd9eb updated disclaimer in  README.md
+4a982fb fixed formatting in README.md
+# exit 0
+
+$ git push -u origin main && git status -sb | head -1
+# at 08:26:48 in /home/ubuntu/chainguard-technical-challenge
+To github.com:saadallahchebaro/chainguard-technical-challenge.git
+ * [new branch]      main -> main
+branch 'main' set up to track 'origin/main'.
+## main...origin/main
+# exit 0

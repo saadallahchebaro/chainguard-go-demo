@@ -1,0 +1,15 @@
+$ multipass transfer k8s/deployment.yaml k8s/service.yaml -> repo (written on the Mac)
+transferred OK
+$ multipass exec k3s -- ps -o uid,gid,args -C hello-server   (the app processes on the node)
+  UID   GID COMMAND
+65532 65532 /usr/local/bin/hello-server
+65532 65532 /usr/local/bin/hello-server
+$ multipass exec k3s -- sudo k3s crictl inspect <each hello container> | jq (the runtime spec the node applied)
+{"container":"hello","pod":"hello-57b4b797b-mg7q4","image":"sha256:67d91c78701af6490115f4e5f178428c0","user":"65532:65532","readonly_root":true,"no_new_privileges":true,"capabilities_bounding":null,"seccomp":"SCMP_ACT_ERRNO","memory_limit":67108864,"cpu_quota":20000}
+{"container":"hello","pod":"hello-57b4b797b-q2qrb","image":"sha256:67d91c78701af6490115f4e5f178428c0","user":"65532:65532","readonly_root":true,"no_new_privileges":true,"capabilities_bounding":null,"seccomp":"SCMP_ACT_ERRNO","memory_limit":67108864,"cpu_quota":20000}
+
+$ multipass transfer README.md JOURNAL.md RUNBOOK.md REPORT.md, demo/screenshots/19-*.png -> repo
+transferred OK
+
+$ multipass transfer JOURNAL.md -> repo (checkpoint 5 line)
+transferred OK

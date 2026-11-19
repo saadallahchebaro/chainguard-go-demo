@@ -1,0 +1,2 @@
+$ multipass transfer JOURNAL.md RUNBOOK.md REPORT.md, demo/screenshots/09-*.png -> repo (tools/count.sh, tools/sync-to-mac.sh and .gitignore copied earlier)
+transferred OK
